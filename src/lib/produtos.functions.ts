@@ -85,6 +85,7 @@ export const obterProduto = createServerFn({ method: "GET" })
       .maybeSingle();
     if (error) throw new Error(error.message);
     if (!row) throw new Error("Produto não encontrado");
+    row.imagens = await signImagemPaths(supabase, row.imagens ?? []);
     return row;
   });
 
