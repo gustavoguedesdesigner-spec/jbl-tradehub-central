@@ -51,6 +51,7 @@ import {
 } from "@/lib/materiais.functions";
 import { listarFornecedores } from "@/lib/fornecedores.functions";
 import { listarCategorias } from "@/lib/categorias.functions";
+import { CompatProdutosDoMaterial } from "@/components/compatibilidades/CompatManager";
 
 const opts = (id: string) =>
   queryOptions({ queryKey: ["material", id], queryFn: () => obterMaterial({ data: { id } }) });
