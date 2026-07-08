@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, useQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Plus, Rocket, Search, CalendarClock, User, Package } from "lucide-react";
-import type { ComponentProps } from "react";
+import heroImg from "@/assets/hero-lancamentos.jpg";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -73,9 +73,8 @@ function LancamentosPage() {
     });
   }, [lancamentos, busca, filtroStatus]);
 
-  type CriarPayload = Parameters<typeof criarLancamento>[0] extends { data: infer D } ? D : never;
   const criarMut = useMutation({
-    mutationFn: (payload: CriarPayload) => criarFn({ data: payload }),
+    mutationFn: (payload: Record<string, unknown>) => criarFn({ data: payload as never }),
     onSuccess: () => {
       toast.success("Lançamento criado");
       qc.invalidateQueries({ queryKey: ["lancamentos"] });
@@ -106,7 +105,7 @@ function LancamentosPage() {
         eyebrow="Central de Lançamentos"
         title="Projetos, campanhas e cronograma"
         description="Cada lançamento é um projeto vinculado a um produto da Base Mestre, uma campanha, um responsável e um prazo."
-        icon={Rocket}
+        image={heroImg}
         actions={
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
