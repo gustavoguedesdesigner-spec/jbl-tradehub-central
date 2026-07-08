@@ -12,6 +12,7 @@ interface Imagem {
   id: string;
   storage_path: string;
   url_publica: string | null;
+  url_assinada?: string | null;
   ordem: number;
   principal: boolean;
 }
