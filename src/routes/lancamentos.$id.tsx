@@ -302,14 +302,9 @@ function LancamentoDetalhe() {
               categoria="existente"
               onChanged={invalidate}
             />
-            <MaterialGroup
-              icon={Wrench}
-              tone="amber"
-              titulo="Materiais Obrigatórios"
-              descricao="Materiais indispensáveis para a execução deste lançamento no PDV."
-              itens={materiaisObrig}
+            <MateriaisObrigatoriosPanel
               lancamentoId={id}
-              categoria="obrigatorio"
+              itens={materiaisObrig as never}
               onChanged={invalidate}
             />
             <MaterialGroup
