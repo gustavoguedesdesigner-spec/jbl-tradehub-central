@@ -35,6 +35,7 @@ import {
 } from "@/lib/lancamentos.functions";
 import { MateriaisObrigatoriosPanel } from "@/components/lancamentos/MateriaisObrigatoriosPanel";
 import { MateriaisEspeciaisPanel } from "@/components/lancamentos/MateriaisEspeciaisPanel";
+import { DecisionEnginePanel } from "@/components/lancamentos/DecisionEnginePanel";
 
 const detailOpts = (id: string) => queryOptions({
   queryKey: ["lancamento", id],
