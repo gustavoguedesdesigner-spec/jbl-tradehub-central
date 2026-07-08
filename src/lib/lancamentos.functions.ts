@@ -80,11 +80,12 @@ export const listarLancamentos = createServerFn({ method: "GET" })
         if (img?.storage_path) allPaths.add(img.storage_path);
       }
     }
-    let signedMap = new Map<string, string>();
+    const signedMap = new Map<string, string>();
     if (allPaths.size > 0) {
       const { data: signed } = await supabase.storage
         .from("produtos")
         .createSignedUrls([...allPaths], 60 * 60 * 24);
+      for (const s of signed ?? []) if (s.path && s.signedUrl) signedMap.set(s.path, s.signedUrl);
       signedMap = new Map((signed ?? []).map((s) => [s.path, s.signedUrl]));
     }
     for (const l of list) {
