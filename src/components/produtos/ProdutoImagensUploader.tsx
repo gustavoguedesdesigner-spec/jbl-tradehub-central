@@ -89,12 +89,11 @@ export function ProdutoImagensUploader({ produtoId, imagens }: { produtoId: stri
           .slice()
           .sort((a, b) => a.ordem - b.ordem)
           .map((img) => {
-            const url =
-              img.url_publica ??
-              supabase.storage.from("produtos").getPublicUrl(img.storage_path).data.publicUrl;
+            const url = img.url_assinada ?? null;
             return (
               <div key={img.id} className="group relative overflow-hidden rounded-md border bg-muted">
-                <img src={url} alt="" className="aspect-square w-full object-cover" />
+                {url && <img src={url} alt="" className="aspect-square w-full object-cover" />}
+
                 {img.principal && (
                   <span className="absolute left-1 top-1 flex items-center gap-1 rounded bg-primary px-1.5 py-0.5 text-[10px] font-medium text-primary-foreground">
                     <Star className="h-3 w-3" /> Principal
