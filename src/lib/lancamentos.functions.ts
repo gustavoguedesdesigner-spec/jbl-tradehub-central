@@ -144,8 +144,9 @@ export const obterLancamento = createServerFn({ method: "GET" })
     // materiais vinculados
     const { data: materiais } = await supabase
       .from("lancamentos_materiais")
-      .select("id, quantidade, observacao, categoria, material:materiais_pdv(id, codigo, nome, tipo, status, imagem_principal_url, fornecedor:fornecedores(nome))" as never)
-      .eq("lancamento_id", data.id);
+      .select("id, quantidade, observacao, categoria, acao, status, prazo, briefing, origem, updated_at, responsavel:profiles(id,nome,email,avatar_url), fornecedor:fornecedores(id,nome), material:materiais_pdv(id, codigo, nome, tipo, status, imagem_principal_url, fornecedor:fornecedores(id,nome))" as never)
+      .eq("lancamento_id", data.id)
+      .order("created_at", { ascending: true });
 
     // checklist
     const { data: checklist } = await (supabase as never as { from: (t: string) => { select: (s: string) => { eq: (c: string, v: string) => { order: (o: string, opts: unknown) => Promise<{ data: unknown[] | null }> } } } })
