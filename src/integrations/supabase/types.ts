@@ -631,42 +631,81 @@ export type Database = {
       }
       produtos: {
         Row: {
+          campanha_tamanho:
+            | Database["public"]["Enums"]["campanha_tamanho"]
+            | null
           categoria_id: string | null
+          codigo_jbl: string | null
           created_at: string
+          data_lancamento: string | null
           descricao: string | null
+          descricao_curta: string | null
+          diferenciais: string | null
           ean: string | null
           familia_id: string | null
+          features: string[]
+          hero_product: boolean
           id: string
           linha_id: string | null
           nome: string
+          observacoes: string | null
+          posicionamento:
+            | Database["public"]["Enums"]["produto_posicionamento"]
+            | null
           preco_sugerido: number | null
           sku: string
           status: Database["public"]["Enums"]["produto_status"]
           updated_at: string
         }
         Insert: {
+          campanha_tamanho?:
+            | Database["public"]["Enums"]["campanha_tamanho"]
+            | null
           categoria_id?: string | null
+          codigo_jbl?: string | null
           created_at?: string
+          data_lancamento?: string | null
           descricao?: string | null
+          descricao_curta?: string | null
+          diferenciais?: string | null
           ean?: string | null
           familia_id?: string | null
+          features?: string[]
+          hero_product?: boolean
           id?: string
           linha_id?: string | null
           nome: string
+          observacoes?: string | null
+          posicionamento?:
+            | Database["public"]["Enums"]["produto_posicionamento"]
+            | null
           preco_sugerido?: number | null
           sku: string
           status?: Database["public"]["Enums"]["produto_status"]
           updated_at?: string
         }
         Update: {
+          campanha_tamanho?:
+            | Database["public"]["Enums"]["campanha_tamanho"]
+            | null
           categoria_id?: string | null
+          codigo_jbl?: string | null
           created_at?: string
+          data_lancamento?: string | null
           descricao?: string | null
+          descricao_curta?: string | null
+          diferenciais?: string | null
           ean?: string | null
           familia_id?: string | null
+          features?: string[]
+          hero_product?: boolean
           id?: string
           linha_id?: string | null
           nome?: string
+          observacoes?: string | null
+          posicionamento?:
+            | Database["public"]["Enums"]["produto_posicionamento"]
+            | null
           preco_sugerido?: number | null
           sku?: string
           status?: Database["public"]["Enums"]["produto_status"]
@@ -696,37 +735,140 @@ export type Database = {
           },
         ]
       }
+      produtos_documentos: {
+        Row: {
+          autor: string | null
+          categoria: string | null
+          created_at: string
+          data_documento: string | null
+          descricao: string | null
+          guideline: boolean
+          id: string
+          mime_type: string | null
+          nome: string
+          produto_id: string
+          storage_path: string
+          tamanho_bytes: number | null
+          versao: string | null
+        }
+        Insert: {
+          autor?: string | null
+          categoria?: string | null
+          created_at?: string
+          data_documento?: string | null
+          descricao?: string | null
+          guideline?: boolean
+          id?: string
+          mime_type?: string | null
+          nome: string
+          produto_id: string
+          storage_path: string
+          tamanho_bytes?: number | null
+          versao?: string | null
+        }
+        Update: {
+          autor?: string | null
+          categoria?: string | null
+          created_at?: string
+          data_documento?: string | null
+          descricao?: string | null
+          guideline?: boolean
+          id?: string
+          mime_type?: string | null
+          nome?: string
+          produto_id?: string
+          storage_path?: string
+          tamanho_bytes?: number | null
+          versao?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "produtos_documentos_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       produtos_imagens: {
         Row: {
           created_at: string
           id: string
+          legenda: string | null
           ordem: number
           principal: boolean
           produto_id: string
           storage_path: string
+          tipo: string | null
           url_publica: string
         }
         Insert: {
           created_at?: string
           id?: string
+          legenda?: string | null
           ordem?: number
           principal?: boolean
           produto_id: string
           storage_path: string
+          tipo?: string | null
           url_publica: string
         }
         Update: {
           created_at?: string
           id?: string
+          legenda?: string | null
           ordem?: number
           principal?: boolean
           produto_id?: string
           storage_path?: string
+          tipo?: string | null
           url_publica?: string
         }
         Relationships: [
           {
             foreignKeyName: "produtos_imagens_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      produtos_videos: {
+        Row: {
+          created_at: string
+          id: string
+          ordem: number
+          origem: string
+          produto_id: string
+          storage_path: string | null
+          titulo: string | null
+          url: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          ordem?: number
+          origem: string
+          produto_id: string
+          storage_path?: string | null
+          titulo?: string | null
+          url?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          ordem?: number
+          origem?: string
+          produto_id?: string
+          storage_path?: string | null
+          titulo?: string | null
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "produtos_videos_produto_id_fkey"
             columns: ["produto_id"]
             isOneToOne: false
             referencedRelation: "produtos"
@@ -777,8 +919,15 @@ export type Database = {
     Enums: {
       briefing_status: "rascunho" | "em_revisao" | "aprovado" | "arquivado"
       campanha_status: "planejada" | "em_andamento" | "concluida" | "cancelada"
+      campanha_tamanho: "P" | "M" | "G"
       lancamento_status: "planejado" | "em_andamento" | "lancado" | "cancelado"
-      produto_status: "ativo" | "inativo" | "descontinuado" | "lancamento"
+      produto_posicionamento: "entrada" | "intermediario" | "premium" | "hero"
+      produto_status:
+        | "ativo"
+        | "inativo"
+        | "descontinuado"
+        | "lancamento"
+        | "em_desenvolvimento"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -908,8 +1057,16 @@ export const Constants = {
     Enums: {
       briefing_status: ["rascunho", "em_revisao", "aprovado", "arquivado"],
       campanha_status: ["planejada", "em_andamento", "concluida", "cancelada"],
+      campanha_tamanho: ["P", "M", "G"],
       lancamento_status: ["planejado", "em_andamento", "lancado", "cancelado"],
-      produto_status: ["ativo", "inativo", "descontinuado", "lancamento"],
+      produto_posicionamento: ["entrada", "intermediario", "premium", "hero"],
+      produto_status: [
+        "ativo",
+        "inativo",
+        "descontinuado",
+        "lancamento",
+        "em_desenvolvimento",
+      ],
     },
   },
 } as const
