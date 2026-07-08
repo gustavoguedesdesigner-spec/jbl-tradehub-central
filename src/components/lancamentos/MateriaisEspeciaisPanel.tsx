@@ -61,10 +61,11 @@ const brl = (n: number | null) =>
 
 export function MateriaisEspeciaisPanel({ lancamentoId }: { lancamentoId: string }) {
   const qc = useQueryClient();
-  const { data: itens = [], refetch, isLoading } = useQuery({
+  const { data: raw = [], refetch, isLoading } = useQuery({
     queryKey: ["materiais-especiais", lancamentoId],
     queryFn: () => listarMateriaisEspeciais({ data: { lancamento_id: lancamentoId } }),
   });
+  const itens = raw as unknown as Especial[];
 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Especial | null>(null);
