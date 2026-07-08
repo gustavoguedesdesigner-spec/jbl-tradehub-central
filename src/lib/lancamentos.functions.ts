@@ -117,12 +117,12 @@ export const obterLancamento = createServerFn({ method: "GET" })
     for (const p of row.produtos ?? []) {
       for (const i of p.produto?.imagens ?? []) if (i.storage_path) paths.add(i.storage_path);
     }
-    let map = new Map<string, string>();
+    const map = new Map<string, string>();
     if (paths.size > 0) {
       const { data: signed } = await supabase.storage
         .from("produtos")
         .createSignedUrls([...paths], 60 * 60 * 24 * 7);
-      map = new Map((signed ?? []).map((s) => [s.path, s.signedUrl]));
+      for (const s of signed ?? []) if (s.path && s.signedUrl) map.set(s.path, s.signedUrl);
     }
     for (const p of row.produtos ?? []) {
       const withUrl = (p.produto?.imagens ?? []).map((i) => ({
