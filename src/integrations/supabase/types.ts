@@ -422,6 +422,8 @@ export type Database = {
       }
       lancamentos: {
         Row: {
+          aprovacao_nota: string | null
+          aprovacao_status: string
           campanha_id: string | null
           codigo: string | null
           created_at: string
@@ -429,13 +431,20 @@ export type Database = {
           data_prevista: string | null
           descricao: string | null
           id: string
+          implantacao_nota: string | null
+          implantacao_status: string
           nome: string
+          pdv_ready: boolean
           prioridade: number
+          producao_nota: string | null
+          producao_status: string
           responsavel_id: string | null
           status: Database["public"]["Enums"]["lancamento_status"]
           updated_at: string
         }
         Insert: {
+          aprovacao_nota?: string | null
+          aprovacao_status?: string
           campanha_id?: string | null
           codigo?: string | null
           created_at?: string
@@ -443,13 +452,20 @@ export type Database = {
           data_prevista?: string | null
           descricao?: string | null
           id?: string
+          implantacao_nota?: string | null
+          implantacao_status?: string
           nome: string
+          pdv_ready?: boolean
           prioridade?: number
+          producao_nota?: string | null
+          producao_status?: string
           responsavel_id?: string | null
           status?: Database["public"]["Enums"]["lancamento_status"]
           updated_at?: string
         }
         Update: {
+          aprovacao_nota?: string | null
+          aprovacao_status?: string
           campanha_id?: string | null
           codigo?: string | null
           created_at?: string
@@ -457,8 +473,13 @@ export type Database = {
           data_prevista?: string | null
           descricao?: string | null
           id?: string
+          implantacao_nota?: string | null
+          implantacao_status?: string
           nome?: string
+          pdv_ready?: boolean
           prioridade?: number
+          producao_nota?: string | null
+          producao_status?: string
           responsavel_id?: string | null
           status?: Database["public"]["Enums"]["lancamento_status"]
           updated_at?: string
@@ -480,8 +501,50 @@ export type Database = {
           },
         ]
       }
+      lancamentos_checklist: {
+        Row: {
+          categoria: string
+          created_at: string
+          feito: boolean
+          id: string
+          lancamento_id: string
+          ordem: number
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          categoria?: string
+          created_at?: string
+          feito?: boolean
+          id?: string
+          lancamento_id: string
+          ordem?: number
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          categoria?: string
+          created_at?: string
+          feito?: boolean
+          id?: string
+          lancamento_id?: string
+          ordem?: number
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lancamentos_checklist_lancamento_id_fkey"
+            columns: ["lancamento_id"]
+            isOneToOne: false
+            referencedRelation: "lancamentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lancamentos_materiais: {
         Row: {
+          categoria: string
           created_at: string
           id: string
           lancamento_id: string
@@ -490,6 +553,7 @@ export type Database = {
           quantidade: number
         }
         Insert: {
+          categoria?: string
           created_at?: string
           id?: string
           lancamento_id: string
@@ -498,6 +562,7 @@ export type Database = {
           quantidade?: number
         }
         Update: {
+          categoria?: string
           created_at?: string
           id?: string
           lancamento_id?: string
