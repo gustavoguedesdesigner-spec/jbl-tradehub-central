@@ -222,7 +222,7 @@ function ProdutoDetalhe() {
             <ProdutoDocumentos produtoId={produto.id} documentos={produto.documentos ?? []} apenasGuidelines />
           </TabsContent>
           <TabsContent value="materiais">
-            <ProdutoMateriais produtoId={produto.id} />
+            <CompatMateriaisDoProduto produtoId={produto.id} />
           </TabsContent>
           <TabsContent value="projetos">
             <ProdutoProjetos produtoId={produto.id} />
