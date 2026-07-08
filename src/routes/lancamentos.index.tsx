@@ -73,8 +73,9 @@ function LancamentosPage() {
     });
   }, [lancamentos, busca, filtroStatus]);
 
+  type CriarPayload = Parameters<typeof criarLancamento>[0] extends { data: infer D } ? D : never;
   const criarMut = useMutation({
-    mutationFn: (payload: Parameters<typeof criarFn>[0]["data"]) => criarFn({ data: payload }),
+    mutationFn: (payload: CriarPayload) => criarFn({ data: payload }),
     onSuccess: () => {
       toast.success("Lançamento criado");
       qc.invalidateQueries({ queryKey: ["lancamentos"] });
