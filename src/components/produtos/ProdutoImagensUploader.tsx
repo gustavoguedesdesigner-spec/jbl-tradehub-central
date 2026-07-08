@@ -42,9 +42,8 @@ export function ProdutoImagensUploader({ produtoId, imagens }: { produtoId: stri
           contentType: file.type,
         });
         if (upErr) throw upErr;
-        const { data: pub } = supabase.storage.from("produtos").getPublicUrl(path);
         await adicionarFn({
-          data: { produto_id: produtoId, storage_path: path, url_publica: pub.publicUrl, principal: false },
+          data: { produto_id: produtoId, storage_path: path, url_publica: path, principal: false },
         });
       }
       toast.success("Imagens adicionadas");
