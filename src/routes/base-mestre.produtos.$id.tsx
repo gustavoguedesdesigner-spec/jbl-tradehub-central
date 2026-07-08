@@ -11,10 +11,10 @@ import { ProdutoGaleria } from "@/components/produtos/ProdutoGaleria";
 import { ProdutoVideos } from "@/components/produtos/ProdutoVideos";
 import { ProdutoDocumentos } from "@/components/produtos/ProdutoDocumentos";
 import {
-  ProdutoMateriais,
   ProdutoProjetos,
   ProdutoHistorico,
 } from "@/components/produtos/ProdutoRelacionados";
+import { CompatMateriaisDoProduto } from "@/components/compatibilidades/CompatManager";
 import { obterProduto } from "@/lib/produtos.functions";
 import { listarLinhas } from "@/lib/linhas.functions";
 import { listarCategorias } from "@/lib/categorias.functions";
