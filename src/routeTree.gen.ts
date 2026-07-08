@@ -9,15 +9,25 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RelatoriosRouteImport } from './routes/relatorios'
 import { Route as MerchandisingRouteImport } from './routes/merchandising'
 import { Route as LancamentosRouteImport } from './routes/lancamentos'
+import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as BaseMestreRouteImport } from './routes/base-mestre'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BaseMestreIndexRouteImport } from './routes/base-mestre.index'
 import { Route as BaseMestreProdutosRouteImport } from './routes/base-mestre.produtos'
+import { Route as BaseMestreMateriaisRouteImport } from './routes/base-mestre.materiais'
+import { Route as BaseMestreFornecedoresRouteImport } from './routes/base-mestre.fornecedores'
+import { Route as BaseMestreArquivosRouteImport } from './routes/base-mestre.arquivos'
 import { Route as BaseMestreProdutosNovoRouteImport } from './routes/base-mestre.produtos.novo'
 import { Route as BaseMestreProdutosIdRouteImport } from './routes/base-mestre.produtos.$id'
 
+const RelatoriosRoute = RelatoriosRouteImport.update({
+  id: '/relatorios',
+  path: '/relatorios',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MerchandisingRoute = MerchandisingRouteImport.update({
   id: '/merchandising',
   path: '/merchandising',
@@ -26,6 +36,11 @@ const MerchandisingRoute = MerchandisingRouteImport.update({
 const LancamentosRoute = LancamentosRouteImport.update({
   id: '/lancamentos',
   path: '/lancamentos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BaseMestreRoute = BaseMestreRouteImport.update({
@@ -48,6 +63,21 @@ const BaseMestreProdutosRoute = BaseMestreProdutosRouteImport.update({
   path: '/produtos',
   getParentRoute: () => BaseMestreRoute,
 } as any)
+const BaseMestreMateriaisRoute = BaseMestreMateriaisRouteImport.update({
+  id: '/materiais',
+  path: '/materiais',
+  getParentRoute: () => BaseMestreRoute,
+} as any)
+const BaseMestreFornecedoresRoute = BaseMestreFornecedoresRouteImport.update({
+  id: '/fornecedores',
+  path: '/fornecedores',
+  getParentRoute: () => BaseMestreRoute,
+} as any)
+const BaseMestreArquivosRoute = BaseMestreArquivosRouteImport.update({
+  id: '/arquivos',
+  path: '/arquivos',
+  getParentRoute: () => BaseMestreRoute,
+} as any)
 const BaseMestreProdutosNovoRoute = BaseMestreProdutosNovoRouteImport.update({
   id: '/novo',
   path: '/novo',
@@ -62,8 +92,13 @@ const BaseMestreProdutosIdRoute = BaseMestreProdutosIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/base-mestre': typeof BaseMestreRouteWithChildren
+  '/configuracoes': typeof ConfiguracoesRoute
   '/lancamentos': typeof LancamentosRoute
   '/merchandising': typeof MerchandisingRoute
+  '/relatorios': typeof RelatoriosRoute
+  '/base-mestre/arquivos': typeof BaseMestreArquivosRoute
+  '/base-mestre/fornecedores': typeof BaseMestreFornecedoresRoute
+  '/base-mestre/materiais': typeof BaseMestreMateriaisRoute
   '/base-mestre/produtos': typeof BaseMestreProdutosRouteWithChildren
   '/base-mestre/': typeof BaseMestreIndexRoute
   '/base-mestre/produtos/$id': typeof BaseMestreProdutosIdRoute
@@ -71,8 +106,13 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/configuracoes': typeof ConfiguracoesRoute
   '/lancamentos': typeof LancamentosRoute
   '/merchandising': typeof MerchandisingRoute
+  '/relatorios': typeof RelatoriosRoute
+  '/base-mestre/arquivos': typeof BaseMestreArquivosRoute
+  '/base-mestre/fornecedores': typeof BaseMestreFornecedoresRoute
+  '/base-mestre/materiais': typeof BaseMestreMateriaisRoute
   '/base-mestre/produtos': typeof BaseMestreProdutosRouteWithChildren
   '/base-mestre': typeof BaseMestreIndexRoute
   '/base-mestre/produtos/$id': typeof BaseMestreProdutosIdRoute
@@ -82,8 +122,13 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/base-mestre': typeof BaseMestreRouteWithChildren
+  '/configuracoes': typeof ConfiguracoesRoute
   '/lancamentos': typeof LancamentosRoute
   '/merchandising': typeof MerchandisingRoute
+  '/relatorios': typeof RelatoriosRoute
+  '/base-mestre/arquivos': typeof BaseMestreArquivosRoute
+  '/base-mestre/fornecedores': typeof BaseMestreFornecedoresRoute
+  '/base-mestre/materiais': typeof BaseMestreMateriaisRoute
   '/base-mestre/produtos': typeof BaseMestreProdutosRouteWithChildren
   '/base-mestre/': typeof BaseMestreIndexRoute
   '/base-mestre/produtos/$id': typeof BaseMestreProdutosIdRoute
@@ -94,8 +139,13 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/base-mestre'
+    | '/configuracoes'
     | '/lancamentos'
     | '/merchandising'
+    | '/relatorios'
+    | '/base-mestre/arquivos'
+    | '/base-mestre/fornecedores'
+    | '/base-mestre/materiais'
     | '/base-mestre/produtos'
     | '/base-mestre/'
     | '/base-mestre/produtos/$id'
@@ -103,8 +153,13 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/configuracoes'
     | '/lancamentos'
     | '/merchandising'
+    | '/relatorios'
+    | '/base-mestre/arquivos'
+    | '/base-mestre/fornecedores'
+    | '/base-mestre/materiais'
     | '/base-mestre/produtos'
     | '/base-mestre'
     | '/base-mestre/produtos/$id'
@@ -113,8 +168,13 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/base-mestre'
+    | '/configuracoes'
     | '/lancamentos'
     | '/merchandising'
+    | '/relatorios'
+    | '/base-mestre/arquivos'
+    | '/base-mestre/fornecedores'
+    | '/base-mestre/materiais'
     | '/base-mestre/produtos'
     | '/base-mestre/'
     | '/base-mestre/produtos/$id'
@@ -124,12 +184,21 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BaseMestreRoute: typeof BaseMestreRouteWithChildren
+  ConfiguracoesRoute: typeof ConfiguracoesRoute
   LancamentosRoute: typeof LancamentosRoute
   MerchandisingRoute: typeof MerchandisingRoute
+  RelatoriosRoute: typeof RelatoriosRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/relatorios': {
+      id: '/relatorios'
+      path: '/relatorios'
+      fullPath: '/relatorios'
+      preLoaderRoute: typeof RelatoriosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/merchandising': {
       id: '/merchandising'
       path: '/merchandising'
@@ -142,6 +211,13 @@ declare module '@tanstack/react-router' {
       path: '/lancamentos'
       fullPath: '/lancamentos'
       preLoaderRoute: typeof LancamentosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/configuracoes': {
+      id: '/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/configuracoes'
+      preLoaderRoute: typeof ConfiguracoesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/base-mestre': {
@@ -170,6 +246,27 @@ declare module '@tanstack/react-router' {
       path: '/produtos'
       fullPath: '/base-mestre/produtos'
       preLoaderRoute: typeof BaseMestreProdutosRouteImport
+      parentRoute: typeof BaseMestreRoute
+    }
+    '/base-mestre/materiais': {
+      id: '/base-mestre/materiais'
+      path: '/materiais'
+      fullPath: '/base-mestre/materiais'
+      preLoaderRoute: typeof BaseMestreMateriaisRouteImport
+      parentRoute: typeof BaseMestreRoute
+    }
+    '/base-mestre/fornecedores': {
+      id: '/base-mestre/fornecedores'
+      path: '/fornecedores'
+      fullPath: '/base-mestre/fornecedores'
+      preLoaderRoute: typeof BaseMestreFornecedoresRouteImport
+      parentRoute: typeof BaseMestreRoute
+    }
+    '/base-mestre/arquivos': {
+      id: '/base-mestre/arquivos'
+      path: '/arquivos'
+      fullPath: '/base-mestre/arquivos'
+      preLoaderRoute: typeof BaseMestreArquivosRouteImport
       parentRoute: typeof BaseMestreRoute
     }
     '/base-mestre/produtos/novo': {
@@ -203,11 +300,17 @@ const BaseMestreProdutosRouteWithChildren =
   BaseMestreProdutosRoute._addFileChildren(BaseMestreProdutosRouteChildren)
 
 interface BaseMestreRouteChildren {
+  BaseMestreArquivosRoute: typeof BaseMestreArquivosRoute
+  BaseMestreFornecedoresRoute: typeof BaseMestreFornecedoresRoute
+  BaseMestreMateriaisRoute: typeof BaseMestreMateriaisRoute
   BaseMestreProdutosRoute: typeof BaseMestreProdutosRouteWithChildren
   BaseMestreIndexRoute: typeof BaseMestreIndexRoute
 }
 
 const BaseMestreRouteChildren: BaseMestreRouteChildren = {
+  BaseMestreArquivosRoute: BaseMestreArquivosRoute,
+  BaseMestreFornecedoresRoute: BaseMestreFornecedoresRoute,
+  BaseMestreMateriaisRoute: BaseMestreMateriaisRoute,
   BaseMestreProdutosRoute: BaseMestreProdutosRouteWithChildren,
   BaseMestreIndexRoute: BaseMestreIndexRoute,
 }
@@ -219,8 +322,10 @@ const BaseMestreRouteWithChildren = BaseMestreRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BaseMestreRoute: BaseMestreRouteWithChildren,
+  ConfiguracoesRoute: ConfiguracoesRoute,
   LancamentosRoute: LancamentosRoute,
   MerchandisingRoute: MerchandisingRoute,
+  RelatoriosRoute: RelatoriosRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
