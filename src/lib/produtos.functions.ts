@@ -24,6 +24,17 @@ const produtoInput = z.object({
   ean: z.string().max(32).optional().nullable(),
 });
 
+async function signImagemPaths<T extends { storage_path: string }>(
+  supabase: ReturnType<typeof getClient>,
+  imagens: T[],
+): Promise<(T & { url_assinada: string | null })[]> {
+  if (!imagens || imagens.length === 0) return [];
+  const paths = imagens.map((i) => i.storage_path);
+  const { data } = await supabase.storage.from("produtos").createSignedUrls(paths, 60 * 60 * 24 * 7);
+  const map = new Map((data ?? []).map((d) => [d.path, d.signedUrl]));
+  return imagens.map((i) => ({ ...i, url_assinada: map.get(i.storage_path) ?? null }));
+}
+
 export const listarProdutos = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) =>
     z
@@ -54,7 +65,11 @@ export const listarProdutos = createServerFn({ method: "GET" })
 
     const { data: rows, error } = await query;
     if (error) throw new Error(error.message);
-    return rows ?? [];
+    const list = rows ?? [];
+    for (const row of list) {
+      row.imagens = await signImagemPaths(supabase, row.imagens ?? []);
+    }
+    return list;
   });
 
 export const obterProduto = createServerFn({ method: "GET" })
