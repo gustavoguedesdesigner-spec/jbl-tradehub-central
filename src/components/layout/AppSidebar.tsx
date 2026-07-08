@@ -10,6 +10,9 @@ import {
   Box,
   Users,
   FileImage,
+  Tags,
+  Layers,
+  Link2,
 } from "lucide-react";
 
 import {
@@ -41,9 +44,12 @@ const principais: Item[] = [
     children: [
       { title: "Visão geral", url: "/base-mestre", icon: LayoutGrid },
       { title: "Produtos", url: "/base-mestre/produtos", icon: Package },
-      { title: "Materiais de PDV", url: "/base-mestre/materiais", icon: Box },
+      { title: "Materiais", url: "/base-mestre/materiais", icon: Box },
+      { title: "Categorias", url: "/base-mestre/categorias", icon: Tags },
+      { title: "Famílias", url: "/base-mestre/familias", icon: Layers },
       { title: "Fornecedores", url: "/base-mestre/fornecedores", icon: Users },
       { title: "Arquivos", url: "/base-mestre/arquivos", icon: FileImage },
+      { title: "Compatibilidades", url: "/base-mestre/compatibilidades", icon: Link2 },
     ],
   },
   { title: "Central de Lançamentos", url: "/lancamentos", icon: Rocket },
