@@ -19,6 +19,9 @@ import { Route as BaseMestreIndexRouteImport } from './routes/base-mestre.index'
 import { Route as BaseMestreProdutosRouteImport } from './routes/base-mestre.produtos'
 import { Route as BaseMestreMateriaisRouteImport } from './routes/base-mestre.materiais'
 import { Route as BaseMestreFornecedoresRouteImport } from './routes/base-mestre.fornecedores'
+import { Route as BaseMestreFamiliasRouteImport } from './routes/base-mestre.familias'
+import { Route as BaseMestreCompatibilidadesRouteImport } from './routes/base-mestre.compatibilidades'
+import { Route as BaseMestreCategoriasRouteImport } from './routes/base-mestre.categorias'
 import { Route as BaseMestreArquivosRouteImport } from './routes/base-mestre.arquivos'
 import { Route as BaseMestreProdutosNovoRouteImport } from './routes/base-mestre.produtos.novo'
 import { Route as BaseMestreProdutosIdRouteImport } from './routes/base-mestre.produtos.$id'
@@ -73,6 +76,22 @@ const BaseMestreFornecedoresRoute = BaseMestreFornecedoresRouteImport.update({
   path: '/fornecedores',
   getParentRoute: () => BaseMestreRoute,
 } as any)
+const BaseMestreFamiliasRoute = BaseMestreFamiliasRouteImport.update({
+  id: '/familias',
+  path: '/familias',
+  getParentRoute: () => BaseMestreRoute,
+} as any)
+const BaseMestreCompatibilidadesRoute =
+  BaseMestreCompatibilidadesRouteImport.update({
+    id: '/compatibilidades',
+    path: '/compatibilidades',
+    getParentRoute: () => BaseMestreRoute,
+  } as any)
+const BaseMestreCategoriasRoute = BaseMestreCategoriasRouteImport.update({
+  id: '/categorias',
+  path: '/categorias',
+  getParentRoute: () => BaseMestreRoute,
+} as any)
 const BaseMestreArquivosRoute = BaseMestreArquivosRouteImport.update({
   id: '/arquivos',
   path: '/arquivos',
@@ -97,6 +116,9 @@ export interface FileRoutesByFullPath {
   '/merchandising': typeof MerchandisingRoute
   '/relatorios': typeof RelatoriosRoute
   '/base-mestre/arquivos': typeof BaseMestreArquivosRoute
+  '/base-mestre/categorias': typeof BaseMestreCategoriasRoute
+  '/base-mestre/compatibilidades': typeof BaseMestreCompatibilidadesRoute
+  '/base-mestre/familias': typeof BaseMestreFamiliasRoute
   '/base-mestre/fornecedores': typeof BaseMestreFornecedoresRoute
   '/base-mestre/materiais': typeof BaseMestreMateriaisRoute
   '/base-mestre/produtos': typeof BaseMestreProdutosRouteWithChildren
@@ -111,6 +133,9 @@ export interface FileRoutesByTo {
   '/merchandising': typeof MerchandisingRoute
   '/relatorios': typeof RelatoriosRoute
   '/base-mestre/arquivos': typeof BaseMestreArquivosRoute
+  '/base-mestre/categorias': typeof BaseMestreCategoriasRoute
+  '/base-mestre/compatibilidades': typeof BaseMestreCompatibilidadesRoute
+  '/base-mestre/familias': typeof BaseMestreFamiliasRoute
   '/base-mestre/fornecedores': typeof BaseMestreFornecedoresRoute
   '/base-mestre/materiais': typeof BaseMestreMateriaisRoute
   '/base-mestre/produtos': typeof BaseMestreProdutosRouteWithChildren
@@ -127,6 +152,9 @@ export interface FileRoutesById {
   '/merchandising': typeof MerchandisingRoute
   '/relatorios': typeof RelatoriosRoute
   '/base-mestre/arquivos': typeof BaseMestreArquivosRoute
+  '/base-mestre/categorias': typeof BaseMestreCategoriasRoute
+  '/base-mestre/compatibilidades': typeof BaseMestreCompatibilidadesRoute
+  '/base-mestre/familias': typeof BaseMestreFamiliasRoute
   '/base-mestre/fornecedores': typeof BaseMestreFornecedoresRoute
   '/base-mestre/materiais': typeof BaseMestreMateriaisRoute
   '/base-mestre/produtos': typeof BaseMestreProdutosRouteWithChildren
@@ -144,6 +172,9 @@ export interface FileRouteTypes {
     | '/merchandising'
     | '/relatorios'
     | '/base-mestre/arquivos'
+    | '/base-mestre/categorias'
+    | '/base-mestre/compatibilidades'
+    | '/base-mestre/familias'
     | '/base-mestre/fornecedores'
     | '/base-mestre/materiais'
     | '/base-mestre/produtos'
@@ -158,6 +189,9 @@ export interface FileRouteTypes {
     | '/merchandising'
     | '/relatorios'
     | '/base-mestre/arquivos'
+    | '/base-mestre/categorias'
+    | '/base-mestre/compatibilidades'
+    | '/base-mestre/familias'
     | '/base-mestre/fornecedores'
     | '/base-mestre/materiais'
     | '/base-mestre/produtos'
@@ -173,6 +207,9 @@ export interface FileRouteTypes {
     | '/merchandising'
     | '/relatorios'
     | '/base-mestre/arquivos'
+    | '/base-mestre/categorias'
+    | '/base-mestre/compatibilidades'
+    | '/base-mestre/familias'
     | '/base-mestre/fornecedores'
     | '/base-mestre/materiais'
     | '/base-mestre/produtos'
@@ -262,6 +299,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BaseMestreFornecedoresRouteImport
       parentRoute: typeof BaseMestreRoute
     }
+    '/base-mestre/familias': {
+      id: '/base-mestre/familias'
+      path: '/familias'
+      fullPath: '/base-mestre/familias'
+      preLoaderRoute: typeof BaseMestreFamiliasRouteImport
+      parentRoute: typeof BaseMestreRoute
+    }
+    '/base-mestre/compatibilidades': {
+      id: '/base-mestre/compatibilidades'
+      path: '/compatibilidades'
+      fullPath: '/base-mestre/compatibilidades'
+      preLoaderRoute: typeof BaseMestreCompatibilidadesRouteImport
+      parentRoute: typeof BaseMestreRoute
+    }
+    '/base-mestre/categorias': {
+      id: '/base-mestre/categorias'
+      path: '/categorias'
+      fullPath: '/base-mestre/categorias'
+      preLoaderRoute: typeof BaseMestreCategoriasRouteImport
+      parentRoute: typeof BaseMestreRoute
+    }
     '/base-mestre/arquivos': {
       id: '/base-mestre/arquivos'
       path: '/arquivos'
@@ -301,6 +359,9 @@ const BaseMestreProdutosRouteWithChildren =
 
 interface BaseMestreRouteChildren {
   BaseMestreArquivosRoute: typeof BaseMestreArquivosRoute
+  BaseMestreCategoriasRoute: typeof BaseMestreCategoriasRoute
+  BaseMestreCompatibilidadesRoute: typeof BaseMestreCompatibilidadesRoute
+  BaseMestreFamiliasRoute: typeof BaseMestreFamiliasRoute
   BaseMestreFornecedoresRoute: typeof BaseMestreFornecedoresRoute
   BaseMestreMateriaisRoute: typeof BaseMestreMateriaisRoute
   BaseMestreProdutosRoute: typeof BaseMestreProdutosRouteWithChildren
@@ -309,6 +370,9 @@ interface BaseMestreRouteChildren {
 
 const BaseMestreRouteChildren: BaseMestreRouteChildren = {
   BaseMestreArquivosRoute: BaseMestreArquivosRoute,
+  BaseMestreCategoriasRoute: BaseMestreCategoriasRoute,
+  BaseMestreCompatibilidadesRoute: BaseMestreCompatibilidadesRoute,
+  BaseMestreFamiliasRoute: BaseMestreFamiliasRoute,
   BaseMestreFornecedoresRoute: BaseMestreFornecedoresRoute,
   BaseMestreMateriaisRoute: BaseMestreMateriaisRoute,
   BaseMestreProdutosRoute: BaseMestreProdutosRouteWithChildren,
