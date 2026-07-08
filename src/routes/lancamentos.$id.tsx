@@ -34,6 +34,7 @@ import {
   listarCampanhas, listarResponsaveis,
 } from "@/lib/lancamentos.functions";
 import { MateriaisObrigatoriosPanel } from "@/components/lancamentos/MateriaisObrigatoriosPanel";
+import { MateriaisEspeciaisPanel } from "@/components/lancamentos/MateriaisEspeciaisPanel";
 
 const detailOpts = (id: string) => queryOptions({
   queryKey: ["lancamento", id],
@@ -308,16 +309,7 @@ function LancamentoDetalhe() {
               itens={materiaisObrig as never}
               onChanged={invalidate}
             />
-            <MaterialGroup
-              icon={Star}
-              tone="primary"
-              titulo="Materiais Especiais"
-              descricao="Peças customizadas, promocionais ou de destaque criadas para este projeto."
-              itens={materiaisEspeciais}
-              lancamentoId={id}
-              categoria="especial"
-              onChanged={invalidate}
-            />
+            <MateriaisEspeciaisPanel lancamentoId={id} />
           </div>
         </Section>
 

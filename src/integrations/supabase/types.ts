@@ -741,6 +741,85 @@ export type Database = {
           },
         ]
       }
+      materiais_especiais: {
+        Row: {
+          briefing: string | null
+          created_at: string
+          created_by: string | null
+          croqui_path: string | null
+          fornecedor_id: string | null
+          fornecedor_sugerido: string | null
+          homologado_material_id: string | null
+          id: string
+          imagem_referencia_path: string | null
+          lancamento_id: string
+          nome: string
+          objetivo: string | null
+          observacoes: string | null
+          status: string
+          updated_at: string
+          valor_estimado: number | null
+        }
+        Insert: {
+          briefing?: string | null
+          created_at?: string
+          created_by?: string | null
+          croqui_path?: string | null
+          fornecedor_id?: string | null
+          fornecedor_sugerido?: string | null
+          homologado_material_id?: string | null
+          id?: string
+          imagem_referencia_path?: string | null
+          lancamento_id: string
+          nome: string
+          objetivo?: string | null
+          observacoes?: string | null
+          status?: string
+          updated_at?: string
+          valor_estimado?: number | null
+        }
+        Update: {
+          briefing?: string | null
+          created_at?: string
+          created_by?: string | null
+          croqui_path?: string | null
+          fornecedor_id?: string | null
+          fornecedor_sugerido?: string | null
+          homologado_material_id?: string | null
+          id?: string
+          imagem_referencia_path?: string | null
+          lancamento_id?: string
+          nome?: string
+          objetivo?: string | null
+          observacoes?: string | null
+          status?: string
+          updated_at?: string
+          valor_estimado?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "materiais_especiais_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "materiais_especiais_homologado_material_id_fkey"
+            columns: ["homologado_material_id"]
+            isOneToOne: false
+            referencedRelation: "materiais_pdv"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "materiais_especiais_lancamento_id_fkey"
+            columns: ["lancamento_id"]
+            isOneToOne: false
+            referencedRelation: "lancamentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       materiais_imagens: {
         Row: {
           created_at: string
