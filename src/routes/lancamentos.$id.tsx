@@ -261,6 +261,11 @@ function LancamentoDetalhe() {
           ) : <EmptyCard text="Nenhum produto vinculado." />}
         </Section>
 
+        {/* DECISION ENGINE */}
+        <Section id="decision" icon={Sparkles} title="Decision Engine">
+          <DecisionEnginePanel lancamentoId={id} onChanged={invalidate} />
+        </Section>
+
         {/* CRONOGRAMA */}
         <Section id="cronograma" icon={CalendarClock} title="Cronograma">
           <div className="grid gap-6 md:grid-cols-3">
