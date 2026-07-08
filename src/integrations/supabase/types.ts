@@ -585,41 +585,163 @@ export type Database = {
         }
         Relationships: []
       }
+      materiais_documentos: {
+        Row: {
+          categoria: string | null
+          created_at: string
+          descricao: string | null
+          id: string
+          material_id: string
+          mime_type: string | null
+          nome: string
+          ordem: number
+          storage_path: string
+          tamanho_bytes: number | null
+          updated_at: string
+          versao: string | null
+        }
+        Insert: {
+          categoria?: string | null
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          material_id: string
+          mime_type?: string | null
+          nome: string
+          ordem?: number
+          storage_path: string
+          tamanho_bytes?: number | null
+          updated_at?: string
+          versao?: string | null
+        }
+        Update: {
+          categoria?: string | null
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          material_id?: string
+          mime_type?: string | null
+          nome?: string
+          ordem?: number
+          storage_path?: string
+          tamanho_bytes?: number | null
+          updated_at?: string
+          versao?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "materiais_documentos_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "materiais_pdv"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      materiais_imagens: {
+        Row: {
+          created_at: string
+          id: string
+          legenda: string | null
+          material_id: string
+          ordem: number
+          principal: boolean
+          storage_path: string
+          tipo: string
+          updated_at: string
+          url_publica: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          legenda?: string | null
+          material_id: string
+          ordem?: number
+          principal?: boolean
+          storage_path: string
+          tipo?: string
+          updated_at?: string
+          url_publica?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          legenda?: string | null
+          material_id?: string
+          ordem?: number
+          principal?: boolean
+          storage_path?: string
+          tipo?: string
+          updated_at?: string
+          url_publica?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "materiais_imagens_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "materiais_pdv"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       materiais_pdv: {
         Row: {
+          briefing: string | null
+          categoria_id: string | null
           codigo: string
           created_at: string
           descricao: string | null
           dimensoes: string | null
           fornecedor_id: string | null
           id: string
+          imagem_principal_url: string | null
           nome: string
+          observacoes: string | null
+          status: Database["public"]["Enums"]["material_status"]
           tipo: string | null
           updated_at: string
         }
         Insert: {
+          briefing?: string | null
+          categoria_id?: string | null
           codigo: string
           created_at?: string
           descricao?: string | null
           dimensoes?: string | null
           fornecedor_id?: string | null
           id?: string
+          imagem_principal_url?: string | null
           nome: string
+          observacoes?: string | null
+          status?: Database["public"]["Enums"]["material_status"]
           tipo?: string | null
           updated_at?: string
         }
         Update: {
+          briefing?: string | null
+          categoria_id?: string | null
           codigo?: string
           created_at?: string
           descricao?: string | null
           dimensoes?: string | null
           fornecedor_id?: string | null
           id?: string
+          imagem_principal_url?: string | null
           nome?: string
+          observacoes?: string | null
+          status?: Database["public"]["Enums"]["material_status"]
           tipo?: string | null
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "materiais_pdv_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "materiais_pdv_fornecedor_id_fkey"
             columns: ["fornecedor_id"]
@@ -921,6 +1043,11 @@ export type Database = {
       campanha_status: "planejada" | "em_andamento" | "concluida" | "cancelada"
       campanha_tamanho: "P" | "M" | "G"
       lancamento_status: "planejado" | "em_andamento" | "lancado" | "cancelado"
+      material_status:
+        | "rascunho"
+        | "em_desenvolvimento"
+        | "ativo"
+        | "descontinuado"
       produto_posicionamento: "entrada" | "intermediario" | "premium" | "hero"
       produto_status:
         | "ativo"
@@ -1059,6 +1186,12 @@ export const Constants = {
       campanha_status: ["planejada", "em_andamento", "concluida", "cancelada"],
       campanha_tamanho: ["P", "M", "G"],
       lancamento_status: ["planejado", "em_andamento", "lancado", "cancelado"],
+      material_status: [
+        "rascunho",
+        "em_desenvolvimento",
+        "ativo",
+        "descontinuado",
+      ],
       produto_posicionamento: ["entrada", "intermediario", "premium", "hero"],
       produto_status: [
         "ativo",
