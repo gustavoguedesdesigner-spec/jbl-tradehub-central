@@ -9,38 +9,148 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as MerchandisingRouteImport } from './routes/merchandising'
+import { Route as LancamentosRouteImport } from './routes/lancamentos'
+import { Route as BaseMestreRouteImport } from './routes/base-mestre'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BaseMestreIndexRouteImport } from './routes/base-mestre.index'
+import { Route as BaseMestreProdutosRouteImport } from './routes/base-mestre.produtos'
+import { Route as BaseMestreProdutosNovoRouteImport } from './routes/base-mestre.produtos.novo'
+import { Route as BaseMestreProdutosIdRouteImport } from './routes/base-mestre.produtos.$id'
 
+const MerchandisingRoute = MerchandisingRouteImport.update({
+  id: '/merchandising',
+  path: '/merchandising',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LancamentosRoute = LancamentosRouteImport.update({
+  id: '/lancamentos',
+  path: '/lancamentos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BaseMestreRoute = BaseMestreRouteImport.update({
+  id: '/base-mestre',
+  path: '/base-mestre',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BaseMestreIndexRoute = BaseMestreIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BaseMestreRoute,
+} as any)
+const BaseMestreProdutosRoute = BaseMestreProdutosRouteImport.update({
+  id: '/produtos',
+  path: '/produtos',
+  getParentRoute: () => BaseMestreRoute,
+} as any)
+const BaseMestreProdutosNovoRoute = BaseMestreProdutosNovoRouteImport.update({
+  id: '/novo',
+  path: '/novo',
+  getParentRoute: () => BaseMestreProdutosRoute,
+} as any)
+const BaseMestreProdutosIdRoute = BaseMestreProdutosIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => BaseMestreProdutosRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/base-mestre': typeof BaseMestreRouteWithChildren
+  '/lancamentos': typeof LancamentosRoute
+  '/merchandising': typeof MerchandisingRoute
+  '/base-mestre/produtos': typeof BaseMestreProdutosRouteWithChildren
+  '/base-mestre/': typeof BaseMestreIndexRoute
+  '/base-mestre/produtos/$id': typeof BaseMestreProdutosIdRoute
+  '/base-mestre/produtos/novo': typeof BaseMestreProdutosNovoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/lancamentos': typeof LancamentosRoute
+  '/merchandising': typeof MerchandisingRoute
+  '/base-mestre/produtos': typeof BaseMestreProdutosRouteWithChildren
+  '/base-mestre': typeof BaseMestreIndexRoute
+  '/base-mestre/produtos/$id': typeof BaseMestreProdutosIdRoute
+  '/base-mestre/produtos/novo': typeof BaseMestreProdutosNovoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/base-mestre': typeof BaseMestreRouteWithChildren
+  '/lancamentos': typeof LancamentosRoute
+  '/merchandising': typeof MerchandisingRoute
+  '/base-mestre/produtos': typeof BaseMestreProdutosRouteWithChildren
+  '/base-mestre/': typeof BaseMestreIndexRoute
+  '/base-mestre/produtos/$id': typeof BaseMestreProdutosIdRoute
+  '/base-mestre/produtos/novo': typeof BaseMestreProdutosNovoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/base-mestre'
+    | '/lancamentos'
+    | '/merchandising'
+    | '/base-mestre/produtos'
+    | '/base-mestre/'
+    | '/base-mestre/produtos/$id'
+    | '/base-mestre/produtos/novo'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/lancamentos'
+    | '/merchandising'
+    | '/base-mestre/produtos'
+    | '/base-mestre'
+    | '/base-mestre/produtos/$id'
+    | '/base-mestre/produtos/novo'
+  id:
+    | '__root__'
+    | '/'
+    | '/base-mestre'
+    | '/lancamentos'
+    | '/merchandising'
+    | '/base-mestre/produtos'
+    | '/base-mestre/'
+    | '/base-mestre/produtos/$id'
+    | '/base-mestre/produtos/novo'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BaseMestreRoute: typeof BaseMestreRouteWithChildren
+  LancamentosRoute: typeof LancamentosRoute
+  MerchandisingRoute: typeof MerchandisingRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/merchandising': {
+      id: '/merchandising'
+      path: '/merchandising'
+      fullPath: '/merchandising'
+      preLoaderRoute: typeof MerchandisingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lancamentos': {
+      id: '/lancamentos'
+      path: '/lancamentos'
+      fullPath: '/lancamentos'
+      preLoaderRoute: typeof LancamentosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/base-mestre': {
+      id: '/base-mestre'
+      path: '/base-mestre'
+      fullPath: '/base-mestre'
+      preLoaderRoute: typeof BaseMestreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +158,69 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/base-mestre/': {
+      id: '/base-mestre/'
+      path: '/'
+      fullPath: '/base-mestre/'
+      preLoaderRoute: typeof BaseMestreIndexRouteImport
+      parentRoute: typeof BaseMestreRoute
+    }
+    '/base-mestre/produtos': {
+      id: '/base-mestre/produtos'
+      path: '/produtos'
+      fullPath: '/base-mestre/produtos'
+      preLoaderRoute: typeof BaseMestreProdutosRouteImport
+      parentRoute: typeof BaseMestreRoute
+    }
+    '/base-mestre/produtos/novo': {
+      id: '/base-mestre/produtos/novo'
+      path: '/novo'
+      fullPath: '/base-mestre/produtos/novo'
+      preLoaderRoute: typeof BaseMestreProdutosNovoRouteImport
+      parentRoute: typeof BaseMestreProdutosRoute
+    }
+    '/base-mestre/produtos/$id': {
+      id: '/base-mestre/produtos/$id'
+      path: '/$id'
+      fullPath: '/base-mestre/produtos/$id'
+      preLoaderRoute: typeof BaseMestreProdutosIdRouteImport
+      parentRoute: typeof BaseMestreProdutosRoute
+    }
   }
 }
 
+interface BaseMestreProdutosRouteChildren {
+  BaseMestreProdutosIdRoute: typeof BaseMestreProdutosIdRoute
+  BaseMestreProdutosNovoRoute: typeof BaseMestreProdutosNovoRoute
+}
+
+const BaseMestreProdutosRouteChildren: BaseMestreProdutosRouteChildren = {
+  BaseMestreProdutosIdRoute: BaseMestreProdutosIdRoute,
+  BaseMestreProdutosNovoRoute: BaseMestreProdutosNovoRoute,
+}
+
+const BaseMestreProdutosRouteWithChildren =
+  BaseMestreProdutosRoute._addFileChildren(BaseMestreProdutosRouteChildren)
+
+interface BaseMestreRouteChildren {
+  BaseMestreProdutosRoute: typeof BaseMestreProdutosRouteWithChildren
+  BaseMestreIndexRoute: typeof BaseMestreIndexRoute
+}
+
+const BaseMestreRouteChildren: BaseMestreRouteChildren = {
+  BaseMestreProdutosRoute: BaseMestreProdutosRouteWithChildren,
+  BaseMestreIndexRoute: BaseMestreIndexRoute,
+}
+
+const BaseMestreRouteWithChildren = BaseMestreRoute._addFileChildren(
+  BaseMestreRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BaseMestreRoute: BaseMestreRouteWithChildren,
+  LancamentosRoute: LancamentosRoute,
+  MerchandisingRoute: MerchandisingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
