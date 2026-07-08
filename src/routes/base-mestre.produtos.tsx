@@ -32,7 +32,7 @@ import {
 import { listarProdutos, excluirProduto } from "@/lib/produtos.functions";
 import { listarLinhas } from "@/lib/linhas.functions";
 import { listarCategorias } from "@/lib/categorias.functions";
-import { supabase } from "@/integrations/supabase/client";
+
 
 const produtosOpts = queryOptions({
   queryKey: ["produtos"],
