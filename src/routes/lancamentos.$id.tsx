@@ -109,9 +109,11 @@ function LancamentoDetalhe() {
   const historico = (l as unknown as { historico: Array<{ id: string; acao: string; created_at: string }> }).historico ?? [];
 
   // hero image from first product
+  type Img = { storage_path: string; principal: boolean; url_assinada?: string | null };
   const first = produtos[0];
-  const heroImg = first?.produto?.imagens?.find((i) => i.principal)?.url_assinada
-    ?? first?.produto?.imagens?.[0]?.url_assinada
+  const firstImgs = (first?.produto?.imagens ?? []) as unknown as Img[];
+  const heroImg = firstImgs.find((i) => i.principal)?.url_assinada
+    ?? firstImgs[0]?.url_assinada
     ?? null;
 
   return (
