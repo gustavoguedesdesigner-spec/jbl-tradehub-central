@@ -141,8 +141,52 @@ export const obterLancamento = createServerFn({ method: "GET" })
       .order("created_at", { ascending: false })
       .limit(50);
 
-    return { ...row, historico: historico ?? [] };
+    // materiais vinculados
+    const { data: materiais } = await supabase
+      .from("lancamentos_materiais")
+      .select("id, quantidade, observacao, categoria, material:materiais_pdv(id, codigo, nome, tipo, status, imagem_principal_url, fornecedor:fornecedores(nome))" as never)
+      .eq("lancamento_id", data.id);
+
+    // checklist
+    const { data: checklist } = await (supabase as never as { from: (t: string) => { select: (s: string) => { eq: (c: string, v: string) => { order: (o: string, opts: unknown) => Promise<{ data: unknown[] | null }> } } } })
+      .from("lancamentos_checklist")
+      .select("*")
+      .eq("lancamento_id", data.id)
+      .order("ordem", { ascending: true });
+
+    // briefings
+    const { data: briefings } = await supabase
+      .from("briefings")
+      .select("id, titulo, objetivo, publico_alvo, mensagem_chave, status, updated_at")
+      .eq("lancamento_id", data.id)
+      .order("updated_at", { ascending: false });
+
+    // arquivos vinculados
+    const { data: arquivosVinc } = await supabase
+      .from("arquivos_vinculos")
+      .select("id, arquivo:arquivos(id, nome, storage_path, mime_type, tamanho_bytes, descricao, created_at)")
+      .eq("entidade_tipo", "lancamento")
+      .eq("entidade_id", data.id);
+
+    // comentários
+    const { data: comentarios } = await supabase
+      .from("comentarios")
+      .select("id, corpo, created_at, autor:profiles(id, nome, email, avatar_url)")
+      .eq("entidade_tipo", "lancamento")
+      .eq("entidade_id", data.id)
+      .order("created_at", { ascending: false });
+
+    return {
+      ...row,
+      historico: historico ?? [],
+      materiais: materiais ?? [],
+      checklist: (checklist ?? []) as Array<{ id: string; titulo: string; feito: boolean; ordem: number; categoria: string }>,
+      briefings: briefings ?? [],
+      arquivos: arquivosVinc ?? [],
+      comentarios: comentarios ?? [],
+    };
   });
+
 
 export const criarLancamento = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => lancamentoInput.parse(input))
