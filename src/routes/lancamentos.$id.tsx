@@ -68,6 +68,7 @@ const etapaMap: Record<string, { l: string; cls: string }> = {
 const sections = [
   { id: "resumo", label: "Resumo", icon: Sparkles },
   { id: "produto", label: "Produto", icon: Package },
+  { id: "decision", label: "Decision Engine", icon: Sparkles },
   { id: "cronograma", label: "Cronograma", icon: CalendarClock },
   { id: "checklist", label: "Checklist", icon: ListChecks },
   { id: "materiais", label: "Materiais", icon: Boxes },
