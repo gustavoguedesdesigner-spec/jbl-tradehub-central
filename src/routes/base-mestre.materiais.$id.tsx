@@ -203,7 +203,7 @@ function MaterialDetalhe() {
           </TabsContent>
 
           <TabsContent value="compat">
-            <CompatSection itens={m.produtos_compativeis ?? []} />
+            <CompatProdutosDoMaterial materialId={id} />
           </TabsContent>
 
           <TabsContent value="briefing">
