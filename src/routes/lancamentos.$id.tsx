@@ -34,6 +34,7 @@ import {
   listarCampanhas, listarResponsaveis,
 } from "@/lib/lancamentos.functions";
 import { MateriaisObrigatoriosPanel } from "@/components/lancamentos/MateriaisObrigatoriosPanel";
+import { MateriaisEspeciaisPanel } from "@/components/lancamentos/MateriaisEspeciaisPanel";
 
 const detailOpts = (id: string) => queryOptions({
   queryKey: ["lancamento", id],
