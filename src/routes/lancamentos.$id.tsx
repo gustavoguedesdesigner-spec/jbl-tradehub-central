@@ -33,7 +33,7 @@ const detailOpts = (id: string) => queryOptions({
 export const Route = createFileRoute("/lancamentos/$id")({
   head: ({ loaderData }) => ({
     meta: [
-      { title: loaderData?.nome ? `${loaderData.nome} — Lançamento — JBL` : "Lançamento — JBL" },
+      { title: loaderData && "nome" in loaderData ? `${(loaderData as { nome: string }).nome} — Lançamento — JBL` : "Lançamento — JBL" },
     ],
   }),
   loader: ({ params, context }) => context.queryClient.ensureQueryData(detailOpts(params.id)),
@@ -206,8 +206,9 @@ function LancamentoDetalhe() {
           <TabsContent value="produtos">
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {produtos.map((p) => {
-                const img = p.produto?.imagens?.find((i) => i.principal)?.url_assinada
-                  ?? p.produto?.imagens?.[0]?.url_assinada;
+                const imgs = (p.produto?.imagens ?? []) as unknown as Img[];
+                const img = imgs.find((i) => i.principal)?.url_assinada
+                  ?? imgs[0]?.url_assinada;
                 return (
                   <Link key={p.id} to="/base-mestre/produtos/$id" params={{ id: p.produto!.id }} className="group">
                     <Card className="overflow-hidden hover:shadow-lg hover:border-primary/40 transition">

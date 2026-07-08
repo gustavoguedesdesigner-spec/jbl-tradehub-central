@@ -17,6 +17,7 @@ import { Route as BaseMestreRouteImport } from './routes/base-mestre'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LancamentosIndexRouteImport } from './routes/lancamentos.index'
 import { Route as BaseMestreIndexRouteImport } from './routes/base-mestre.index'
+import { Route as LancamentosIdRouteImport } from './routes/lancamentos.$id'
 import { Route as BaseMestreProdutosRouteImport } from './routes/base-mestre.produtos'
 import { Route as BaseMestreMateriaisRouteImport } from './routes/base-mestre.materiais'
 import { Route as BaseMestreFornecedoresRouteImport } from './routes/base-mestre.fornecedores'
@@ -67,6 +68,11 @@ const BaseMestreIndexRoute = BaseMestreIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => BaseMestreRoute,
+} as any)
+const LancamentosIdRoute = LancamentosIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => LancamentosRoute,
 } as any)
 const BaseMestreProdutosRoute = BaseMestreProdutosRouteImport.update({
   id: '/produtos',
@@ -134,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/base-mestre/fornecedores': typeof BaseMestreFornecedoresRoute
   '/base-mestre/materiais': typeof BaseMestreMateriaisRouteWithChildren
   '/base-mestre/produtos': typeof BaseMestreProdutosRouteWithChildren
+  '/lancamentos/$id': typeof LancamentosIdRoute
   '/base-mestre/': typeof BaseMestreIndexRoute
   '/lancamentos/': typeof LancamentosIndexRoute
   '/base-mestre/materiais/$id': typeof BaseMestreMateriaisIdRoute
@@ -152,6 +159,7 @@ export interface FileRoutesByTo {
   '/base-mestre/fornecedores': typeof BaseMestreFornecedoresRoute
   '/base-mestre/materiais': typeof BaseMestreMateriaisRouteWithChildren
   '/base-mestre/produtos': typeof BaseMestreProdutosRouteWithChildren
+  '/lancamentos/$id': typeof LancamentosIdRoute
   '/base-mestre': typeof BaseMestreIndexRoute
   '/lancamentos': typeof LancamentosIndexRoute
   '/base-mestre/materiais/$id': typeof BaseMestreMateriaisIdRoute
@@ -173,6 +181,7 @@ export interface FileRoutesById {
   '/base-mestre/fornecedores': typeof BaseMestreFornecedoresRoute
   '/base-mestre/materiais': typeof BaseMestreMateriaisRouteWithChildren
   '/base-mestre/produtos': typeof BaseMestreProdutosRouteWithChildren
+  '/lancamentos/$id': typeof LancamentosIdRoute
   '/base-mestre/': typeof BaseMestreIndexRoute
   '/lancamentos/': typeof LancamentosIndexRoute
   '/base-mestre/materiais/$id': typeof BaseMestreMateriaisIdRoute
@@ -195,6 +204,7 @@ export interface FileRouteTypes {
     | '/base-mestre/fornecedores'
     | '/base-mestre/materiais'
     | '/base-mestre/produtos'
+    | '/lancamentos/$id'
     | '/base-mestre/'
     | '/lancamentos/'
     | '/base-mestre/materiais/$id'
@@ -213,6 +223,7 @@ export interface FileRouteTypes {
     | '/base-mestre/fornecedores'
     | '/base-mestre/materiais'
     | '/base-mestre/produtos'
+    | '/lancamentos/$id'
     | '/base-mestre'
     | '/lancamentos'
     | '/base-mestre/materiais/$id'
@@ -233,6 +244,7 @@ export interface FileRouteTypes {
     | '/base-mestre/fornecedores'
     | '/base-mestre/materiais'
     | '/base-mestre/produtos'
+    | '/lancamentos/$id'
     | '/base-mestre/'
     | '/lancamentos/'
     | '/base-mestre/materiais/$id'
@@ -306,6 +318,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/base-mestre/'
       preLoaderRoute: typeof BaseMestreIndexRouteImport
       parentRoute: typeof BaseMestreRoute
+    }
+    '/lancamentos/$id': {
+      id: '/lancamentos/$id'
+      path: '/$id'
+      fullPath: '/lancamentos/$id'
+      preLoaderRoute: typeof LancamentosIdRouteImport
+      parentRoute: typeof LancamentosRoute
     }
     '/base-mestre/produtos': {
       id: '/base-mestre/produtos'
@@ -431,10 +450,12 @@ const BaseMestreRouteWithChildren = BaseMestreRoute._addFileChildren(
 )
 
 interface LancamentosRouteChildren {
+  LancamentosIdRoute: typeof LancamentosIdRoute
   LancamentosIndexRoute: typeof LancamentosIndexRoute
 }
 
 const LancamentosRouteChildren: LancamentosRouteChildren = {
+  LancamentosIdRoute: LancamentosIdRoute,
   LancamentosIndexRoute: LancamentosIndexRoute,
 }
 
