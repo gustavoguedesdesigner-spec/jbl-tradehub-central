@@ -82,6 +82,123 @@ export type Database = {
           },
         ]
       }
+      briefings: {
+        Row: {
+          aprovado_em: string | null
+          aprovado_por_id: string | null
+          autor_id: string | null
+          conteudo: Json
+          created_at: string
+          id: string
+          lancamento_id: string
+          mensagem_chave: string | null
+          objetivo: string | null
+          publico_alvo: string | null
+          status: Database["public"]["Enums"]["briefing_status"]
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          aprovado_em?: string | null
+          aprovado_por_id?: string | null
+          autor_id?: string | null
+          conteudo?: Json
+          created_at?: string
+          id?: string
+          lancamento_id: string
+          mensagem_chave?: string | null
+          objetivo?: string | null
+          publico_alvo?: string | null
+          status?: Database["public"]["Enums"]["briefing_status"]
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          aprovado_em?: string | null
+          aprovado_por_id?: string | null
+          autor_id?: string | null
+          conteudo?: Json
+          created_at?: string
+          id?: string
+          lancamento_id?: string
+          mensagem_chave?: string | null
+          objetivo?: string | null
+          publico_alvo?: string | null
+          status?: Database["public"]["Enums"]["briefing_status"]
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "briefings_aprovado_por_id_fkey"
+            columns: ["aprovado_por_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "briefings_autor_id_fkey"
+            columns: ["autor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "briefings_lancamento_id_fkey"
+            columns: ["lancamento_id"]
+            isOneToOne: true
+            referencedRelation: "lancamentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      campanhas: {
+        Row: {
+          codigo: string | null
+          created_at: string
+          data_fim: string | null
+          data_inicio: string | null
+          descricao: string | null
+          id: string
+          nome: string
+          responsavel_id: string | null
+          status: Database["public"]["Enums"]["campanha_status"]
+          updated_at: string
+        }
+        Insert: {
+          codigo?: string | null
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string | null
+          descricao?: string | null
+          id?: string
+          nome: string
+          responsavel_id?: string | null
+          status?: Database["public"]["Enums"]["campanha_status"]
+          updated_at?: string
+        }
+        Update: {
+          codigo?: string | null
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string | null
+          descricao?: string | null
+          id?: string
+          nome?: string
+          responsavel_id?: string | null
+          status?: Database["public"]["Enums"]["campanha_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campanhas_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categorias: {
         Row: {
           created_at: string
@@ -104,6 +221,123 @@ export type Database = {
           descricao?: string | null
           id?: string
           nome?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      comentarios: {
+        Row: {
+          autor_id: string | null
+          corpo: string
+          created_at: string
+          entidade_id: string
+          entidade_tipo: string
+          id: string
+          parent_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          autor_id?: string | null
+          corpo: string
+          created_at?: string
+          entidade_id: string
+          entidade_tipo: string
+          id?: string
+          parent_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          autor_id?: string | null
+          corpo?: string
+          created_at?: string
+          entidade_id?: string
+          entidade_tipo?: string
+          id?: string
+          parent_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comentarios_autor_id_fkey"
+            columns: ["autor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comentarios_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "comentarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      compatibilidades: {
+        Row: {
+          created_at: string
+          id: string
+          material_id: string
+          observacao: string | null
+          produto_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          material_id: string
+          observacao?: string | null
+          produto_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          material_id?: string
+          observacao?: string | null
+          produto_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "compatibilidades_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "materiais_pdv"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "compatibilidades_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      familias: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          id: string
+          nome: string
+          ordem: number
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome: string
+          ordem?: number
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome?: string
+          ordem?: number
           slug?: string
           updated_at?: string
         }
@@ -145,38 +379,148 @@ export type Database = {
         }
         Relationships: []
       }
+      historico: {
+        Row: {
+          acao: string
+          autor_id: string | null
+          created_at: string
+          dados_antes: Json | null
+          dados_depois: Json | null
+          entidade_id: string
+          entidade_tipo: string
+          id: string
+        }
+        Insert: {
+          acao: string
+          autor_id?: string | null
+          created_at?: string
+          dados_antes?: Json | null
+          dados_depois?: Json | null
+          entidade_id: string
+          entidade_tipo: string
+          id?: string
+        }
+        Update: {
+          acao?: string
+          autor_id?: string | null
+          created_at?: string
+          dados_antes?: Json | null
+          dados_depois?: Json | null
+          entidade_id?: string
+          entidade_tipo?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "historico_autor_id_fkey"
+            columns: ["autor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lancamentos: {
         Row: {
+          campanha_id: string | null
+          codigo: string | null
           created_at: string
           data_lancamento: string | null
           data_prevista: string | null
           descricao: string | null
           id: string
           nome: string
+          prioridade: number
+          responsavel_id: string | null
           status: Database["public"]["Enums"]["lancamento_status"]
           updated_at: string
         }
         Insert: {
+          campanha_id?: string | null
+          codigo?: string | null
           created_at?: string
           data_lancamento?: string | null
           data_prevista?: string | null
           descricao?: string | null
           id?: string
           nome: string
+          prioridade?: number
+          responsavel_id?: string | null
           status?: Database["public"]["Enums"]["lancamento_status"]
           updated_at?: string
         }
         Update: {
+          campanha_id?: string | null
+          codigo?: string | null
           created_at?: string
           data_lancamento?: string | null
           data_prevista?: string | null
           descricao?: string | null
           id?: string
           nome?: string
+          prioridade?: number
+          responsavel_id?: string | null
           status?: Database["public"]["Enums"]["lancamento_status"]
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "lancamentos_campanha_id_fkey"
+            columns: ["campanha_id"]
+            isOneToOne: false
+            referencedRelation: "campanhas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lancamentos_materiais: {
+        Row: {
+          created_at: string
+          id: string
+          lancamento_id: string
+          material_id: string
+          observacao: string | null
+          quantidade: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lancamento_id: string
+          material_id: string
+          observacao?: string | null
+          quantidade?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lancamento_id?: string
+          material_id?: string
+          observacao?: string | null
+          quantidade?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lancamentos_materiais_lancamento_id_fkey"
+            columns: ["lancamento_id"]
+            isOneToOne: false
+            referencedRelation: "lancamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_materiais_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "materiais_pdv"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       lancamentos_produtos: {
         Row: {
@@ -291,6 +635,7 @@ export type Database = {
           created_at: string
           descricao: string | null
           ean: string | null
+          familia_id: string | null
           id: string
           linha_id: string | null
           nome: string
@@ -304,6 +649,7 @@ export type Database = {
           created_at?: string
           descricao?: string | null
           ean?: string | null
+          familia_id?: string | null
           id?: string
           linha_id?: string | null
           nome: string
@@ -317,6 +663,7 @@ export type Database = {
           created_at?: string
           descricao?: string | null
           ean?: string | null
+          familia_id?: string | null
           id?: string
           linha_id?: string | null
           nome?: string
@@ -331,6 +678,13 @@ export type Database = {
             columns: ["categoria_id"]
             isOneToOne: false
             referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produtos_familia_id_fkey"
+            columns: ["familia_id"]
+            isOneToOne: false
+            referencedRelation: "familias"
             referencedColumns: ["id"]
           },
           {
@@ -380,6 +734,39 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          ativo: boolean
+          avatar_url: string | null
+          cargo: string | null
+          created_at: string
+          email: string | null
+          id: string
+          nome: string | null
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          avatar_url?: string | null
+          cargo?: string | null
+          created_at?: string
+          email?: string | null
+          id: string
+          nome?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          avatar_url?: string | null
+          cargo?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          nome?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -388,6 +775,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      briefing_status: "rascunho" | "em_revisao" | "aprovado" | "arquivado"
+      campanha_status: "planejada" | "em_andamento" | "concluida" | "cancelada"
       lancamento_status: "planejado" | "em_andamento" | "lancado" | "cancelado"
       produto_status: "ativo" | "inativo" | "descontinuado" | "lancamento"
     }
@@ -517,6 +906,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      briefing_status: ["rascunho", "em_revisao", "aprovado", "arquivado"],
+      campanha_status: ["planejada", "em_andamento", "concluida", "cancelada"],
       lancamento_status: ["planejado", "em_andamento", "lancado", "cancelado"],
       produto_status: ["ativo", "inativo", "descontinuado", "lancamento"],
     },
