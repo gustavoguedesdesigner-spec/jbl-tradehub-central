@@ -86,7 +86,7 @@ export const listarLancamentos = createServerFn({ method: "GET" })
         .from("produtos")
         .createSignedUrls([...allPaths], 60 * 60 * 24);
       for (const s of signed ?? []) if (s.path && s.signedUrl) signedMap.set(s.path, s.signedUrl);
-      signedMap = new Map((signed ?? []).map((s) => [s.path, s.signedUrl]));
+      
     }
     for (const l of list) {
       for (const p of l.produtos ?? []) {
