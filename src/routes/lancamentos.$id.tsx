@@ -33,6 +33,7 @@ import {
   adicionarComentario, criarBriefingRapido,
   listarCampanhas, listarResponsaveis,
 } from "@/lib/lancamentos.functions";
+import { MateriaisObrigatoriosPanel } from "@/components/lancamentos/MateriaisObrigatoriosPanel";
 
 const detailOpts = (id: string) => queryOptions({
   queryKey: ["lancamento", id],
