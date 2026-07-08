@@ -135,16 +135,8 @@ function RootComponent() {
       <SidebarProvider>
         <div className="flex min-h-screen w-full bg-background">
           <AppSidebar />
-          <div className="flex flex-1 flex-col">
-            <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-neutral-200 bg-background/80 px-6 backdrop-blur">
-              <SidebarTrigger />
-              <div className="flex items-baseline gap-3">
-                <span className="text-sm font-semibold tracking-tight">JBL Trade Hub</span>
-                <span className="hidden text-xs text-muted-foreground sm:inline">
-                  Sistema operacional do Trade Marketing
-                </span>
-              </div>
-            </header>
+          <div className="flex min-w-0 flex-1 flex-col">
+            <AppTopbar />
             <main className="flex-1">
               <Outlet />
             </main>
