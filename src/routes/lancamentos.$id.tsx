@@ -35,6 +35,7 @@ import {
 } from "@/lib/lancamentos.functions";
 import { MateriaisObrigatoriosPanel } from "@/components/lancamentos/MateriaisObrigatoriosPanel";
 import { MateriaisEspeciaisPanel } from "@/components/lancamentos/MateriaisEspeciaisPanel";
+import { DecisionEnginePanel } from "@/components/lancamentos/DecisionEnginePanel";
 
 const detailOpts = (id: string) => queryOptions({
   queryKey: ["lancamento", id],
@@ -68,6 +69,7 @@ const etapaMap: Record<string, { l: string; cls: string }> = {
 const sections = [
   { id: "resumo", label: "Resumo", icon: Sparkles },
   { id: "produto", label: "Produto", icon: Package },
+  { id: "decision", label: "Decision Engine", icon: Sparkles },
   { id: "cronograma", label: "Cronograma", icon: CalendarClock },
   { id: "checklist", label: "Checklist", icon: ListChecks },
   { id: "materiais", label: "Materiais", icon: Boxes },
@@ -257,6 +259,11 @@ function LancamentoDetalhe() {
               </Card>
             </Link>
           ) : <EmptyCard text="Nenhum produto vinculado." />}
+        </Section>
+
+        {/* DECISION ENGINE */}
+        <Section id="decision" icon={Sparkles} title="Decision Engine">
+          <DecisionEnginePanel lancamentoId={id} onChanged={invalidate} />
         </Section>
 
         {/* CRONOGRAMA */}
