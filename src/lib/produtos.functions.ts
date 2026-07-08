@@ -62,7 +62,7 @@ async function registrarHistorico(
     entidade_tipo: "produto",
     entidade_id,
     acao,
-    dados_depois: dados_depois ?? null,
+    dados_depois: (dados_depois ?? null) as never,
   });
 }
 
