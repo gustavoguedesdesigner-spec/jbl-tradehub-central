@@ -171,9 +171,7 @@ function ProdutosPage() {
               {filtrados.map((p) => {
                 const s = statusLabel[p.status] ?? { label: p.status, variant: "outline" as const };
                 const principal = p.imagens?.find((i) => i.principal) ?? p.imagens?.[0];
-                const thumbUrl = principal
-                  ? supabase.storage.from("produtos").getPublicUrl(principal.storage_path).data.publicUrl
-                  : null;
+                const thumbUrl = (principal as { url_assinada?: string | null } | undefined)?.url_assinada ?? null;
                 return (
                   <TableRow
                     key={p.id}
