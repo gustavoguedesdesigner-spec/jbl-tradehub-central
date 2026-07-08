@@ -144,8 +144,9 @@ export const obterLancamento = createServerFn({ method: "GET" })
     // materiais vinculados
     const { data: materiais } = await supabase
       .from("lancamentos_materiais")
-      .select("id, quantidade, observacao, categoria, material:materiais_pdv(id, codigo, nome, tipo, status, imagem_principal_url, fornecedor:fornecedores(nome))" as never)
-      .eq("lancamento_id", data.id);
+      .select("id, quantidade, observacao, categoria, acao, status, prazo, briefing, origem, updated_at, responsavel:profiles(id,nome,email,avatar_url), fornecedor:fornecedores(id,nome), material:materiais_pdv(id, codigo, nome, tipo, status, imagem_principal_url, fornecedor:fornecedores(id,nome))" as never)
+      .eq("lancamento_id", data.id)
+      .order("created_at", { ascending: true });
 
     // checklist
     const { data: checklist } = await (supabase as never as { from: (t: string) => { select: (s: string) => { eq: (c: string, v: string) => { order: (o: string, opts: unknown) => Promise<{ data: unknown[] | null }> } } } })
@@ -480,3 +481,132 @@ export const criarBriefingRapido = createServerFn({ method: "POST" })
     await registrarHistorico(supabase, data.lancamento_id, "briefing_criado", { titulo: data.titulo });
     return { ok: true };
   });
+
+// ============ MATERIAIS OBRIGATÓRIOS (workflow) ============
+const acaoMaterial = z.enum(["produzir", "atualizar", "nao_utilizar", "ja_existente"]);
+const statusMaterial = z.enum(["pendente", "em_producao", "em_aprovacao", "aprovado", "entregue", "bloqueado"]);
+
+type Row = { material_id: string };
+
+export const carregarMateriaisObrigatorios = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => z.object({ lancamento_id: z.string().uuid() }).parse(input))
+  .handler(async ({ data }) => {
+    const supabase = getClient();
+
+    // produto do lançamento
+    const { data: produtos } = await supabase
+      .from("lancamentos_produtos")
+      .select("produto_id")
+      .eq("lancamento_id", data.lancamento_id);
+    const produtoIds = (produtos ?? []).map((p) => p.produto_id).filter(Boolean) as string[];
+    if (produtoIds.length === 0) return { criados: 0, ja_existentes: 0, total_homologados: 0 };
+
+    // materiais compatíveis
+    const { data: compat } = await supabase
+      .from("compatibilidades")
+      .select("material_id, material:materiais_pdv(id, nome, status)")
+      .in("produto_id", produtoIds);
+    const homologados = (compat ?? []).filter(
+      (c) => (c as unknown as { material: { status: string } | null }).material?.status === "ativo",
+    );
+    if (homologados.length === 0) return { criados: 0, ja_existentes: 0, total_homologados: 0 };
+
+    // materiais já vinculados como obrigatórios
+    const { data: existentes } = await supabase
+      .from("lancamentos_materiais")
+      .select("material_id")
+      .eq("lancamento_id", data.lancamento_id)
+      .eq("categoria", "obrigatorio");
+    const jaExistemSet = new Set((existentes ?? []).map((r) => (r as Row).material_id));
+
+    const paraInserir = homologados
+      .map((c) => (c as unknown as { material_id: string; material: { nome: string } | null }))
+      .filter((c) => !jaExistemSet.has(c.material_id))
+      .map((c) => ({
+        lancamento_id: data.lancamento_id,
+        material_id: c.material_id,
+        categoria: "obrigatorio",
+        origem: "auto",
+        acao: "produzir",
+        status: "pendente",
+        quantidade: 1,
+      }));
+
+    if (paraInserir.length > 0) {
+      const { error } = await supabase.from("lancamentos_materiais").insert(paraInserir as never);
+      if (error) throw new Error(error.message);
+    }
+
+    // checklist automático — 1 item por material homologado
+    const { data: cklExist } = await (supabase as never as { from: (t: string) => { select: (s: string) => { eq: (c: string, v: string) => { eq: (c: string, v: string) => Promise<{ data: unknown[] | null }> } } } })
+      .from("lancamentos_checklist")
+      .select("titulo")
+      .eq("lancamento_id", data.lancamento_id)
+      .eq("categoria", "materiais_obrigatorios");
+    const titulosExistentes = new Set(((cklExist ?? []) as Array<{ titulo: string }>).map((c) => c.titulo));
+
+    const cklNovos = homologados
+      .map((c) => (c as unknown as { material: { nome: string } | null }).material?.nome)
+      .filter((n): n is string => !!n)
+      .filter((n) => !titulosExistentes.has(`Homologar entrega: ${n}`))
+      .map((n, idx) => ({
+        lancamento_id: data.lancamento_id,
+        titulo: `Homologar entrega: ${n}`,
+        categoria: "materiais_obrigatorios",
+        feito: false,
+        ordem: idx,
+      }));
+    if (cklNovos.length > 0) {
+      await (supabase as never as { from: (t: string) => { insert: (v: unknown) => Promise<{ error: unknown }> } })
+        .from("lancamentos_checklist")
+        .insert(cklNovos);
+    }
+
+    await registrarHistorico(supabase, data.lancamento_id, "materiais_obrigatorios_carregados", {
+      criados: paraInserir.length,
+      total_homologados: homologados.length,
+    });
+
+    return {
+      criados: paraInserir.length,
+      ja_existentes: jaExistemSet.size,
+      total_homologados: homologados.length,
+    };
+  });
+
+export const atualizarMaterialLancamento = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        id: z.string().uuid(),
+        patch: z
+          .object({
+            acao: acaoMaterial.optional(),
+            status: statusMaterial.optional(),
+            responsavel_id: z.string().uuid().nullable().optional(),
+            fornecedor_id: z.string().uuid().nullable().optional(),
+            prazo: z.string().nullable().optional(),
+            briefing: z.string().max(4000).nullable().optional(),
+            observacao: z.string().max(1000).nullable().optional(),
+            quantidade: z.number().int().min(1).optional(),
+          })
+          .refine((v) => Object.keys(v).length > 0, "Nada para atualizar"),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data }) => {
+    const supabase = getClient();
+    const { error } = await supabase
+      .from("lancamentos_materiais")
+      .update(data.patch as never)
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const listarFornecedoresBasico = createServerFn({ method: "GET" }).handler(async () => {
+  const supabase = getClient();
+  const { data, error } = await supabase.from("fornecedores").select("id, nome").order("nome");
+  if (error) throw new Error(error.message);
+  return data ?? [];
+});
