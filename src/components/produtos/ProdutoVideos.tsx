@@ -12,7 +12,7 @@ import { adicionarVideo, removerVideo } from "@/lib/produtos.functions";
 
 interface Video {
   id: string;
-  origem: "upload" | "youtube" | "vimeo";
+  origem: string;
   titulo: string | null;
   url: string | null;
   storage_path: string | null;
