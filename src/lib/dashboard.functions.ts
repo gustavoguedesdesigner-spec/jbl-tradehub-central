@@ -96,8 +96,8 @@ export const obterResumoDashboard = createServerFn({ method: "GET" }).handler(
       sb.from("produtos").select("linha_id"),
       sb
         .from("lancamentos")
-        .select("id, nome, data, status")
-        .order("data", { ascending: true, nullsFirst: false })
+        .select("id, nome, data_prevista, status")
+        .order("data_prevista", { ascending: true, nullsFirst: false })
         .limit(6),
       sb
         .from("historico")
@@ -130,8 +130,8 @@ export const obterResumoDashboard = createServerFn({ method: "GET" }).handler(
     const { count: lancMes } = await sb
       .from("lancamentos")
       .select("*", { count: "exact", head: true })
-      .gte("data", inicioMes)
-      .lte("data", fimMes);
+      .gte("data_prevista", inicioMes)
+      .lte("data_prevista", fimMes);
 
     // Alertas dinâmicos
     const alertas: DashboardResumo["alertas"] = [];
@@ -192,7 +192,7 @@ export const obterResumoDashboard = createServerFn({ method: "GET" }).handler(
       cronograma: (cronogramaRows.data ?? []).map((r) => ({
         id: r.id,
         nome: r.nome,
-        data: r.data,
+        data: r.data_prevista,
         status: r.status,
       })),
       atividades: (historicoRows.data ?? []).map((h) => ({
