@@ -309,3 +309,174 @@ export const listarProdutosDisponiveis = createServerFn({ method: "GET" }).handl
   if (error) throw new Error(error.message);
   return data ?? [];
 });
+
+// ============ ETAPAS / PDV READY ============
+const etapaStatus = z.enum(["pendente", "em_andamento", "concluido", "bloqueado"]);
+
+export const atualizarEtapas = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        id: z.string().uuid(),
+        pdv_ready: z.boolean().optional(),
+        producao_status: etapaStatus.optional(),
+        aprovacao_status: etapaStatus.optional(),
+        implantacao_status: etapaStatus.optional(),
+        producao_nota: z.string().max(2000).optional().nullable(),
+        aprovacao_nota: z.string().max(2000).optional().nullable(),
+        implantacao_nota: z.string().max(2000).optional().nullable(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data }) => {
+    const supabase = getClient();
+    const { id, ...patch } = data;
+    const { error } = await supabase.from("lancamentos").update(patch as never).eq("id", id);
+    if (error) throw new Error(error.message);
+    await registrarHistorico(supabase, id, "etapa_atualizada", patch as Record<string, unknown>);
+    return { ok: true };
+  });
+
+// ============ CHECKLIST ============
+export const adicionarChecklistItem = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        lancamento_id: z.string().uuid(),
+        titulo: z.string().min(1).max(300),
+        categoria: z.string().max(60).default("geral"),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data }) => {
+    const supabase = getClient();
+    const { data: existentes } = await (supabase as never as { from: (t: string) => { select: (s: string) => { eq: (c: string, v: string) => Promise<{ data: unknown[] | null }> } } })
+      .from("lancamentos_checklist")
+      .select("id")
+      .eq("lancamento_id", data.lancamento_id);
+    const ordem = (existentes ?? []).length;
+    const { error } = await (supabase as never as { from: (t: string) => { insert: (v: unknown) => Promise<{ error: { message: string } | null }> } })
+      .from("lancamentos_checklist")
+      .insert({ ...data, ordem });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const alternarChecklistItem = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z.object({ id: z.string().uuid(), feito: z.boolean() }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    const supabase = getClient();
+    const { error } = await (supabase as never as { from: (t: string) => { update: (v: unknown) => { eq: (c: string, v: string) => Promise<{ error: { message: string } | null }> } } })
+      .from("lancamentos_checklist")
+      .update({ feito: data.feito })
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const removerChecklistItem = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data }) => {
+    const supabase = getClient();
+    const { error } = await (supabase as never as { from: (t: string) => { delete: () => { eq: (c: string, v: string) => Promise<{ error: { message: string } | null }> } } })
+      .from("lancamentos_checklist")
+      .delete()
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+// ============ MATERIAIS DO LANÇAMENTO ============
+const categoriaMaterial = z.enum(["existente", "obrigatorio", "especial"]);
+
+export const vincularMaterial = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        lancamento_id: z.string().uuid(),
+        material_id: z.string().uuid(),
+        categoria: categoriaMaterial.default("existente"),
+        quantidade: z.number().int().min(1).default(1),
+        observacao: z.string().max(500).optional().nullable(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data }) => {
+    const supabase = getClient();
+    const { error } = await supabase.from("lancamentos_materiais").insert(data as never);
+    if (error) throw new Error(error.message);
+    await registrarHistorico(supabase, data.lancamento_id, "material_vinculado", { categoria: data.categoria });
+    return { ok: true };
+  });
+
+export const desvincularMaterial = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data }) => {
+    const supabase = getClient();
+    const { data: row } = await supabase
+      .from("lancamentos_materiais")
+      .select("lancamento_id")
+      .eq("id", data.id)
+      .maybeSingle();
+    const { error } = await supabase.from("lancamentos_materiais").delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    if (row?.lancamento_id) await registrarHistorico(supabase, row.lancamento_id, "material_desvinculado");
+    return { ok: true };
+  });
+
+export const listarMateriaisDisponiveis = createServerFn({ method: "GET" }).handler(async () => {
+  const supabase = getClient();
+  const { data, error } = await supabase
+    .from("materiais_pdv")
+    .select("id, codigo, nome, tipo, status, imagem_principal_url")
+    .order("nome");
+  if (error) throw new Error(error.message);
+  return data ?? [];
+});
+
+// ============ COMENTÁRIOS ============
+export const adicionarComentario = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z.object({ lancamento_id: z.string().uuid(), corpo: z.string().min(1).max(4000) }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    const supabase = getClient();
+    const { error } = await supabase.from("comentarios").insert({
+      entidade_tipo: "lancamento",
+      entidade_id: data.lancamento_id,
+      corpo: data.corpo,
+    } as never);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+// ============ BRIEFINGS ============
+export const criarBriefingRapido = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        lancamento_id: z.string().uuid(),
+        titulo: z.string().min(1).max(200),
+        objetivo: z.string().max(2000).optional().nullable(),
+        publico_alvo: z.string().max(1000).optional().nullable(),
+        mensagem_chave: z.string().max(1000).optional().nullable(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data }) => {
+    const supabase = getClient();
+    const { error } = await supabase.from("briefings").insert({
+      lancamento_id: data.lancamento_id,
+      titulo: data.titulo,
+      objetivo: data.objetivo ?? null,
+      publico_alvo: data.publico_alvo ?? null,
+      mensagem_chave: data.mensagem_chave ?? null,
+      conteudo: {},
+      status: "rascunho",
+    } as never);
+    if (error) throw new Error(error.message);
+    await registrarHistorico(supabase, data.lancamento_id, "briefing_criado", { titulo: data.titulo });
+    return { ok: true };
+  });
