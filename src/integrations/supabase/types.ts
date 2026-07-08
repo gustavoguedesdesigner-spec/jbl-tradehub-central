@@ -544,33 +544,64 @@ export type Database = {
       }
       lancamentos_materiais: {
         Row: {
+          acao: string
+          briefing: string | null
           categoria: string
           created_at: string
+          fornecedor_id: string | null
           id: string
           lancamento_id: string
           material_id: string
           observacao: string | null
+          origem: string
+          prazo: string | null
           quantidade: number
+          responsavel_id: string | null
+          status: string
+          updated_at: string
         }
         Insert: {
+          acao?: string
+          briefing?: string | null
           categoria?: string
           created_at?: string
+          fornecedor_id?: string | null
           id?: string
           lancamento_id: string
           material_id: string
           observacao?: string | null
+          origem?: string
+          prazo?: string | null
           quantidade?: number
+          responsavel_id?: string | null
+          status?: string
+          updated_at?: string
         }
         Update: {
+          acao?: string
+          briefing?: string | null
           categoria?: string
           created_at?: string
+          fornecedor_id?: string | null
           id?: string
           lancamento_id?: string
           material_id?: string
           observacao?: string | null
+          origem?: string
+          prazo?: string | null
           quantidade?: number
+          responsavel_id?: string | null
+          status?: string
+          updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "lancamentos_materiais_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "lancamentos_materiais_lancamento_id_fkey"
             columns: ["lancamento_id"]
@@ -583,6 +614,13 @@ export type Database = {
             columns: ["material_id"]
             isOneToOne: false
             referencedRelation: "materiais_pdv"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_materiais_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
