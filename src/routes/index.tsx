@@ -25,6 +25,7 @@ import {
 } from "recharts";
 
 import { PageHeader } from "@/components/layout/PageHeader";
+import { NovoProjetoInteligenteButton } from "@/components/NovoProjetoInteligenteButton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { obterResumoDashboard, type DashboardResumo } from "@/lib/dashboard.functions";
