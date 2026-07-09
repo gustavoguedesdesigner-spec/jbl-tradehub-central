@@ -130,81 +130,13 @@ function MateriaisPage() {
               const principal = m.imagens?.find((i: { principal: boolean }) => i.principal) ?? m.imagens?.[0];
               const status = statusMap[m.status] ?? { l: m.status, v: "outline" as const };
               return (
-                <Link key={m.id} to="/base-mestre/materiais/$id" params={{ id: m.id }} className="group">
-                  <Card className="overflow-hidden transition hover:shadow-xl">
-                    <div className="relative aspect-square">
-                      {principal?.url_assinada ? (
-                        <img src={principal.url_assinada} alt={m.nome} className="h-full w-full object-cover" />
-                      ) : (
-                        <MaterialPlaceholder tipo={m.tipo} />
-                      )}
-                      <Badge variant={status.v} className="absolute left-3 top-3">{status.l}</Badge>
-                      <div className="absolute right-3 top-3 flex gap-1 opacity-0 transition group-hover:opacity-100">
-                        <Button
-                          size="icon"
-                          variant="secondary"
-                          className="h-8 w-8 shadow-md"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            navigate({ to: "/base-mestre/materiais/$id", params: { id: m.id }, hash: "editar" });
-                          }}
-                          aria-label="Editar material"
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button
-                              size="icon"
-                              variant="secondary"
-                              className="h-8 w-8 shadow-md"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                              }}
-                              onMouseDown={(e) => {
-                                // Prevent the parent <Link> from navigating on pointer-down
-                                e.preventDefault();
-                                e.stopPropagation();
-                              }}
-                              aria-label="Excluir material"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent onClick={(e) => e.stopPropagation()}>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Excluir material?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Esta ação removerá o material <strong>{m.nome}</strong> e suas imagens. Não pode ser desfeita.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() => excluir.mutate(m.id)}
-                              >
-                                Excluir
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </div>
-                    </div>
-                    <CardHeader className="gap-1">
-                      <p className="font-mono text-xs text-muted-foreground">{m.codigo}</p>
-                      <CardTitle className="text-base leading-tight">{m.nome}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-1 text-sm">
-                      <div className="flex flex-wrap gap-1">
-                        {m.tipo && <Badge variant="outline">{m.tipo}</Badge>}
-                        {m.categoria?.nome && <Badge variant="outline">{m.categoria.nome}</Badge>}
-                      </div>
-                      {m.dimensoes && <p className="pt-1 text-muted-foreground">{m.dimensoes}</p>}
-                      {m.fornecedor?.nome && <p className="text-muted-foreground">Fornecedor: {m.fornecedor.nome}</p>}
-                    </CardContent>
-                  </Card>
-                </Link>
+                <MaterialCard
+                  key={m.id}
+                  material={m}
+                  principal={principal}
+                  status={status}
+                  onDelete={(id) => excluir.mutate(id)}
+                />
               );
             })}
           </div>
