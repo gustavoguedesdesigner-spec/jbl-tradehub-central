@@ -13,6 +13,7 @@ import {
   Tags,
   Layers,
   Link2,
+  FolderOpen,
 } from "lucide-react";
 
 import {
