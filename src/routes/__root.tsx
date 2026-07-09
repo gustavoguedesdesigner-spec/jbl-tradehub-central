@@ -81,20 +81,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "JBL Trade Hub — Sistema operacional do Trade Marketing" },
+      { title: "Dashboard — JBL Trade Hub" },
       {
         name: "description",
         content:
-          "Plataforma central da JBL para produtos, materiais de PDV, lançamentos, campanhas, briefings, fornecedores e Menu Merchandising.",
+          "Visão geral do Trade Marketing JBL: produtos, materiais, projetos e campanhas.",
       },
-      { property: "og:title", content: "JBL Trade Hub" },
+      { property: "og:title", content: "Dashboard — JBL Trade Hub" },
       {
         property: "og:description",
         content:
-          "Sistema operacional do Trade Marketing JBL: produtos, PDV, lançamentos e merchandising em um só lugar.",
+          "Visão geral do Trade Marketing JBL: produtos, materiais, projetos e campanhas.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Dashboard — JBL Trade Hub" },
+      { name: "twitter:description", content: "Visão geral do Trade Marketing JBL: produtos, materiais, projetos e campanhas." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6ecc9c5e-4bd7-472d-9c3b-f2dc296bab90/id-preview-3cb02c35--f6a639f9-38fc-4e9e-ad55-6dca7af04705.lovable.app-1783571794013.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6ecc9c5e-4bd7-472d-9c3b-f2dc296bab90/id-preview-3cb02c35--f6a639f9-38fc-4e9e-ad55-6dca7af04705.lovable.app-1783571794013.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
