@@ -167,7 +167,7 @@ function AssetCenterPage() {
       }),
   });
 
-  const assets = (q.data ?? []) as Asset[];
+  const assets = (q.data ?? []) as unknown as Asset[];
 
   const stats = useMemo(() => {
     const total = assets.length;
