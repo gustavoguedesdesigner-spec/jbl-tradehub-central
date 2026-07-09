@@ -63,6 +63,7 @@ function Dashboard() {
         eyebrow="Visão geral"
         title="Dashboard"
         description="Panorama do Trade Marketing JBL — produtos, materiais, projetos, campanhas."
+        actions={<NovoProjetoInteligenteButton />}
       />
       <div className="container-page space-y-8 py-10">
         <StatsCards data={data} />
