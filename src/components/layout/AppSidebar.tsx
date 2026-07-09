@@ -31,6 +31,7 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import jblLogoAsset from "@/assets/jbl-logo.png.asset.json";
 
 type Child = { title: string; url: string; icon: typeof Home };
 type Item = { title: string; url: string; icon: typeof Home; children?: Child[] };
