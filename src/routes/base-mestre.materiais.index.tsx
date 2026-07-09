@@ -147,6 +147,8 @@ function MateriaisPage() {
                   principal={principal}
                   status={status}
                   onDelete={(id: string) => excluir.mutate(id)}
+                  onDuplicate={(id: string) => duplicar.mutate(id)}
+                  duplicating={duplicar.isPending}
                 />
               );
             })}
@@ -158,7 +160,7 @@ function MateriaisPage() {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function MaterialCard({ material: m, principal, status, onDelete }: { material: any; principal: any; status: { l: string; v: "default" | "secondary" | "outline" | "destructive" }; onDelete: (id: string) => void }) {
+function MaterialCard({ material: m, principal, status, onDelete, onDuplicate, duplicating }: { material: any; principal: any; status: { l: string; v: "default" | "secondary" | "outline" | "destructive" }; onDelete: (id: string) => void; onDuplicate: (id: string) => void; duplicating: boolean }) {
   const navigate = useNavigate();
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -186,6 +188,20 @@ function MaterialCard({ material: m, principal, status, onDelete }: { material: 
                 aria-label="Editar material"
               >
                 <Pencil className="h-4 w-4" />
+              </Button>
+              <Button
+                size="icon"
+                variant="secondary"
+                className="h-8 w-8 shadow-md"
+                disabled={duplicating}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onDuplicate(m.id);
+                }}
+                aria-label="Duplicar material"
+              >
+                <Copy className="h-4 w-4" />
               </Button>
               <Button
                 size="icon"
