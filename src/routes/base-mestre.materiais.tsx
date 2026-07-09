@@ -128,9 +128,9 @@ function MateriaisPage() {
               </div>
               <CardTitle>Nenhum material encontrado</CardTitle>
               <p className="mx-auto max-w-md text-sm text-muted-foreground">Ajuste os filtros ou cadastre um novo material.</p>
-              <Button className="mt-4" onClick={() => setOpen(true)}>
-                <Plus className="mr-2 h-4 w-4" /> Novo material
-              </Button>
+              <Link to="/base-mestre/materiais/novo">
+                <Button className="mt-4"><Plus className="mr-2 h-4 w-4" /> Novo material</Button>
+              </Link>
             </CardHeader>
           </Card>
         ) : (
