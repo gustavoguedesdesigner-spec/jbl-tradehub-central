@@ -112,7 +112,7 @@ export const obterAsset = createServerFn({ method: "GET" })
       .order("created_at", { ascending: false });
 
     return {
-      ...row,
+      ...(row as Record<string, unknown>),
       url: map.get(r.storage_path) ?? null,
       thumbnail_url: r.thumbnail_path ? map.get(r.thumbnail_path) ?? null : null,
       preview_url: r.preview_path ? map.get(r.preview_path) ?? null : null,
