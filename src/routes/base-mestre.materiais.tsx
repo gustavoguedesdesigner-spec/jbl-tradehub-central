@@ -57,9 +57,10 @@ function MateriaisPage() {
         description="Displays, wobblers, adesivos e demais materiais de PDV — cada peça com sua própria página tipo e-commerce."
         image={heroImg}
         actions={
-          <Link to="/base-mestre/materiais/novo">
-            <Button><Plus className="mr-2 h-4 w-4" /> Novo material</Button>
-          </Link>
+          <NovoProjetoInteligenteButton
+            cadastroManualHref="/base-mestre/materiais/novo"
+            cadastroManualLabel="Novo material"
+          />
         }
       />
 
