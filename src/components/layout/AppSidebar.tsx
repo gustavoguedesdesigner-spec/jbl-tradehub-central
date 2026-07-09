@@ -51,6 +51,7 @@ const principais: Item[] = [
     ],
   },
   { title: "Central de Lançamentos", url: "/lancamentos", icon: Rocket },
+  { title: "Launch Control Center", url: "/launch-control", icon: Sparkles },
   { title: "Territory Intelligence", url: "/territory", icon: Map },
   { title: "Asset Center", url: "/asset-center", icon: FolderOpen },
   { title: "Importação Inteligente", url: "/importacao", icon: Zap },
