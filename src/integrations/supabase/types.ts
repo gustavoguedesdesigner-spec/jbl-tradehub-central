@@ -614,6 +614,170 @@ export type Database = {
           },
         ]
       }
+      import_batches: {
+        Row: {
+          created_at: string
+          criados_assets: number
+          criados_materiais: number
+          criados_produtos: number
+          duplicados: number
+          id: string
+          ignorados: number
+          metadata: Json
+          nome: string
+          origem: string | null
+          relacionamentos: number
+          status: string
+          tempo_ms: number | null
+          total_3d: number
+          total_adobe: number
+          total_arquivos: number
+          total_desconhecidos: number
+          total_excel: number
+          total_imagens: number
+          total_pdf: number
+          total_powerpoint: number
+          total_videos: number
+          updated_at: string
+          usuario: string | null
+        }
+        Insert: {
+          created_at?: string
+          criados_assets?: number
+          criados_materiais?: number
+          criados_produtos?: number
+          duplicados?: number
+          id?: string
+          ignorados?: number
+          metadata?: Json
+          nome?: string
+          origem?: string | null
+          relacionamentos?: number
+          status?: string
+          tempo_ms?: number | null
+          total_3d?: number
+          total_adobe?: number
+          total_arquivos?: number
+          total_desconhecidos?: number
+          total_excel?: number
+          total_imagens?: number
+          total_pdf?: number
+          total_powerpoint?: number
+          total_videos?: number
+          updated_at?: string
+          usuario?: string | null
+        }
+        Update: {
+          created_at?: string
+          criados_assets?: number
+          criados_materiais?: number
+          criados_produtos?: number
+          duplicados?: number
+          id?: string
+          ignorados?: number
+          metadata?: Json
+          nome?: string
+          origem?: string | null
+          relacionamentos?: number
+          status?: string
+          tempo_ms?: number | null
+          total_3d?: number
+          total_adobe?: number
+          total_arquivos?: number
+          total_desconhecidos?: number
+          total_excel?: number
+          total_imagens?: number
+          total_pdf?: number
+          total_powerpoint?: number
+          total_videos?: number
+          updated_at?: string
+          usuario?: string | null
+        }
+        Relationships: []
+      }
+      import_items: {
+        Row: {
+          asset_id: string | null
+          batch_id: string
+          caminho_original: string | null
+          categoria_sugerida: string | null
+          created_at: string
+          destino: string | null
+          erro: string | null
+          familia_sugerida: string | null
+          id: string
+          material_id: string | null
+          material_sugerido: string | null
+          metadata: Json
+          mime: string | null
+          nome_arquivo: string
+          pasta: string | null
+          produto_id: string | null
+          produto_sugerido: string | null
+          status: string
+          storage_path: string | null
+          tamanho: number | null
+          tipo_detectado: string | null
+          updated_at: string
+        }
+        Insert: {
+          asset_id?: string | null
+          batch_id: string
+          caminho_original?: string | null
+          categoria_sugerida?: string | null
+          created_at?: string
+          destino?: string | null
+          erro?: string | null
+          familia_sugerida?: string | null
+          id?: string
+          material_id?: string | null
+          material_sugerido?: string | null
+          metadata?: Json
+          mime?: string | null
+          nome_arquivo: string
+          pasta?: string | null
+          produto_id?: string | null
+          produto_sugerido?: string | null
+          status?: string
+          storage_path?: string | null
+          tamanho?: number | null
+          tipo_detectado?: string | null
+          updated_at?: string
+        }
+        Update: {
+          asset_id?: string | null
+          batch_id?: string
+          caminho_original?: string | null
+          categoria_sugerida?: string | null
+          created_at?: string
+          destino?: string | null
+          erro?: string | null
+          familia_sugerida?: string | null
+          id?: string
+          material_id?: string | null
+          material_sugerido?: string | null
+          metadata?: Json
+          mime?: string | null
+          nome_arquivo?: string
+          pasta?: string | null
+          produto_id?: string | null
+          produto_sugerido?: string | null
+          status?: string
+          storage_path?: string | null
+          tamanho?: number | null
+          tipo_detectado?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "import_items_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "import_batches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lancamentos: {
         Row: {
           aprovacao_nota: string | null
