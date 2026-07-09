@@ -174,7 +174,7 @@ export const obterResumoDashboard = createServerFn({ method: "GET" }).handler(
         },
         materiais: {
           total: materiaisTotal.count ?? 0,
-          em_desenvolvimento: 0,
+          em_desenvolvimento: materiaisEmDesenv.count ?? 0,
         },
         projetos: {
           total: projetosTotal.count ?? 0,
@@ -185,7 +185,7 @@ export const obterResumoDashboard = createServerFn({ method: "GET" }).handler(
           ativas: campanhasAtivas.count ?? 0,
         },
         lancamentos_mes: lancMes ?? 0,
-        materiais_dev: 0,
+        materiais_dev: materiaisEmProducao.count ?? 0,
       },
       produtosPorLinha,
       projetosPorStatus: [
