@@ -82,6 +82,200 @@ export type Database = {
           },
         ]
       }
+      asset_comentarios: {
+        Row: {
+          asset_id: string
+          autor: string | null
+          corpo: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          asset_id: string
+          autor?: string | null
+          corpo: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          asset_id?: string
+          autor?: string | null
+          corpo?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_comentarios_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      asset_pastas: {
+        Row: {
+          cor: string | null
+          created_at: string
+          icone: string | null
+          id: string
+          nome: string
+          parent_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          cor?: string | null
+          created_at?: string
+          icone?: string | null
+          id?: string
+          nome: string
+          parent_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cor?: string | null
+          created_at?: string
+          icone?: string | null
+          id?: string
+          nome?: string
+          parent_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_pastas_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "asset_pastas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      asset_vinculos: {
+        Row: {
+          asset_id: string
+          created_at: string
+          entidade_id: string
+          entidade_tipo: Database["public"]["Enums"]["asset_entidade"]
+          id: string
+          ordem: number
+          papel: string | null
+        }
+        Insert: {
+          asset_id: string
+          created_at?: string
+          entidade_id: string
+          entidade_tipo: Database["public"]["Enums"]["asset_entidade"]
+          id?: string
+          ordem?: number
+          papel?: string | null
+        }
+        Update: {
+          asset_id?: string
+          created_at?: string
+          entidade_id?: string
+          entidade_tipo?: Database["public"]["Enums"]["asset_entidade"]
+          id?: string
+          ordem?: number
+          papel?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_vinculos_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assets: {
+        Row: {
+          altura: number | null
+          autor: string | null
+          categoria: string | null
+          created_at: string
+          created_by: string | null
+          descricao: string | null
+          downloads: number
+          duracao_segundos: number | null
+          formato: string | null
+          id: string
+          largura: number | null
+          metadata: Json
+          nome: string
+          pasta_id: string | null
+          peso_bytes: number | null
+          preview_path: string | null
+          status: Database["public"]["Enums"]["asset_status"]
+          storage_path: string
+          tags: string[]
+          thumbnail_path: string | null
+          tipo: Database["public"]["Enums"]["asset_tipo"]
+          updated_at: string
+          versao: string | null
+        }
+        Insert: {
+          altura?: number | null
+          autor?: string | null
+          categoria?: string | null
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          downloads?: number
+          duracao_segundos?: number | null
+          formato?: string | null
+          id?: string
+          largura?: number | null
+          metadata?: Json
+          nome: string
+          pasta_id?: string | null
+          peso_bytes?: number | null
+          preview_path?: string | null
+          status?: Database["public"]["Enums"]["asset_status"]
+          storage_path: string
+          tags?: string[]
+          thumbnail_path?: string | null
+          tipo?: Database["public"]["Enums"]["asset_tipo"]
+          updated_at?: string
+          versao?: string | null
+        }
+        Update: {
+          altura?: number | null
+          autor?: string | null
+          categoria?: string | null
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          downloads?: number
+          duracao_segundos?: number | null
+          formato?: string | null
+          id?: string
+          largura?: number | null
+          metadata?: Json
+          nome?: string
+          pasta_id?: string | null
+          peso_bytes?: number | null
+          preview_path?: string | null
+          status?: Database["public"]["Enums"]["asset_status"]
+          storage_path?: string
+          tags?: string[]
+          thumbnail_path?: string | null
+          tipo?: Database["public"]["Enums"]["asset_tipo"]
+          updated_at?: string
+          versao?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assets_pasta_id_fkey"
+            columns: ["pasta_id"]
+            isOneToOne: false
+            referencedRelation: "asset_pastas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       briefings: {
         Row: {
           aprovado_em: string | null
@@ -1218,9 +1412,41 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
+      asset_entidade:
+        | "produto"
+        | "material"
+        | "lancamento"
+        | "campanha"
+        | "guideline"
+        | "categoria"
+        | "familia"
+        | "fornecedor"
+      asset_status: "rascunho" | "ativo" | "arquivado" | "obsoleto"
+      asset_tipo:
+        | "imagem"
+        | "video"
+        | "pdf"
+        | "brand_book"
+        | "guideline"
+        | "powerpoint"
+        | "excel"
+        | "word"
+        | "ai"
+        | "psd"
+        | "indd"
+        | "eps"
+        | "stl"
+        | "obj"
+        | "zip"
+        | "foto_loja"
+        | "foto_pdv"
+        | "mockup"
+        | "render"
+        | "outro"
       briefing_status: "rascunho" | "em_revisao" | "aprovado" | "arquivado"
       campanha_status: "planejada" | "em_andamento" | "concluida" | "cancelada"
       campanha_tamanho: "P" | "M" | "G"
@@ -1364,6 +1590,39 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      asset_entidade: [
+        "produto",
+        "material",
+        "lancamento",
+        "campanha",
+        "guideline",
+        "categoria",
+        "familia",
+        "fornecedor",
+      ],
+      asset_status: ["rascunho", "ativo", "arquivado", "obsoleto"],
+      asset_tipo: [
+        "imagem",
+        "video",
+        "pdf",
+        "brand_book",
+        "guideline",
+        "powerpoint",
+        "excel",
+        "word",
+        "ai",
+        "psd",
+        "indd",
+        "eps",
+        "stl",
+        "obj",
+        "zip",
+        "foto_loja",
+        "foto_pdv",
+        "mockup",
+        "render",
+        "outro",
+      ],
       briefing_status: ["rascunho", "em_revisao", "aprovado", "arquivado"],
       campanha_status: ["planejada", "em_andamento", "concluida", "cancelada"],
       campanha_tamanho: ["P", "M", "G"],
