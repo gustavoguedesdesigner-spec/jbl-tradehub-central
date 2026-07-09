@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UsuariosRouteImport } from './routes/usuarios'
 import { Route as TerritoryRouteImport } from './routes/territory'
 import { Route as RelatoriosRouteImport } from './routes/relatorios'
 import { Route as ProjetoInteligenteRouteImport } from './routes/projeto-inteligente'
@@ -38,6 +39,11 @@ import { Route as BaseMestreProdutosIdRouteImport } from './routes/base-mestre.p
 import { Route as BaseMestreMateriaisNovoRouteImport } from './routes/base-mestre.materiais.novo'
 import { Route as BaseMestreMateriaisIdRouteImport } from './routes/base-mestre.materiais.$id'
 
+const UsuariosRoute = UsuariosRouteImport.update({
+  id: '/usuarios',
+  path: '/usuarios',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TerritoryRoute = TerritoryRouteImport.update({
   id: '/territory',
   path: '/territory',
@@ -193,6 +199,7 @@ export interface FileRoutesByFullPath {
   '/projeto-inteligente': typeof ProjetoInteligenteRoute
   '/relatorios': typeof RelatoriosRoute
   '/territory': typeof TerritoryRoute
+  '/usuarios': typeof UsuariosRoute
   '/base-mestre/arquivos': typeof BaseMestreArquivosRoute
   '/base-mestre/categorias': typeof BaseMestreCategoriasRoute
   '/base-mestre/compatibilidades': typeof BaseMestreCompatibilidadesRoute
@@ -221,6 +228,7 @@ export interface FileRoutesByTo {
   '/projeto-inteligente': typeof ProjetoInteligenteRoute
   '/relatorios': typeof RelatoriosRoute
   '/territory': typeof TerritoryRoute
+  '/usuarios': typeof UsuariosRoute
   '/base-mestre/arquivos': typeof BaseMestreArquivosRoute
   '/base-mestre/categorias': typeof BaseMestreCategoriasRoute
   '/base-mestre/compatibilidades': typeof BaseMestreCompatibilidadesRoute
@@ -250,6 +258,7 @@ export interface FileRoutesById {
   '/projeto-inteligente': typeof ProjetoInteligenteRoute
   '/relatorios': typeof RelatoriosRoute
   '/territory': typeof TerritoryRoute
+  '/usuarios': typeof UsuariosRoute
   '/base-mestre/arquivos': typeof BaseMestreArquivosRoute
   '/base-mestre/categorias': typeof BaseMestreCategoriasRoute
   '/base-mestre/compatibilidades': typeof BaseMestreCompatibilidadesRoute
@@ -282,6 +291,7 @@ export interface FileRouteTypes {
     | '/projeto-inteligente'
     | '/relatorios'
     | '/territory'
+    | '/usuarios'
     | '/base-mestre/arquivos'
     | '/base-mestre/categorias'
     | '/base-mestre/compatibilidades'
@@ -310,6 +320,7 @@ export interface FileRouteTypes {
     | '/projeto-inteligente'
     | '/relatorios'
     | '/territory'
+    | '/usuarios'
     | '/base-mestre/arquivos'
     | '/base-mestre/categorias'
     | '/base-mestre/compatibilidades'
@@ -338,6 +349,7 @@ export interface FileRouteTypes {
     | '/projeto-inteligente'
     | '/relatorios'
     | '/territory'
+    | '/usuarios'
     | '/base-mestre/arquivos'
     | '/base-mestre/categorias'
     | '/base-mestre/compatibilidades'
@@ -369,10 +381,18 @@ export interface RootRouteChildren {
   ProjetoInteligenteRoute: typeof ProjetoInteligenteRoute
   RelatoriosRoute: typeof RelatoriosRoute
   TerritoryRoute: typeof TerritoryRoute
+  UsuariosRoute: typeof UsuariosRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/usuarios': {
+      id: '/usuarios'
+      path: '/usuarios'
+      fullPath: '/usuarios'
+      preLoaderRoute: typeof UsuariosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/territory': {
       id: '/territory'
       path: '/territory'
@@ -666,6 +686,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProjetoInteligenteRoute: ProjetoInteligenteRoute,
   RelatoriosRoute: RelatoriosRoute,
   TerritoryRoute: TerritoryRoute,
+  UsuariosRoute: UsuariosRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
