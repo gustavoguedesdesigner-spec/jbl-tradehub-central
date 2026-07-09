@@ -158,6 +158,56 @@ export const excluirProduto = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const duplicarProduto = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data }) => {
+    const supabase = getClient();
+    const { data: original, error: errGet } = await supabase
+      .from("produtos")
+      .select("*")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (errGet) throw new Error(errGet.message);
+    if (!original) throw new Error("Produto não encontrado");
+
+    const baseSku = original.sku ?? "PROD";
+    let novoSku = `${baseSku}-COPIA`;
+    let n = 1;
+    while (true) {
+      const { data: existe } = await supabase
+        .from("produtos")
+        .select("id")
+        .eq("sku", novoSku)
+        .maybeSingle();
+      if (!existe) break;
+      n += 1;
+      novoSku = `${baseSku}-COPIA-${n}`;
+    }
+
+    const orig = original as Record<string, unknown>;
+    delete orig.id;
+    delete orig.created_at;
+    delete orig.updated_at;
+
+    const payload = {
+      ...orig,
+      sku: novoSku,
+      nome: `${original.nome} (cópia)`,
+      ean: null,
+      codigo_jbl: null,
+      status: "em_desenvolvimento",
+    };
+
+    const { data: novo, error: errIns } = await supabase
+      .from("produtos")
+      .insert(payload as never)
+      .select("id")
+      .single();
+    if (errIns) throw new Error(errIns.message);
+    await registrarHistorico(supabase, novo.id, "duplicado", { origem_id: data.id });
+    return novo;
+  });
+
 // ============ IMAGENS ============
 const imagemInput = z.object({
   produto_id: z.string().uuid(),
