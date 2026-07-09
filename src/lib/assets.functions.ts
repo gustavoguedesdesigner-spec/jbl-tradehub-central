@@ -140,7 +140,7 @@ const assetInput = z.object({
   thumbnail_path: z.string().max(500).nullable().optional(),
   preview_path: z.string().max(500).nullable().optional(),
   pasta_id: z.string().uuid().nullable().optional(),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
 });
 
 export const criarAsset = createServerFn({ method: "POST" })
