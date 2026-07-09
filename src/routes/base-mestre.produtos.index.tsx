@@ -40,7 +40,7 @@ const produtosOpts = queryOptions({
   queryFn: () => listarProdutos({ data: {} }),
 });
 
-export const Route = createFileRoute("/base-mestre/produtos")({
+export const Route = createFileRoute("/base-mestre/produtos/")({
   head: () => ({ meta: [{ title: "Produtos — Base Mestre — JBL Trade Hub" }] }),
   loader: ({ context }) => context.queryClient.ensureQueryData(produtosOpts),
   component: ProdutosPage,
