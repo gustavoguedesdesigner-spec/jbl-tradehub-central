@@ -16,7 +16,7 @@ import heroImg from "@/assets/hero-materiais.jpg";
 
 const opts = queryOptions({ queryKey: ["materiais"], queryFn: () => listarMateriais() });
 
-export const Route = createFileRoute("/base-mestre/materiais")({
+export const Route = createFileRoute("/base-mestre/materiais/")({
   head: () => ({ meta: [{ title: "Biblioteca de Materiais — Base Mestre — JBL Trade Hub" }] }),
   loader: ({ context }) => context.queryClient.ensureQueryData(opts),
   component: MateriaisPage,
