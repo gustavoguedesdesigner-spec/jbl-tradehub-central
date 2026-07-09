@@ -50,7 +50,6 @@ const principais: Item[] = [
       { title: "Materiais", url: "/base-mestre/materiais", icon: Box },
       { title: "Categorias", url: "/base-mestre/categorias", icon: Tags },
       { title: "Fornecedores", url: "/base-mestre/fornecedores", icon: Users },
-      { title: "Arquivos", url: "/base-mestre/arquivos", icon: FileImage },
     ],
   },
   { title: "Central de Lançamentos", url: "/lancamentos", icon: Rocket },
