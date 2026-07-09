@@ -1309,6 +1309,7 @@ export type Database = {
           hero_product: boolean
           id: string
           linha_id: string | null
+          marca: string | null
           nome: string
           observacoes: string | null
           posicionamento:
@@ -1337,6 +1338,7 @@ export type Database = {
           hero_product?: boolean
           id?: string
           linha_id?: string | null
+          marca?: string | null
           nome: string
           observacoes?: string | null
           posicionamento?:
@@ -1365,6 +1367,7 @@ export type Database = {
           hero_product?: boolean
           id?: string
           linha_id?: string | null
+          marca?: string | null
           nome?: string
           observacoes?: string | null
           posicionamento?:
