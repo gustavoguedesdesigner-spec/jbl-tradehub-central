@@ -15,6 +15,7 @@ import {
   Link2,
   FolderOpen,
   Zap,
+  Download,
 } from "lucide-react";
 
 import {
