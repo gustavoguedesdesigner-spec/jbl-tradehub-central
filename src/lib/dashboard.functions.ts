@@ -106,6 +106,11 @@ export const obterResumoDashboard = createServerFn({ method: "GET" }).handler(
         .limit(8),
     ]);
 
+    const [materiaisEmProducao, materiaisEmDesenv] = await Promise.all([
+      sb.from("lancamentos_materiais").select("*", { count: "exact", head: true }).eq("status", "em_producao"),
+      sb.from("materiais_pdv").select("*", { count: "exact", head: true }).eq("status", "em_desenvolvimento"),
+    ]);
+
     // Produtos por linha (join manual — evita depender de FK embedded)
     const linhas = linhasRows.data ?? [];
     const linhaById = new Map(linhas.map((l) => [l.id, l.nome]));
