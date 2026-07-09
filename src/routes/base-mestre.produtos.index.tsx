@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useSuspenseQuery, useQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Plus, Search, Trash2, Pencil } from "lucide-react";
+import { Plus, Search, Trash2, Pencil, Copy } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -30,7 +30,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { listarProdutos, excluirProduto } from "@/lib/produtos.functions";
+import { listarProdutos, excluirProduto, duplicarProduto } from "@/lib/produtos.functions";
 import { listarLinhas } from "@/lib/linhas.functions";
 import { listarCategorias } from "@/lib/categorias.functions";
 
@@ -74,6 +74,17 @@ function ProdutosPage() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["produtos"] });
       toast.success("Produto excluído");
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  const duplicarFn = useServerFn(duplicarProduto);
+  const duplicar = useMutation({
+    mutationFn: (id: string) => duplicarFn({ data: { id } }),
+    onSuccess: (novo) => {
+      qc.invalidateQueries({ queryKey: ["produtos"] });
+      toast.success("Produto duplicado");
+      navigate({ to: "/base-mestre/produtos/$id", params: { id: novo.id } });
     },
     onError: (e) => toast.error(e.message),
   });
@@ -197,6 +208,15 @@ function ProdutosPage() {
                           <Link to="/base-mestre/produtos/$id" params={{ id: p.id }}>
                             <Pencil className="h-4 w-4" />
                           </Link>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          title="Duplicar"
+                          disabled={duplicar.isPending}
+                          onClick={() => duplicar.mutate(p.id)}
+                        >
+                          <Copy className="h-4 w-4" />
                         </Button>
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
