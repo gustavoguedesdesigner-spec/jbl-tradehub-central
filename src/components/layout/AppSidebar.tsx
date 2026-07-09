@@ -9,7 +9,6 @@ import {
   Package,
   Box,
   Users,
-  FileImage,
   Tags,
   FolderOpen,
   Zap,
