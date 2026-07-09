@@ -13,6 +13,7 @@ import { Route as TerritoryRouteImport } from './routes/territory'
 import { Route as RelatoriosRouteImport } from './routes/relatorios'
 import { Route as ProjetoInteligenteRouteImport } from './routes/projeto-inteligente'
 import { Route as MerchandisingRouteImport } from './routes/merchandising'
+import { Route as LaunchControlRouteImport } from './routes/launch-control'
 import { Route as LancamentosRouteImport } from './routes/lancamentos'
 import { Route as ImportacaoRouteImport } from './routes/importacao'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
@@ -55,6 +56,11 @@ const ProjetoInteligenteRoute = ProjetoInteligenteRouteImport.update({
 const MerchandisingRoute = MerchandisingRouteImport.update({
   id: '/merchandising',
   path: '/merchandising',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LaunchControlRoute = LaunchControlRouteImport.update({
+  id: '/launch-control',
+  path: '/launch-control',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LancamentosRoute = LancamentosRouteImport.update({
@@ -182,6 +188,7 @@ export interface FileRoutesByFullPath {
   '/configuracoes': typeof ConfiguracoesRoute
   '/importacao': typeof ImportacaoRouteWithChildren
   '/lancamentos': typeof LancamentosRouteWithChildren
+  '/launch-control': typeof LaunchControlRoute
   '/merchandising': typeof MerchandisingRoute
   '/projeto-inteligente': typeof ProjetoInteligenteRoute
   '/relatorios': typeof RelatoriosRoute
@@ -209,6 +216,7 @@ export interface FileRoutesByTo {
   '/asset-center': typeof AssetCenterRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/importacao': typeof ImportacaoRouteWithChildren
+  '/launch-control': typeof LaunchControlRoute
   '/merchandising': typeof MerchandisingRoute
   '/projeto-inteligente': typeof ProjetoInteligenteRoute
   '/relatorios': typeof RelatoriosRoute
@@ -237,6 +245,7 @@ export interface FileRoutesById {
   '/configuracoes': typeof ConfiguracoesRoute
   '/importacao': typeof ImportacaoRouteWithChildren
   '/lancamentos': typeof LancamentosRouteWithChildren
+  '/launch-control': typeof LaunchControlRoute
   '/merchandising': typeof MerchandisingRoute
   '/projeto-inteligente': typeof ProjetoInteligenteRoute
   '/relatorios': typeof RelatoriosRoute
@@ -268,6 +277,7 @@ export interface FileRouteTypes {
     | '/configuracoes'
     | '/importacao'
     | '/lancamentos'
+    | '/launch-control'
     | '/merchandising'
     | '/projeto-inteligente'
     | '/relatorios'
@@ -295,6 +305,7 @@ export interface FileRouteTypes {
     | '/asset-center'
     | '/configuracoes'
     | '/importacao'
+    | '/launch-control'
     | '/merchandising'
     | '/projeto-inteligente'
     | '/relatorios'
@@ -322,6 +333,7 @@ export interface FileRouteTypes {
     | '/configuracoes'
     | '/importacao'
     | '/lancamentos'
+    | '/launch-control'
     | '/merchandising'
     | '/projeto-inteligente'
     | '/relatorios'
@@ -352,6 +364,7 @@ export interface RootRouteChildren {
   ConfiguracoesRoute: typeof ConfiguracoesRoute
   ImportacaoRoute: typeof ImportacaoRouteWithChildren
   LancamentosRoute: typeof LancamentosRouteWithChildren
+  LaunchControlRoute: typeof LaunchControlRoute
   MerchandisingRoute: typeof MerchandisingRoute
   ProjetoInteligenteRoute: typeof ProjetoInteligenteRoute
   RelatoriosRoute: typeof RelatoriosRoute
@@ -386,6 +399,13 @@ declare module '@tanstack/react-router' {
       path: '/merchandising'
       fullPath: '/merchandising'
       preLoaderRoute: typeof MerchandisingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/launch-control': {
+      id: '/launch-control'
+      path: '/launch-control'
+      fullPath: '/launch-control'
+      preLoaderRoute: typeof LaunchControlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lancamentos': {
@@ -641,6 +661,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConfiguracoesRoute: ConfiguracoesRoute,
   ImportacaoRoute: ImportacaoRouteWithChildren,
   LancamentosRoute: LancamentosRouteWithChildren,
+  LaunchControlRoute: LaunchControlRoute,
   MerchandisingRoute: MerchandisingRoute,
   ProjetoInteligenteRoute: ProjetoInteligenteRoute,
   RelatoriosRoute: RelatoriosRoute,
@@ -649,13 +670,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
