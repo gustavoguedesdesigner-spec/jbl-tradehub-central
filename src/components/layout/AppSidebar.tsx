@@ -11,8 +11,6 @@ import {
   Users,
   FileImage,
   Tags,
-  Layers,
-  Link2,
   FolderOpen,
   Zap,
   Sparkles,
