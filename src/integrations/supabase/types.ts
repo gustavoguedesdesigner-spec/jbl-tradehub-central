@@ -1318,6 +1318,7 @@ export type Database = {
           sku: string
           status: Database["public"]["Enums"]["produto_status"]
           updated_at: string
+          url_origem: string | null
         }
         Insert: {
           campanha_tamanho?:
@@ -1345,6 +1346,7 @@ export type Database = {
           sku: string
           status?: Database["public"]["Enums"]["produto_status"]
           updated_at?: string
+          url_origem?: string | null
         }
         Update: {
           campanha_tamanho?:
@@ -1372,6 +1374,7 @@ export type Database = {
           sku?: string
           status?: Database["public"]["Enums"]["produto_status"]
           updated_at?: string
+          url_origem?: string | null
         }
         Relationships: [
           {
@@ -1463,6 +1466,7 @@ export type Database = {
           produto_id: string
           storage_path: string
           tipo: string | null
+          url_origem: string | null
           url_publica: string
         }
         Insert: {
@@ -1474,6 +1478,7 @@ export type Database = {
           produto_id: string
           storage_path: string
           tipo?: string | null
+          url_origem?: string | null
           url_publica: string
         }
         Update: {
@@ -1485,6 +1490,7 @@ export type Database = {
           produto_id?: string
           storage_path?: string
           tipo?: string | null
+          url_origem?: string | null
           url_publica?: string
         }
         Relationships: [
