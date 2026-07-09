@@ -234,6 +234,7 @@ function LaunchControlPage() {
         eyebrow="Launch Control Center"
         title="Centro de Controle de Operações"
         description="Toda a operação de lançamentos, campanhas e projetos em uma única visão. Entenda o estado real da operação em menos de 20 segundos."
+        image={heroImg}
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant="outline" className="gap-1.5 border-emerald-500/30 bg-emerald-500/5 text-emerald-700 dark:text-emerald-400">
