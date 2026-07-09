@@ -139,19 +139,56 @@ function MateriaisPage() {
                         <MaterialPlaceholder tipo={m.tipo} />
                       )}
                       <Badge variant={status.v} className="absolute left-3 top-3">{status.l}</Badge>
-                      <Button
-                        size="icon"
-                        variant="secondary"
-                        className="absolute right-3 top-3 h-8 w-8 opacity-0 shadow-md transition group-hover:opacity-100"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          navigate({ to: "/base-mestre/materiais/$id", params: { id: m.id }, hash: "editar" });
-                        }}
-                        aria-label="Editar material"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
+                      <div className="absolute right-3 top-3 flex gap-1 opacity-0 transition group-hover:opacity-100">
+                        <Button
+                          size="icon"
+                          variant="secondary"
+                          className="h-8 w-8 shadow-md"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            navigate({ to: "/base-mestre/materiais/$id", params: { id: m.id }, hash: "editar" });
+                          }}
+                          aria-label="Editar material"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              size="icon"
+                              variant="secondary"
+                              className="h-8 w-8 shadow-md"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                              aria-label="Excluir material"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Excluir material?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Esta ação removerá o material <strong>{m.nome}</strong> e suas imagens. Não pode ser desfeita.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel onClick={(e) => e.preventDefault()}>Cancelar</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  excluir.mutate(m.id);
+                                }}
+                              >
+                                Excluir
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
                     </div>
                     <CardHeader className="gap-1">
                       <p className="font-mono text-xs text-muted-foreground">{m.codigo}</p>
