@@ -160,6 +160,10 @@ function MateriaisPage() {
                               variant="secondary"
                               className="h-8 w-8 shadow-md"
                               onClick={(e) => {
+                                e.stopPropagation();
+                              }}
+                              onMouseDown={(e) => {
+                                // Prevent the parent <Link> from navigating on pointer-down
                                 e.preventDefault();
                                 e.stopPropagation();
                               }}
@@ -176,12 +180,9 @@ function MateriaisPage() {
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                              <AlertDialogCancel onClick={(e) => e.preventDefault()}>Cancelar</AlertDialogCancel>
+                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
                               <AlertDialogAction
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  excluir.mutate(m.id);
-                                }}
+                                onClick={() => excluir.mutate(m.id)}
                               >
                                 Excluir
                               </AlertDialogAction>
