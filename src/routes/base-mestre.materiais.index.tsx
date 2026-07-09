@@ -135,7 +135,7 @@ function MateriaisPage() {
                   material={m}
                   principal={principal}
                   status={status}
-                  onDelete={(id) => excluir.mutate(id)}
+                  onDelete={(id: string) => excluir.mutate(id)}
                 />
               );
             })}
