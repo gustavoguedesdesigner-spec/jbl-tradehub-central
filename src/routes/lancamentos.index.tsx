@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, useQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Plus, Rocket, Search, CalendarClock, User, Package } from "lucide-react";
+import { Plus, Rocket, Search, CalendarClock, User, Package, Sparkles } from "lucide-react";
 import heroImg from "@/assets/hero-lancamentos.jpg";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -108,11 +108,27 @@ function LancamentosPage() {
         image={heroImg}
         actions={
           <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button size="lg" className="gap-2">
-                <Plus className="h-4 w-4" /> Novo Lançamento
-              </Button>
-            </DialogTrigger>
+            <div className="flex flex-col items-end gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  asChild
+                  size="lg"
+                  className="gap-2 bg-[#FF6B00] text-white shadow-sm hover:bg-[#E85F00]"
+                >
+                  <Link to="/projeto-inteligente">
+                    <Sparkles className="h-4 w-4" /> Novo Projeto Inteligente
+                  </Link>
+                </Button>
+                <DialogTrigger asChild>
+                  <Button size="lg" variant="outline" className="gap-2">
+                    <Plus className="h-4 w-4" /> Cadastro Manual
+                  </Button>
+                </DialogTrigger>
+              </div>
+              <p className="max-w-[380px] text-right text-[11px] leading-snug text-muted-foreground">
+                Crie automaticamente um projeto a partir de briefing, PDF, apresentação, imagens ou URL.
+              </p>
+            </div>
             <DialogContent className="max-w-2xl">
               <DialogHeader>
                 <DialogTitle>Novo Lançamento</DialogTitle>

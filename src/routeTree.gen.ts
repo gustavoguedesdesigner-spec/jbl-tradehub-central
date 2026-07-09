@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RelatoriosRouteImport } from './routes/relatorios'
+import { Route as ProjetoInteligenteRouteImport } from './routes/projeto-inteligente'
 import { Route as MerchandisingRouteImport } from './routes/merchandising'
 import { Route as LancamentosRouteImport } from './routes/lancamentos'
 import { Route as ImportacaoRouteImport } from './routes/importacao'
@@ -36,6 +37,11 @@ import { Route as BaseMestreMateriaisIdRouteImport } from './routes/base-mestre.
 const RelatoriosRoute = RelatoriosRouteImport.update({
   id: '/relatorios',
   path: '/relatorios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjetoInteligenteRoute = ProjetoInteligenteRouteImport.update({
+  id: '/projeto-inteligente',
+  path: '/projeto-inteligente',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MerchandisingRoute = MerchandisingRouteImport.update({
@@ -158,6 +164,7 @@ export interface FileRoutesByFullPath {
   '/importacao': typeof ImportacaoRouteWithChildren
   '/lancamentos': typeof LancamentosRouteWithChildren
   '/merchandising': typeof MerchandisingRoute
+  '/projeto-inteligente': typeof ProjetoInteligenteRoute
   '/relatorios': typeof RelatoriosRoute
   '/base-mestre/arquivos': typeof BaseMestreArquivosRoute
   '/base-mestre/categorias': typeof BaseMestreCategoriasRoute
@@ -181,6 +188,7 @@ export interface FileRoutesByTo {
   '/configuracoes': typeof ConfiguracoesRoute
   '/importacao': typeof ImportacaoRouteWithChildren
   '/merchandising': typeof MerchandisingRoute
+  '/projeto-inteligente': typeof ProjetoInteligenteRoute
   '/relatorios': typeof RelatoriosRoute
   '/base-mestre/arquivos': typeof BaseMestreArquivosRoute
   '/base-mestre/categorias': typeof BaseMestreCategoriasRoute
@@ -207,6 +215,7 @@ export interface FileRoutesById {
   '/importacao': typeof ImportacaoRouteWithChildren
   '/lancamentos': typeof LancamentosRouteWithChildren
   '/merchandising': typeof MerchandisingRoute
+  '/projeto-inteligente': typeof ProjetoInteligenteRoute
   '/relatorios': typeof RelatoriosRoute
   '/base-mestre/arquivos': typeof BaseMestreArquivosRoute
   '/base-mestre/categorias': typeof BaseMestreCategoriasRoute
@@ -234,6 +243,7 @@ export interface FileRouteTypes {
     | '/importacao'
     | '/lancamentos'
     | '/merchandising'
+    | '/projeto-inteligente'
     | '/relatorios'
     | '/base-mestre/arquivos'
     | '/base-mestre/categorias'
@@ -257,6 +267,7 @@ export interface FileRouteTypes {
     | '/configuracoes'
     | '/importacao'
     | '/merchandising'
+    | '/projeto-inteligente'
     | '/relatorios'
     | '/base-mestre/arquivos'
     | '/base-mestre/categorias'
@@ -282,6 +293,7 @@ export interface FileRouteTypes {
     | '/importacao'
     | '/lancamentos'
     | '/merchandising'
+    | '/projeto-inteligente'
     | '/relatorios'
     | '/base-mestre/arquivos'
     | '/base-mestre/categorias'
@@ -308,6 +320,7 @@ export interface RootRouteChildren {
   ImportacaoRoute: typeof ImportacaoRouteWithChildren
   LancamentosRoute: typeof LancamentosRouteWithChildren
   MerchandisingRoute: typeof MerchandisingRoute
+  ProjetoInteligenteRoute: typeof ProjetoInteligenteRoute
   RelatoriosRoute: typeof RelatoriosRoute
 }
 
@@ -318,6 +331,13 @@ declare module '@tanstack/react-router' {
       path: '/relatorios'
       fullPath: '/relatorios'
       preLoaderRoute: typeof RelatoriosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projeto-inteligente': {
+      id: '/projeto-inteligente'
+      path: '/projeto-inteligente'
+      fullPath: '/projeto-inteligente'
+      preLoaderRoute: typeof ProjetoInteligenteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/merchandising': {
@@ -563,6 +583,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImportacaoRoute: ImportacaoRouteWithChildren,
   LancamentosRoute: LancamentosRouteWithChildren,
   MerchandisingRoute: MerchandisingRoute,
+  ProjetoInteligenteRoute: ProjetoInteligenteRoute,
   RelatoriosRoute: RelatoriosRoute,
 }
 export const routeTree = rootRouteImport

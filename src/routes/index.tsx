@@ -25,6 +25,7 @@ import {
 } from "recharts";
 
 import { PageHeader } from "@/components/layout/PageHeader";
+import { NovoProjetoInteligenteButton } from "@/components/NovoProjetoInteligenteButton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { obterResumoDashboard, type DashboardResumo } from "@/lib/dashboard.functions";
@@ -62,6 +63,7 @@ function Dashboard() {
         eyebrow="Visão geral"
         title="Dashboard"
         description="Panorama do Trade Marketing JBL — produtos, materiais, projetos, campanhas."
+        actions={<NovoProjetoInteligenteButton />}
       />
       <div className="container-page space-y-8 py-10">
         <StatsCards data={data} />

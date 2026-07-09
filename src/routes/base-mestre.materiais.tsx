@@ -4,6 +4,7 @@ import { Plus, Box, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { PageHero } from "@/components/layout/PageHero";
+import { NovoProjetoInteligenteButton } from "@/components/NovoProjetoInteligenteButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -56,9 +57,10 @@ function MateriaisPage() {
         description="Displays, wobblers, adesivos e demais materiais de PDV — cada peça com sua própria página tipo e-commerce."
         image={heroImg}
         actions={
-          <Link to="/base-mestre/materiais/novo">
-            <Button><Plus className="mr-2 h-4 w-4" /> Novo material</Button>
-          </Link>
+          <NovoProjetoInteligenteButton
+            cadastroManualHref="/base-mestre/materiais/novo"
+            cadastroManualLabel="Novo material"
+          />
         }
       />
 

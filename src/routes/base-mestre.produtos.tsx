@@ -6,6 +6,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { PageHeader } from "@/components/layout/PageHeader";
+import { NovoProjetoInteligenteButton } from "@/components/NovoProjetoInteligenteButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -92,12 +93,10 @@ function ProdutosPage() {
         title="Produtos JBL"
         description="Cadastro central de SKUs. Todas as demais áreas do sistema referenciam estes produtos."
         actions={
-          <Button asChild>
-            <Link to="/base-mestre/produtos/novo">
-              <Plus className="mr-2 h-4 w-4" />
-              Novo produto
-            </Link>
-          </Button>
+          <NovoProjetoInteligenteButton
+            cadastroManualHref="/base-mestre/produtos/novo"
+            cadastroManualLabel="Novo produto"
+          />
         }
       />
       <div className="mx-auto max-w-7xl px-6 py-6">
