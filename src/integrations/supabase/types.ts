@@ -1227,6 +1227,7 @@ export type Database = {
       }
       materiais_pdv: {
         Row: {
+          acabamento: string | null
           briefing: string | null
           categoria_id: string | null
           codigo: string
@@ -1236,13 +1237,20 @@ export type Database = {
           fornecedor_id: string | null
           id: string
           imagem_principal_url: string | null
+          material_construcao: string | null
           nome: string
           observacoes: string | null
+          peso: string | null
+          prazo_producao: string | null
+          quantidade_minima: number | null
           status: Database["public"]["Enums"]["material_status"]
           tipo: string | null
+          tipo_impressao: string | null
           updated_at: string
+          valor_estimado: number | null
         }
         Insert: {
+          acabamento?: string | null
           briefing?: string | null
           categoria_id?: string | null
           codigo: string
@@ -1252,13 +1260,20 @@ export type Database = {
           fornecedor_id?: string | null
           id?: string
           imagem_principal_url?: string | null
+          material_construcao?: string | null
           nome: string
           observacoes?: string | null
+          peso?: string | null
+          prazo_producao?: string | null
+          quantidade_minima?: number | null
           status?: Database["public"]["Enums"]["material_status"]
           tipo?: string | null
+          tipo_impressao?: string | null
           updated_at?: string
+          valor_estimado?: number | null
         }
         Update: {
+          acabamento?: string | null
           briefing?: string | null
           categoria_id?: string | null
           codigo?: string
@@ -1268,11 +1283,17 @@ export type Database = {
           fornecedor_id?: string | null
           id?: string
           imagem_principal_url?: string | null
+          material_construcao?: string | null
           nome?: string
           observacoes?: string | null
+          peso?: string | null
+          prazo_producao?: string | null
+          quantidade_minima?: number | null
           status?: Database["public"]["Enums"]["material_status"]
           tipo?: string | null
+          tipo_impressao?: string | null
           updated_at?: string
+          valor_estimado?: number | null
         }
         Relationships: [
           {

@@ -25,6 +25,13 @@ const materialInput = z.object({
   categoria_id: z.string().uuid().optional().nullable(),
   status: materialStatus.default("rascunho"),
   imagem_principal_url: z.string().max(500).optional().nullable(),
+  material_construcao: z.string().max(64).optional().nullable(),
+  peso: z.string().max(64).optional().nullable(),
+  prazo_producao: z.string().max(64).optional().nullable(),
+  valor_estimado: z.number().nonnegative().optional().nullable(),
+  quantidade_minima: z.number().int().nonnegative().optional().nullable(),
+  tipo_impressao: z.string().max(120).optional().nullable(),
+  acabamento: z.string().max(120).optional().nullable(),
 });
 
 async function signPaths<T extends { storage_path: string | null }>(

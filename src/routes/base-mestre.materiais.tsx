@@ -1,24 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useSuspenseQuery, useMutation, useQueryClient, useQuery, queryOptions } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
+import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { Plus, Box, Search } from "lucide-react";
 import { useMemo, useState } from "react";
-import { toast } from "sonner";
 
 import { PageHero } from "@/components/layout/PageHero";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import {
-  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
-} from "@/components/ui/dialog";
-import { listarMateriais, criarMaterial } from "@/lib/materiais.functions";
-import { listarFornecedores } from "@/lib/fornecedores.functions";
-import { listarCategorias } from "@/lib/categorias.functions";
+import { listarMateriais } from "@/lib/materiais.functions";
 import heroImg from "@/assets/hero-materiais.jpg";
 
 const opts = queryOptions({ queryKey: ["materiais"], queryFn: () => listarMateriais() });
@@ -37,19 +28,10 @@ const statusMap: Record<string, { l: string; v: "default" | "secondary" | "outli
 };
 
 function MateriaisPage() {
-  const qc = useQueryClient();
   const { data: materiais } = useSuspenseQuery(opts);
-  const { data: fornecedores = [] } = useQuery({ queryKey: ["fornecedores"], queryFn: () => listarFornecedores() });
-  const { data: categorias = [] } = useQuery({ queryKey: ["categorias"], queryFn: () => listarCategorias() });
-  const criarFn = useServerFn(criarMaterial);
 
   const [busca, setBusca] = useState("");
   const [filtroStatus, setFiltroStatus] = useState<string>("__all");
-  const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({
-    codigo: "", nome: "", tipo: "", dimensoes: "", descricao: "",
-    fornecedor_id: "", categoria_id: "", status: "rascunho",
-  });
 
   const filtrados = useMemo(() => {
     const t = busca.trim().toLowerCase();
@@ -65,26 +47,6 @@ function MateriaisPage() {
     });
   }, [materiais, busca, filtroStatus]);
 
-  const criar = useMutation({
-    mutationFn: () =>
-      criarFn({
-        data: {
-          codigo: form.codigo, nome: form.nome,
-          tipo: form.tipo || null, dimensoes: form.dimensoes || null,
-          descricao: form.descricao || null,
-          fornecedor_id: form.fornecedor_id || null,
-          categoria_id: form.categoria_id || null,
-          status: form.status as "rascunho" | "em_desenvolvimento" | "ativo" | "descontinuado",
-        },
-      }),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["materiais"] });
-      toast.success("Material criado");
-      setOpen(false);
-      setForm({ codigo: "", nome: "", tipo: "", dimensoes: "", descricao: "", fornecedor_id: "", categoria_id: "", status: "rascunho" });
-    },
-    onError: (e) => toast.error(e.message),
-  });
 
   return (
     <>
@@ -94,68 +56,12 @@ function MateriaisPage() {
         description="Displays, wobblers, adesivos e demais materiais de PDV — cada peça com sua própria página tipo e-commerce."
         image={heroImg}
         actions={
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button><Plus className="mr-2 h-4 w-4" /> Novo material</Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>Novo material</DialogTitle>
-                <DialogDescription>Cadastre uma nova peça de PDV.</DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-2">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2"><Label>Código</Label><Input value={form.codigo} onChange={(e) => setForm({ ...form, codigo: e.target.value })} /></div>
-                  <div className="grid gap-2"><Label>Tipo</Label><Input placeholder="Display, wobbler…" value={form.tipo} onChange={(e) => setForm({ ...form, tipo: e.target.value })} /></div>
-                </div>
-                <div className="grid gap-2"><Label>Nome</Label><Input value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} /></div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2"><Label>Dimensões</Label><Input placeholder="Ex.: 30 × 40 × 20 cm" value={form.dimensoes} onChange={(e) => setForm({ ...form, dimensoes: e.target.value })} /></div>
-                  <div className="grid gap-2">
-                    <Label>Status</Label>
-                    <Select value={form.status} onValueChange={(v) => setForm({ ...form, status: v })}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="rascunho">Rascunho</SelectItem>
-                        <SelectItem value="em_desenvolvimento">Em desenvolvimento</SelectItem>
-                        <SelectItem value="ativo">Ativo</SelectItem>
-                        <SelectItem value="descontinuado">Descontinuado</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label>Fornecedor</Label>
-                    <Select value={form.fornecedor_id || "__none"} onValueChange={(v) => setForm({ ...form, fornecedor_id: v === "__none" ? "" : v })}>
-                      <SelectTrigger><SelectValue placeholder="Selecione…" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="__none">— Nenhum —</SelectItem>
-                        {fornecedores.map((x) => (<SelectItem key={x.id} value={x.id}>{x.nome}</SelectItem>))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="grid gap-2">
-                    <Label>Categoria</Label>
-                    <Select value={form.categoria_id || "__none"} onValueChange={(v) => setForm({ ...form, categoria_id: v === "__none" ? "" : v })}>
-                      <SelectTrigger><SelectValue placeholder="Selecione…" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="__none">— Nenhuma —</SelectItem>
-                        {categorias.map((x) => (<SelectItem key={x.id} value={x.id}>{x.nome}</SelectItem>))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="grid gap-2"><Label>Descrição</Label><Textarea value={form.descricao} onChange={(e) => setForm({ ...form, descricao: e.target.value })} /></div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
-                <Button disabled={!form.codigo || !form.nome || criar.isPending} onClick={() => criar.mutate()}>Criar</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <Link to="/base-mestre/materiais/novo">
+            <Button><Plus className="mr-2 h-4 w-4" /> Novo material</Button>
+          </Link>
         }
       />
+
 
       <div className="container-page py-12">
         {/* Filtros */}
@@ -184,9 +90,9 @@ function MateriaisPage() {
               </div>
               <CardTitle>Nenhum material encontrado</CardTitle>
               <p className="mx-auto max-w-md text-sm text-muted-foreground">Ajuste os filtros ou cadastre um novo material.</p>
-              <Button className="mt-4" onClick={() => setOpen(true)}>
-                <Plus className="mr-2 h-4 w-4" /> Novo material
-              </Button>
+              <Link to="/base-mestre/materiais/novo">
+                <Button className="mt-4"><Plus className="mr-2 h-4 w-4" /> Novo material</Button>
+              </Link>
             </CardHeader>
           </Card>
         ) : (
