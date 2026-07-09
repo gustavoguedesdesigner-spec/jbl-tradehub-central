@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TerritoryRouteImport } from './routes/territory'
 import { Route as RelatoriosRouteImport } from './routes/relatorios'
 import { Route as ProjetoInteligenteRouteImport } from './routes/projeto-inteligente'
 import { Route as MerchandisingRouteImport } from './routes/merchandising'
@@ -34,6 +35,11 @@ import { Route as BaseMestreProdutosIdRouteImport } from './routes/base-mestre.p
 import { Route as BaseMestreMateriaisNovoRouteImport } from './routes/base-mestre.materiais.novo'
 import { Route as BaseMestreMateriaisIdRouteImport } from './routes/base-mestre.materiais.$id'
 
+const TerritoryRoute = TerritoryRouteImport.update({
+  id: '/territory',
+  path: '/territory',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RelatoriosRoute = RelatoriosRouteImport.update({
   id: '/relatorios',
   path: '/relatorios',
@@ -166,6 +172,7 @@ export interface FileRoutesByFullPath {
   '/merchandising': typeof MerchandisingRoute
   '/projeto-inteligente': typeof ProjetoInteligenteRoute
   '/relatorios': typeof RelatoriosRoute
+  '/territory': typeof TerritoryRoute
   '/base-mestre/arquivos': typeof BaseMestreArquivosRoute
   '/base-mestre/categorias': typeof BaseMestreCategoriasRoute
   '/base-mestre/compatibilidades': typeof BaseMestreCompatibilidadesRoute
@@ -190,6 +197,7 @@ export interface FileRoutesByTo {
   '/merchandising': typeof MerchandisingRoute
   '/projeto-inteligente': typeof ProjetoInteligenteRoute
   '/relatorios': typeof RelatoriosRoute
+  '/territory': typeof TerritoryRoute
   '/base-mestre/arquivos': typeof BaseMestreArquivosRoute
   '/base-mestre/categorias': typeof BaseMestreCategoriasRoute
   '/base-mestre/compatibilidades': typeof BaseMestreCompatibilidadesRoute
@@ -217,6 +225,7 @@ export interface FileRoutesById {
   '/merchandising': typeof MerchandisingRoute
   '/projeto-inteligente': typeof ProjetoInteligenteRoute
   '/relatorios': typeof RelatoriosRoute
+  '/territory': typeof TerritoryRoute
   '/base-mestre/arquivos': typeof BaseMestreArquivosRoute
   '/base-mestre/categorias': typeof BaseMestreCategoriasRoute
   '/base-mestre/compatibilidades': typeof BaseMestreCompatibilidadesRoute
@@ -245,6 +254,7 @@ export interface FileRouteTypes {
     | '/merchandising'
     | '/projeto-inteligente'
     | '/relatorios'
+    | '/territory'
     | '/base-mestre/arquivos'
     | '/base-mestre/categorias'
     | '/base-mestre/compatibilidades'
@@ -269,6 +279,7 @@ export interface FileRouteTypes {
     | '/merchandising'
     | '/projeto-inteligente'
     | '/relatorios'
+    | '/territory'
     | '/base-mestre/arquivos'
     | '/base-mestre/categorias'
     | '/base-mestre/compatibilidades'
@@ -295,6 +306,7 @@ export interface FileRouteTypes {
     | '/merchandising'
     | '/projeto-inteligente'
     | '/relatorios'
+    | '/territory'
     | '/base-mestre/arquivos'
     | '/base-mestre/categorias'
     | '/base-mestre/compatibilidades'
@@ -322,10 +334,18 @@ export interface RootRouteChildren {
   MerchandisingRoute: typeof MerchandisingRoute
   ProjetoInteligenteRoute: typeof ProjetoInteligenteRoute
   RelatoriosRoute: typeof RelatoriosRoute
+  TerritoryRoute: typeof TerritoryRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/territory': {
+      id: '/territory'
+      path: '/territory'
+      fullPath: '/territory'
+      preLoaderRoute: typeof TerritoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/relatorios': {
       id: '/relatorios'
       path: '/relatorios'
@@ -585,6 +605,7 @@ const rootRouteChildren: RootRouteChildren = {
   MerchandisingRoute: MerchandisingRoute,
   ProjetoInteligenteRoute: ProjetoInteligenteRoute,
   RelatoriosRoute: RelatoriosRoute,
+  TerritoryRoute: TerritoryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -16,6 +16,7 @@ import {
   FolderOpen,
   Zap,
   Sparkles,
+  Map,
 } from "lucide-react";
 
 import {
@@ -57,6 +58,7 @@ const principais: Item[] = [
     ],
   },
   { title: "Central de Lançamentos", url: "/lancamentos", icon: Rocket },
+  { title: "Territory Intelligence", url: "/territory", icon: Map },
   { title: "Asset Center", url: "/asset-center", icon: FolderOpen },
   { title: "Importação Inteligente", url: "/importacao", icon: Zap },
   { title: "Menu Merchandising", url: "/merchandising", icon: LayoutGrid },
