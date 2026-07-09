@@ -1,7 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
-import { Plus, Box, Search, Pencil } from "lucide-react";
+import { useSuspenseQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { Plus, Box, Search, Pencil, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
 import { PageHero } from "@/components/layout/PageHero";
 import { NovoProjetoInteligenteButton } from "@/components/NovoProjetoInteligenteButton";
@@ -10,7 +12,18 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { listarMateriais } from "@/lib/materiais.functions";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { listarMateriais, excluirMaterial } from "@/lib/materiais.functions";
 import { MaterialPlaceholder } from "@/components/MaterialPlaceholder";
 import heroImg from "@/assets/hero-materiais.jpg";
 
