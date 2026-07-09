@@ -13,6 +13,7 @@ import {
   Tags,
   Layers,
   Link2,
+  FolderOpen,
 } from "lucide-react";
 
 import {
@@ -53,6 +54,7 @@ const principais: Item[] = [
     ],
   },
   { title: "Central de Lançamentos", url: "/lancamentos", icon: Rocket },
+  { title: "Asset Center", url: "/asset-center", icon: FolderOpen },
   { title: "Menu Merchandising", url: "/merchandising", icon: LayoutGrid },
 ];
 

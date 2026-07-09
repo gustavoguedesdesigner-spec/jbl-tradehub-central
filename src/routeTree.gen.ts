@@ -14,6 +14,7 @@ import { Route as MerchandisingRouteImport } from './routes/merchandising'
 import { Route as LancamentosRouteImport } from './routes/lancamentos'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as BaseMestreRouteImport } from './routes/base-mestre'
+import { Route as AssetCenterRouteImport } from './routes/asset-center'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LancamentosIndexRouteImport } from './routes/lancamentos.index'
 import { Route as BaseMestreIndexRouteImport } from './routes/base-mestre.index'
@@ -52,6 +53,11 @@ const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
 const BaseMestreRoute = BaseMestreRouteImport.update({
   id: '/base-mestre',
   path: '/base-mestre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AssetCenterRoute = AssetCenterRouteImport.update({
+  id: '/asset-center',
+  path: '/asset-center',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -128,6 +134,7 @@ const BaseMestreMateriaisIdRoute = BaseMestreMateriaisIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/asset-center': typeof AssetCenterRoute
   '/base-mestre': typeof BaseMestreRouteWithChildren
   '/configuracoes': typeof ConfiguracoesRoute
   '/lancamentos': typeof LancamentosRouteWithChildren
@@ -149,6 +156,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/asset-center': typeof AssetCenterRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/merchandising': typeof MerchandisingRoute
   '/relatorios': typeof RelatoriosRoute
@@ -169,6 +177,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/asset-center': typeof AssetCenterRoute
   '/base-mestre': typeof BaseMestreRouteWithChildren
   '/configuracoes': typeof ConfiguracoesRoute
   '/lancamentos': typeof LancamentosRouteWithChildren
@@ -192,6 +201,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/asset-center'
     | '/base-mestre'
     | '/configuracoes'
     | '/lancamentos'
@@ -213,6 +223,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/asset-center'
     | '/configuracoes'
     | '/merchandising'
     | '/relatorios'
@@ -232,6 +243,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/asset-center'
     | '/base-mestre'
     | '/configuracoes'
     | '/lancamentos'
@@ -254,6 +266,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AssetCenterRoute: typeof AssetCenterRoute
   BaseMestreRoute: typeof BaseMestreRouteWithChildren
   ConfiguracoesRoute: typeof ConfiguracoesRoute
   LancamentosRoute: typeof LancamentosRouteWithChildren
@@ -296,6 +309,13 @@ declare module '@tanstack/react-router' {
       path: '/base-mestre'
       fullPath: '/base-mestre'
       preLoaderRoute: typeof BaseMestreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/asset-center': {
+      id: '/asset-center'
+      path: '/asset-center'
+      fullPath: '/asset-center'
+      preLoaderRoute: typeof AssetCenterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -465,6 +485,7 @@ const LancamentosRouteWithChildren = LancamentosRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AssetCenterRoute: AssetCenterRoute,
   BaseMestreRoute: BaseMestreRouteWithChildren,
   ConfiguracoesRoute: ConfiguracoesRoute,
   LancamentosRoute: LancamentosRouteWithChildren,
