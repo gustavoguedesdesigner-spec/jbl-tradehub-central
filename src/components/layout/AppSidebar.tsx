@@ -47,7 +47,6 @@ const principais: Item[] = [
       { title: "Visão geral", url: "/base-mestre", icon: LayoutGrid },
       { title: "Produtos", url: "/base-mestre/produtos", icon: Package },
       { title: "Materiais", url: "/base-mestre/materiais", icon: Box },
-      { title: "Categorias", url: "/base-mestre/categorias", icon: Tags },
       { title: "Fornecedores", url: "/base-mestre/fornecedores", icon: Users },
     ],
   },
