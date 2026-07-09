@@ -16,6 +16,7 @@ import {
   FolderOpen,
   Zap,
   Download,
+  Sparkles,
 } from "lucide-react";
 
 import {
