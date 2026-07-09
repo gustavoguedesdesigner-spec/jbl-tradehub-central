@@ -34,6 +34,7 @@ const produtoInput = z.object({
   status: produtoStatus.default("ativo"),
   preco_sugerido: z.number().nonnegative().optional().nullable(),
   ean: z.string().max(32).optional().nullable(),
+  marca: z.string().max(80).optional().nullable(),
 });
 
 async function signPaths<T extends { storage_path: string | null }>(
