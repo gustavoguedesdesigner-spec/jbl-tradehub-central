@@ -25,7 +25,6 @@ import { Route as BaseMestreFornecedoresRouteImport } from './routes/base-mestre
 import { Route as BaseMestreFamiliasRouteImport } from './routes/base-mestre.familias'
 import { Route as BaseMestreCompatibilidadesRouteImport } from './routes/base-mestre.compatibilidades'
 import { Route as BaseMestreCategoriasRouteImport } from './routes/base-mestre.categorias'
-import { Route as BaseMestreCampanhasRouteImport } from './routes/base-mestre.campanhas'
 import { Route as BaseMestreArquivosRouteImport } from './routes/base-mestre.arquivos'
 import { Route as BaseMestreProdutosNovoRouteImport } from './routes/base-mestre.produtos.novo'
 import { Route as BaseMestreProdutosIdRouteImport } from './routes/base-mestre.produtos.$id'
@@ -112,11 +111,6 @@ const BaseMestreCategoriasRoute = BaseMestreCategoriasRouteImport.update({
   path: '/categorias',
   getParentRoute: () => BaseMestreRoute,
 } as any)
-const BaseMestreCampanhasRoute = BaseMestreCampanhasRouteImport.update({
-  id: '/campanhas',
-  path: '/campanhas',
-  getParentRoute: () => BaseMestreRoute,
-} as any)
 const BaseMestreArquivosRoute = BaseMestreArquivosRouteImport.update({
   id: '/arquivos',
   path: '/arquivos',
@@ -147,7 +141,6 @@ export interface FileRoutesByFullPath {
   '/merchandising': typeof MerchandisingRoute
   '/relatorios': typeof RelatoriosRoute
   '/base-mestre/arquivos': typeof BaseMestreArquivosRoute
-  '/base-mestre/campanhas': typeof BaseMestreCampanhasRoute
   '/base-mestre/categorias': typeof BaseMestreCategoriasRoute
   '/base-mestre/compatibilidades': typeof BaseMestreCompatibilidadesRoute
   '/base-mestre/familias': typeof BaseMestreFamiliasRoute
@@ -168,7 +161,6 @@ export interface FileRoutesByTo {
   '/merchandising': typeof MerchandisingRoute
   '/relatorios': typeof RelatoriosRoute
   '/base-mestre/arquivos': typeof BaseMestreArquivosRoute
-  '/base-mestre/campanhas': typeof BaseMestreCampanhasRoute
   '/base-mestre/categorias': typeof BaseMestreCategoriasRoute
   '/base-mestre/compatibilidades': typeof BaseMestreCompatibilidadesRoute
   '/base-mestre/familias': typeof BaseMestreFamiliasRoute
@@ -192,7 +184,6 @@ export interface FileRoutesById {
   '/merchandising': typeof MerchandisingRoute
   '/relatorios': typeof RelatoriosRoute
   '/base-mestre/arquivos': typeof BaseMestreArquivosRoute
-  '/base-mestre/campanhas': typeof BaseMestreCampanhasRoute
   '/base-mestre/categorias': typeof BaseMestreCategoriasRoute
   '/base-mestre/compatibilidades': typeof BaseMestreCompatibilidadesRoute
   '/base-mestre/familias': typeof BaseMestreFamiliasRoute
@@ -217,7 +208,6 @@ export interface FileRouteTypes {
     | '/merchandising'
     | '/relatorios'
     | '/base-mestre/arquivos'
-    | '/base-mestre/campanhas'
     | '/base-mestre/categorias'
     | '/base-mestre/compatibilidades'
     | '/base-mestre/familias'
@@ -238,7 +228,6 @@ export interface FileRouteTypes {
     | '/merchandising'
     | '/relatorios'
     | '/base-mestre/arquivos'
-    | '/base-mestre/campanhas'
     | '/base-mestre/categorias'
     | '/base-mestre/compatibilidades'
     | '/base-mestre/familias'
@@ -261,7 +250,6 @@ export interface FileRouteTypes {
     | '/merchandising'
     | '/relatorios'
     | '/base-mestre/arquivos'
-    | '/base-mestre/campanhas'
     | '/base-mestre/categorias'
     | '/base-mestre/compatibilidades'
     | '/base-mestre/familias'
@@ -400,13 +388,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BaseMestreCategoriasRouteImport
       parentRoute: typeof BaseMestreRoute
     }
-    '/base-mestre/campanhas': {
-      id: '/base-mestre/campanhas'
-      path: '/campanhas'
-      fullPath: '/base-mestre/campanhas'
-      preLoaderRoute: typeof BaseMestreCampanhasRouteImport
-      parentRoute: typeof BaseMestreRoute
-    }
     '/base-mestre/arquivos': {
       id: '/base-mestre/arquivos'
       path: '/arquivos'
@@ -464,7 +445,6 @@ const BaseMestreProdutosRouteWithChildren =
 
 interface BaseMestreRouteChildren {
   BaseMestreArquivosRoute: typeof BaseMestreArquivosRoute
-  BaseMestreCampanhasRoute: typeof BaseMestreCampanhasRoute
   BaseMestreCategoriasRoute: typeof BaseMestreCategoriasRoute
   BaseMestreCompatibilidadesRoute: typeof BaseMestreCompatibilidadesRoute
   BaseMestreFamiliasRoute: typeof BaseMestreFamiliasRoute
@@ -476,7 +456,6 @@ interface BaseMestreRouteChildren {
 
 const BaseMestreRouteChildren: BaseMestreRouteChildren = {
   BaseMestreArquivosRoute: BaseMestreArquivosRoute,
-  BaseMestreCampanhasRoute: BaseMestreCampanhasRoute,
   BaseMestreCategoriasRoute: BaseMestreCategoriasRoute,
   BaseMestreCompatibilidadesRoute: BaseMestreCompatibilidadesRoute,
   BaseMestreFamiliasRoute: BaseMestreFamiliasRoute,
