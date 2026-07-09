@@ -161,7 +161,7 @@ function MaterialDetalhe() {
 
       {/* Abas */}
       <div className="mx-auto max-w-7xl px-6 py-10">
-        <Tabs defaultValue="visao">
+        <Tabs defaultValue={typeof window !== "undefined" && window.location.hash === "#editar" ? "editar" : "visao"}>
           <TabsList className="mb-8 flex-wrap">
             <TabsTrigger value="visao">Visão geral</TabsTrigger>
             <TabsTrigger value="galeria">Galeria</TabsTrigger>

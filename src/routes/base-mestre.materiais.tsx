@@ -1,6 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
-import { Plus, Box, Search } from "lucide-react";
+import { Plus, Box, Search, Pencil } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { PageHero } from "@/components/layout/PageHero";
@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { listarMateriais } from "@/lib/materiais.functions";
+import { MaterialPlaceholder } from "@/components/MaterialPlaceholder";
 import heroImg from "@/assets/hero-materiais.jpg";
 
 const opts = queryOptions({ queryKey: ["materiais"], queryFn: () => listarMateriais() });
@@ -30,6 +31,7 @@ const statusMap: Record<string, { l: string; v: "default" | "secondary" | "outli
 
 function MateriaisPage() {
   const { data: materiais } = useSuspenseQuery(opts);
+  const navigate = useNavigate();
 
   const [busca, setBusca] = useState("");
   const [filtroStatus, setFiltroStatus] = useState<string>("__all");
@@ -104,15 +106,28 @@ function MateriaisPage() {
               const principal = m.imagens?.find((i: { principal: boolean }) => i.principal) ?? m.imagens?.[0];
               const status = statusMap[m.status] ?? { l: m.status, v: "outline" as const };
               return (
-                <Link key={m.id} to="/base-mestre/materiais/$id" params={{ id: m.id }}>
+                <Link key={m.id} to="/base-mestre/materiais/$id" params={{ id: m.id }} className="group">
                   <Card className="overflow-hidden transition hover:shadow-xl">
-                    <div className="relative flex aspect-square items-center justify-center bg-gradient-to-br from-neutral-50 to-neutral-200">
+                    <div className="relative aspect-square">
                       {principal?.url_assinada ? (
                         <img src={principal.url_assinada} alt={m.nome} className="h-full w-full object-cover" />
                       ) : (
-                        <Box className="h-16 w-16 text-neutral-400" />
+                        <MaterialPlaceholder tipo={m.tipo} />
                       )}
                       <Badge variant={status.v} className="absolute left-3 top-3">{status.l}</Badge>
+                      <Button
+                        size="icon"
+                        variant="secondary"
+                        className="absolute right-3 top-3 h-8 w-8 opacity-0 shadow-md transition group-hover:opacity-100"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          navigate({ to: "/base-mestre/materiais/$id", params: { id: m.id }, hash: "editar" });
+                        }}
+                        aria-label="Editar material"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
                     </div>
                     <CardHeader className="gap-1">
                       <p className="font-mono text-xs text-muted-foreground">{m.codigo}</p>
