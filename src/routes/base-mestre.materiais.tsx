@@ -4,6 +4,7 @@ import { Plus, Box, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { PageHero } from "@/components/layout/PageHero";
+import { NovoProjetoInteligenteButton } from "@/components/NovoProjetoInteligenteButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
