@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, useQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Plus, Rocket, Search, CalendarClock, User, Package } from "lucide-react";
+import { Plus, Rocket, Search, CalendarClock, User, Package, Sparkles } from "lucide-react";
 import heroImg from "@/assets/hero-lancamentos.jpg";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
