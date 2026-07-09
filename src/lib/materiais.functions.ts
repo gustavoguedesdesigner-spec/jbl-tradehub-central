@@ -174,6 +174,54 @@ export const excluirMaterial = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const duplicarMaterial = createServerFn({ method: "POST" })
+  .inputValidator((raw: unknown) => z.object({ id: z.string().uuid() }).parse(raw))
+  .handler(async ({ data }) => {
+    const supabase = getClient();
+    const { data: original, error: errGet } = await supabase
+      .from("materiais_pdv")
+      .select("*")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (errGet) throw new Error(errGet.message);
+    if (!original) throw new Error("Material não encontrado");
+
+    const baseCod = original.codigo ?? "MAT";
+    let novoCod = `${baseCod}-COPIA`;
+    let n = 1;
+    while (true) {
+      const { data: existe } = await supabase
+        .from("materiais_pdv")
+        .select("id")
+        .eq("codigo", novoCod)
+        .maybeSingle();
+      if (!existe) break;
+      n += 1;
+      novoCod = `${baseCod}-COPIA-${n}`;
+    }
+
+    const orig = original as Record<string, unknown>;
+    delete orig.id;
+    delete orig.created_at;
+    delete orig.updated_at;
+
+    const payload = {
+      ...orig,
+      codigo: novoCod,
+      nome: `${original.nome} (cópia)`,
+      status: "rascunho",
+    };
+
+    const { data: novo, error: errIns } = await supabase
+      .from("materiais_pdv")
+      .insert(payload as never)
+      .select("id")
+      .single();
+    if (errIns) throw new Error(errIns.message);
+    await registrarHistorico(supabase, novo.id, "duplicado", { origem_id: data.id });
+    return novo;
+  });
+
 // ============ IMAGENS ============
 export const adicionarImagemMaterial = createServerFn({ method: "POST" })
   .inputValidator((raw: unknown) =>
