@@ -24,6 +24,7 @@ import { Route as BaseMestreIndexRouteImport } from './routes/base-mestre.index'
 import { Route as LancamentosIdRouteImport } from './routes/lancamentos.$id'
 import { Route as ImportacaoJblRouteImport } from './routes/importacao.jbl'
 import { Route as BaseMestreProdutosRouteImport } from './routes/base-mestre.produtos'
+import { Route as BaseMestreMateriaisRouteImport } from './routes/base-mestre.materiais'
 import { Route as BaseMestreFornecedoresRouteImport } from './routes/base-mestre.fornecedores'
 import { Route as BaseMestreFamiliasRouteImport } from './routes/base-mestre.familias'
 import { Route as BaseMestreCompatibilidadesRouteImport } from './routes/base-mestre.compatibilidades'
@@ -111,6 +112,11 @@ const BaseMestreProdutosRoute = BaseMestreProdutosRouteImport.update({
   path: '/produtos',
   getParentRoute: () => BaseMestreRoute,
 } as any)
+const BaseMestreMateriaisRoute = BaseMestreMateriaisRouteImport.update({
+  id: '/materiais',
+  path: '/materiais',
+  getParentRoute: () => BaseMestreRoute,
+} as any)
 const BaseMestreFornecedoresRoute = BaseMestreFornecedoresRouteImport.update({
   id: '/fornecedores',
   path: '/fornecedores',
@@ -144,9 +150,9 @@ const BaseMestreProdutosIndexRoute = BaseMestreProdutosIndexRouteImport.update({
 } as any)
 const BaseMestreMateriaisIndexRoute =
   BaseMestreMateriaisIndexRouteImport.update({
-    id: '/materiais/',
-    path: '/materiais/',
-    getParentRoute: () => BaseMestreRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => BaseMestreMateriaisRoute,
   } as any)
 const BaseMestreProdutosNovoRoute = BaseMestreProdutosNovoRouteImport.update({
   id: '/novo',
@@ -159,14 +165,14 @@ const BaseMestreProdutosIdRoute = BaseMestreProdutosIdRouteImport.update({
   getParentRoute: () => BaseMestreProdutosRoute,
 } as any)
 const BaseMestreMateriaisNovoRoute = BaseMestreMateriaisNovoRouteImport.update({
-  id: '/materiais/novo',
-  path: '/materiais/novo',
-  getParentRoute: () => BaseMestreRoute,
+  id: '/novo',
+  path: '/novo',
+  getParentRoute: () => BaseMestreMateriaisRoute,
 } as any)
 const BaseMestreMateriaisIdRoute = BaseMestreMateriaisIdRouteImport.update({
-  id: '/materiais/$id',
-  path: '/materiais/$id',
-  getParentRoute: () => BaseMestreRoute,
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => BaseMestreMateriaisRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -185,6 +191,7 @@ export interface FileRoutesByFullPath {
   '/base-mestre/compatibilidades': typeof BaseMestreCompatibilidadesRoute
   '/base-mestre/familias': typeof BaseMestreFamiliasRoute
   '/base-mestre/fornecedores': typeof BaseMestreFornecedoresRoute
+  '/base-mestre/materiais': typeof BaseMestreMateriaisRouteWithChildren
   '/base-mestre/produtos': typeof BaseMestreProdutosRouteWithChildren
   '/importacao/jbl': typeof ImportacaoJblRoute
   '/lancamentos/$id': typeof LancamentosIdRoute
@@ -239,6 +246,7 @@ export interface FileRoutesById {
   '/base-mestre/compatibilidades': typeof BaseMestreCompatibilidadesRoute
   '/base-mestre/familias': typeof BaseMestreFamiliasRoute
   '/base-mestre/fornecedores': typeof BaseMestreFornecedoresRoute
+  '/base-mestre/materiais': typeof BaseMestreMateriaisRouteWithChildren
   '/base-mestre/produtos': typeof BaseMestreProdutosRouteWithChildren
   '/importacao/jbl': typeof ImportacaoJblRoute
   '/lancamentos/$id': typeof LancamentosIdRoute
@@ -269,6 +277,7 @@ export interface FileRouteTypes {
     | '/base-mestre/compatibilidades'
     | '/base-mestre/familias'
     | '/base-mestre/fornecedores'
+    | '/base-mestre/materiais'
     | '/base-mestre/produtos'
     | '/importacao/jbl'
     | '/lancamentos/$id'
@@ -322,6 +331,7 @@ export interface FileRouteTypes {
     | '/base-mestre/compatibilidades'
     | '/base-mestre/familias'
     | '/base-mestre/fornecedores'
+    | '/base-mestre/materiais'
     | '/base-mestre/produtos'
     | '/importacao/jbl'
     | '/lancamentos/$id'
@@ -455,6 +465,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BaseMestreProdutosRouteImport
       parentRoute: typeof BaseMestreRoute
     }
+    '/base-mestre/materiais': {
+      id: '/base-mestre/materiais'
+      path: '/materiais'
+      fullPath: '/base-mestre/materiais'
+      preLoaderRoute: typeof BaseMestreMateriaisRouteImport
+      parentRoute: typeof BaseMestreRoute
+    }
     '/base-mestre/fornecedores': {
       id: '/base-mestre/fornecedores'
       path: '/fornecedores'
@@ -499,10 +516,10 @@ declare module '@tanstack/react-router' {
     }
     '/base-mestre/materiais/': {
       id: '/base-mestre/materiais/'
-      path: '/materiais'
+      path: '/'
       fullPath: '/base-mestre/materiais/'
       preLoaderRoute: typeof BaseMestreMateriaisIndexRouteImport
-      parentRoute: typeof BaseMestreRoute
+      parentRoute: typeof BaseMestreMateriaisRoute
     }
     '/base-mestre/produtos/novo': {
       id: '/base-mestre/produtos/novo'
@@ -520,20 +537,35 @@ declare module '@tanstack/react-router' {
     }
     '/base-mestre/materiais/novo': {
       id: '/base-mestre/materiais/novo'
-      path: '/materiais/novo'
+      path: '/novo'
       fullPath: '/base-mestre/materiais/novo'
       preLoaderRoute: typeof BaseMestreMateriaisNovoRouteImport
-      parentRoute: typeof BaseMestreRoute
+      parentRoute: typeof BaseMestreMateriaisRoute
     }
     '/base-mestre/materiais/$id': {
       id: '/base-mestre/materiais/$id'
-      path: '/materiais/$id'
+      path: '/$id'
       fullPath: '/base-mestre/materiais/$id'
       preLoaderRoute: typeof BaseMestreMateriaisIdRouteImport
-      parentRoute: typeof BaseMestreRoute
+      parentRoute: typeof BaseMestreMateriaisRoute
     }
   }
 }
+
+interface BaseMestreMateriaisRouteChildren {
+  BaseMestreMateriaisIdRoute: typeof BaseMestreMateriaisIdRoute
+  BaseMestreMateriaisNovoRoute: typeof BaseMestreMateriaisNovoRoute
+  BaseMestreMateriaisIndexRoute: typeof BaseMestreMateriaisIndexRoute
+}
+
+const BaseMestreMateriaisRouteChildren: BaseMestreMateriaisRouteChildren = {
+  BaseMestreMateriaisIdRoute: BaseMestreMateriaisIdRoute,
+  BaseMestreMateriaisNovoRoute: BaseMestreMateriaisNovoRoute,
+  BaseMestreMateriaisIndexRoute: BaseMestreMateriaisIndexRoute,
+}
+
+const BaseMestreMateriaisRouteWithChildren =
+  BaseMestreMateriaisRoute._addFileChildren(BaseMestreMateriaisRouteChildren)
 
 interface BaseMestreProdutosRouteChildren {
   BaseMestreProdutosIdRoute: typeof BaseMestreProdutosIdRoute
@@ -556,11 +588,9 @@ interface BaseMestreRouteChildren {
   BaseMestreCompatibilidadesRoute: typeof BaseMestreCompatibilidadesRoute
   BaseMestreFamiliasRoute: typeof BaseMestreFamiliasRoute
   BaseMestreFornecedoresRoute: typeof BaseMestreFornecedoresRoute
+  BaseMestreMateriaisRoute: typeof BaseMestreMateriaisRouteWithChildren
   BaseMestreProdutosRoute: typeof BaseMestreProdutosRouteWithChildren
   BaseMestreIndexRoute: typeof BaseMestreIndexRoute
-  BaseMestreMateriaisIdRoute: typeof BaseMestreMateriaisIdRoute
-  BaseMestreMateriaisNovoRoute: typeof BaseMestreMateriaisNovoRoute
-  BaseMestreMateriaisIndexRoute: typeof BaseMestreMateriaisIndexRoute
 }
 
 const BaseMestreRouteChildren: BaseMestreRouteChildren = {
@@ -569,11 +599,9 @@ const BaseMestreRouteChildren: BaseMestreRouteChildren = {
   BaseMestreCompatibilidadesRoute: BaseMestreCompatibilidadesRoute,
   BaseMestreFamiliasRoute: BaseMestreFamiliasRoute,
   BaseMestreFornecedoresRoute: BaseMestreFornecedoresRoute,
+  BaseMestreMateriaisRoute: BaseMestreMateriaisRouteWithChildren,
   BaseMestreProdutosRoute: BaseMestreProdutosRouteWithChildren,
   BaseMestreIndexRoute: BaseMestreIndexRoute,
-  BaseMestreMateriaisIdRoute: BaseMestreMateriaisIdRoute,
-  BaseMestreMateriaisNovoRoute: BaseMestreMateriaisNovoRoute,
-  BaseMestreMateriaisIndexRoute: BaseMestreMateriaisIndexRoute,
 }
 
 const BaseMestreRouteWithChildren = BaseMestreRoute._addFileChildren(
