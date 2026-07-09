@@ -41,6 +41,7 @@ type Item = { title: string; url: string; icon: typeof Home; children?: Child[] 
 
 const principais: Item[] = [
   { title: "Dashboard", url: "/", icon: Home },
+  { title: "Novo Projeto Inteligente", url: "/projeto-inteligente", icon: Sparkles },
   {
     title: "Base Mestre",
     url: "/base-mestre",
