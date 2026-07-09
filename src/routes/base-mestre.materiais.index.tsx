@@ -1,7 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
-import { Plus, Box, Search, Pencil } from "lucide-react";
+import { useSuspenseQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { Plus, Box, Search, Pencil, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
 import { PageHero } from "@/components/layout/PageHero";
 import { NovoProjetoInteligenteButton } from "@/components/NovoProjetoInteligenteButton";
@@ -10,7 +12,18 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { listarMateriais } from "@/lib/materiais.functions";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { listarMateriais, excluirMaterial } from "@/lib/materiais.functions";
 import { MaterialPlaceholder } from "@/components/MaterialPlaceholder";
 import heroImg from "@/assets/hero-materiais.jpg";
 
@@ -32,9 +45,20 @@ const statusMap: Record<string, { l: string; v: "default" | "secondary" | "outli
 function MateriaisPage() {
   const { data: materiais } = useSuspenseQuery(opts);
   const navigate = useNavigate();
+  const qc = useQueryClient();
 
   const [busca, setBusca] = useState("");
   const [filtroStatus, setFiltroStatus] = useState<string>("__all");
+
+  const excluirFn = useServerFn(excluirMaterial);
+  const excluir = useMutation({
+    mutationFn: (id: string) => excluirFn({ data: { id } }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["materiais"] });
+      toast.success("Material excluído");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   const filtrados = useMemo(() => {
     const t = busca.trim().toLowerCase();
@@ -115,19 +139,56 @@ function MateriaisPage() {
                         <MaterialPlaceholder tipo={m.tipo} />
                       )}
                       <Badge variant={status.v} className="absolute left-3 top-3">{status.l}</Badge>
-                      <Button
-                        size="icon"
-                        variant="secondary"
-                        className="absolute right-3 top-3 h-8 w-8 opacity-0 shadow-md transition group-hover:opacity-100"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          navigate({ to: "/base-mestre/materiais/$id", params: { id: m.id }, hash: "editar" });
-                        }}
-                        aria-label="Editar material"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
+                      <div className="absolute right-3 top-3 flex gap-1 opacity-0 transition group-hover:opacity-100">
+                        <Button
+                          size="icon"
+                          variant="secondary"
+                          className="h-8 w-8 shadow-md"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            navigate({ to: "/base-mestre/materiais/$id", params: { id: m.id }, hash: "editar" });
+                          }}
+                          aria-label="Editar material"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              size="icon"
+                              variant="secondary"
+                              className="h-8 w-8 shadow-md"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                              aria-label="Excluir material"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Excluir material?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Esta ação removerá o material <strong>{m.nome}</strong> e suas imagens. Não pode ser desfeita.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel onClick={(e) => e.preventDefault()}>Cancelar</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  excluir.mutate(m.id);
+                                }}
+                              >
+                                Excluir
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
                     </div>
                     <CardHeader className="gap-1">
                       <p className="font-mono text-xs text-muted-foreground">{m.codigo}</p>
