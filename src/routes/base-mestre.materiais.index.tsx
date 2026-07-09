@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useSuspenseQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Plus, Box, Search, Pencil, Trash2 } from "lucide-react";
+import { Plus, Box, Search, Pencil, Trash2, Copy } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -23,7 +23,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { listarMateriais, excluirMaterial } from "@/lib/materiais.functions";
+import { listarMateriais, excluirMaterial, duplicarMaterial } from "@/lib/materiais.functions";
 import { MaterialPlaceholder } from "@/components/MaterialPlaceholder";
 import heroImg from "@/assets/hero-materiais.jpg";
 
@@ -56,6 +56,17 @@ function MateriaisPage() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["materiais"] });
       toast.success("Material excluído");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const duplicarFn = useServerFn(duplicarMaterial);
+  const duplicar = useMutation({
+    mutationFn: (id: string) => duplicarFn({ data: { id } }),
+    onSuccess: (novo) => {
+      qc.invalidateQueries({ queryKey: ["materiais"] });
+      toast.success("Material duplicado");
+      navigate({ to: "/base-mestre/materiais/$id", params: { id: novo.id } });
     },
     onError: (e: Error) => toast.error(e.message),
   });
