@@ -145,3 +145,80 @@ function MateriaisPage() {
     </>
   );
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function MaterialCard({ material: m, principal, status, onDelete }: { material: any; principal: any; status: { l: string; v: "default" | "secondary" | "outline" | "destructive" }; onDelete: (id: string) => void }) {
+  const navigate = useNavigate();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  return (
+    <>
+      <Link to="/base-mestre/materiais/$id" params={{ id: m.id }} className="group">
+        <Card className="overflow-hidden transition hover:shadow-xl">
+          <div className="relative aspect-square">
+            {principal?.url_assinada ? (
+              <img src={principal.url_assinada} alt={m.nome} className="h-full w-full object-cover" />
+            ) : (
+              <MaterialPlaceholder tipo={m.tipo} />
+            )}
+            <Badge variant={status.v} className="absolute left-3 top-3">{status.l}</Badge>
+            <div className="absolute right-3 top-3 flex gap-1 opacity-0 transition group-hover:opacity-100">
+              <Button
+                size="icon"
+                variant="secondary"
+                className="h-8 w-8 shadow-md"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  navigate({ to: "/base-mestre/materiais/$id", params: { id: m.id }, hash: "editar" });
+                }}
+                aria-label="Editar material"
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+              <Button
+                size="icon"
+                variant="secondary"
+                className="h-8 w-8 shadow-md"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setConfirmOpen(true);
+                }}
+                aria-label="Excluir material"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+          <CardHeader className="gap-1">
+            <p className="font-mono text-xs text-muted-foreground">{m.codigo}</p>
+            <CardTitle className="text-base leading-tight">{m.nome}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-1 text-sm">
+            <div className="flex flex-wrap gap-1">
+              {m.tipo && <Badge variant="outline">{m.tipo}</Badge>}
+              {m.categoria?.nome && <Badge variant="outline">{m.categoria.nome}</Badge>}
+            </div>
+            {m.dimensoes && <p className="pt-1 text-muted-foreground">{m.dimensoes}</p>}
+            {m.fornecedor?.nome && <p className="text-muted-foreground">Fornecedor: {m.fornecedor.nome}</p>}
+          </CardContent>
+        </Card>
+      </Link>
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir material?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta ação removerá o material <strong>{m.nome}</strong> e suas imagens. Não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={() => onDelete(m.id)}>Excluir</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+}
