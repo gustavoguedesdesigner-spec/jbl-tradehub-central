@@ -9,7 +9,6 @@ import {
   Package,
   Box,
   Users,
-  Tags,
   FolderOpen,
   Zap,
   Sparkles,
