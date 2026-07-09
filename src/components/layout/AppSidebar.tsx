@@ -102,8 +102,12 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border">
         <div className="flex items-center gap-2.5 px-2 py-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-neutral-900 text-neutral-50 font-bold">
-            J
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl">
+            <img
+              src={jblLogoAsset.url}
+              alt="JBL"
+              className="h-full w-full object-cover"
+            />
           </div>
           {!collapsed && (
             <div className="flex min-w-0 flex-col leading-tight">
