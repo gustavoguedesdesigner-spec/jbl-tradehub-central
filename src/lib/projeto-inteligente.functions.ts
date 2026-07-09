@@ -617,10 +617,10 @@ export const criarProjetoInteligente = createServerFn({ method: "POST" })
           const { error: esErr } = await supabase.from("materiais_especiais").insert({
             lancamento_id: lanc.id,
             nome: esp.nome,
-            descricao: esp.descricao ?? null,
+            briefing: esp.descricao ?? null,
             objetivo: esp.objetivo ?? null,
             status: "sugerido",
-          } as never);
+          });
           if (!esErr) log.especiais_criados++;
         }
       }
