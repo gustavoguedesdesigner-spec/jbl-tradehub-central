@@ -45,9 +45,20 @@ const statusMap: Record<string, { l: string; v: "default" | "secondary" | "outli
 function MateriaisPage() {
   const { data: materiais } = useSuspenseQuery(opts);
   const navigate = useNavigate();
+  const qc = useQueryClient();
 
   const [busca, setBusca] = useState("");
   const [filtroStatus, setFiltroStatus] = useState<string>("__all");
+
+  const excluirFn = useServerFn(excluirMaterial);
+  const excluir = useMutation({
+    mutationFn: (id: string) => excluirFn({ data: { id } }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["materiais"] });
+      toast.success("Material excluído");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   const filtrados = useMemo(() => {
     const t = busca.trim().toLowerCase();
