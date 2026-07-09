@@ -144,10 +144,9 @@ function ImportacaoPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        icon={Zap}
+        eyebrow="Assistente"
         title="Importação Inteligente"
         description="Assistente que analisa, classifica e importa toda a biblioteca de arquivos da JBL."
-        breadcrumbs={[{ label: "Importação Inteligente" }]}
       />
 
       <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
