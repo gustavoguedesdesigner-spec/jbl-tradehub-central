@@ -1,24 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useSuspenseQuery, useMutation, useQueryClient, useQuery, queryOptions } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
+import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { Plus, Box, Search } from "lucide-react";
 import { useMemo, useState } from "react";
-import { toast } from "sonner";
 
 import { PageHero } from "@/components/layout/PageHero";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import {
-  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
-} from "@/components/ui/dialog";
-import { listarMateriais, criarMaterial } from "@/lib/materiais.functions";
-import { listarFornecedores } from "@/lib/fornecedores.functions";
-import { listarCategorias } from "@/lib/categorias.functions";
+import { listarMateriais } from "@/lib/materiais.functions";
 import heroImg from "@/assets/hero-materiais.jpg";
 
 const opts = queryOptions({ queryKey: ["materiais"], queryFn: () => listarMateriais() });
@@ -37,19 +28,10 @@ const statusMap: Record<string, { l: string; v: "default" | "secondary" | "outli
 };
 
 function MateriaisPage() {
-  const qc = useQueryClient();
   const { data: materiais } = useSuspenseQuery(opts);
-  const { data: fornecedores = [] } = useQuery({ queryKey: ["fornecedores"], queryFn: () => listarFornecedores() });
-  const { data: categorias = [] } = useQuery({ queryKey: ["categorias"], queryFn: () => listarCategorias() });
-  const criarFn = useServerFn(criarMaterial);
 
   const [busca, setBusca] = useState("");
   const [filtroStatus, setFiltroStatus] = useState<string>("__all");
-  const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({
-    codigo: "", nome: "", tipo: "", dimensoes: "", descricao: "",
-    fornecedor_id: "", categoria_id: "", status: "rascunho",
-  });
 
   const filtrados = useMemo(() => {
     const t = busca.trim().toLowerCase();
@@ -65,26 +47,6 @@ function MateriaisPage() {
     });
   }, [materiais, busca, filtroStatus]);
 
-  const criar = useMutation({
-    mutationFn: () =>
-      criarFn({
-        data: {
-          codigo: form.codigo, nome: form.nome,
-          tipo: form.tipo || null, dimensoes: form.dimensoes || null,
-          descricao: form.descricao || null,
-          fornecedor_id: form.fornecedor_id || null,
-          categoria_id: form.categoria_id || null,
-          status: form.status as "rascunho" | "em_desenvolvimento" | "ativo" | "descontinuado",
-        },
-      }),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["materiais"] });
-      toast.success("Material criado");
-      setOpen(false);
-      setForm({ codigo: "", nome: "", tipo: "", dimensoes: "", descricao: "", fornecedor_id: "", categoria_id: "", status: "rascunho" });
-    },
-    onError: (e) => toast.error(e.message),
-  });
 
   return (
     <>
