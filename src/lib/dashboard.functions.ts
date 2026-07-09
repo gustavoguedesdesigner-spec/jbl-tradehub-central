@@ -106,6 +106,11 @@ export const obterResumoDashboard = createServerFn({ method: "GET" }).handler(
         .limit(8),
     ]);
 
+    const [materiaisEmProducao, materiaisEmDesenv] = await Promise.all([
+      sb.from("lancamentos_materiais").select("*", { count: "exact", head: true }).eq("status", "em_producao"),
+      sb.from("materiais_pdv").select("*", { count: "exact", head: true }).eq("status", "em_desenvolvimento"),
+    ]);
+
     // Produtos por linha (join manual — evita depender de FK embedded)
     const linhas = linhasRows.data ?? [];
     const linhaById = new Map(linhas.map((l) => [l.id, l.nome]));
@@ -169,7 +174,7 @@ export const obterResumoDashboard = createServerFn({ method: "GET" }).handler(
         },
         materiais: {
           total: materiaisTotal.count ?? 0,
-          em_desenvolvimento: 0,
+          em_desenvolvimento: materiaisEmDesenv.count ?? 0,
         },
         projetos: {
           total: projetosTotal.count ?? 0,
@@ -180,7 +185,7 @@ export const obterResumoDashboard = createServerFn({ method: "GET" }).handler(
           ativas: campanhasAtivas.count ?? 0,
         },
         lancamentos_mes: lancMes ?? 0,
-        materiais_dev: 0,
+        materiais_dev: materiaisEmProducao.count ?? 0,
       },
       produtosPorLinha,
       projetosPorStatus: [
