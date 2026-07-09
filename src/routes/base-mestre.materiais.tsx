@@ -94,68 +94,12 @@ function MateriaisPage() {
         description="Displays, wobblers, adesivos e demais materiais de PDV — cada peça com sua própria página tipo e-commerce."
         image={heroImg}
         actions={
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button><Plus className="mr-2 h-4 w-4" /> Novo material</Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>Novo material</DialogTitle>
-                <DialogDescription>Cadastre uma nova peça de PDV.</DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-2">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2"><Label>Código</Label><Input value={form.codigo} onChange={(e) => setForm({ ...form, codigo: e.target.value })} /></div>
-                  <div className="grid gap-2"><Label>Tipo</Label><Input placeholder="Display, wobbler…" value={form.tipo} onChange={(e) => setForm({ ...form, tipo: e.target.value })} /></div>
-                </div>
-                <div className="grid gap-2"><Label>Nome</Label><Input value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} /></div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2"><Label>Dimensões</Label><Input placeholder="Ex.: 30 × 40 × 20 cm" value={form.dimensoes} onChange={(e) => setForm({ ...form, dimensoes: e.target.value })} /></div>
-                  <div className="grid gap-2">
-                    <Label>Status</Label>
-                    <Select value={form.status} onValueChange={(v) => setForm({ ...form, status: v })}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="rascunho">Rascunho</SelectItem>
-                        <SelectItem value="em_desenvolvimento">Em desenvolvimento</SelectItem>
-                        <SelectItem value="ativo">Ativo</SelectItem>
-                        <SelectItem value="descontinuado">Descontinuado</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label>Fornecedor</Label>
-                    <Select value={form.fornecedor_id || "__none"} onValueChange={(v) => setForm({ ...form, fornecedor_id: v === "__none" ? "" : v })}>
-                      <SelectTrigger><SelectValue placeholder="Selecione…" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="__none">— Nenhum —</SelectItem>
-                        {fornecedores.map((x) => (<SelectItem key={x.id} value={x.id}>{x.nome}</SelectItem>))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="grid gap-2">
-                    <Label>Categoria</Label>
-                    <Select value={form.categoria_id || "__none"} onValueChange={(v) => setForm({ ...form, categoria_id: v === "__none" ? "" : v })}>
-                      <SelectTrigger><SelectValue placeholder="Selecione…" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="__none">— Nenhuma —</SelectItem>
-                        {categorias.map((x) => (<SelectItem key={x.id} value={x.id}>{x.nome}</SelectItem>))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="grid gap-2"><Label>Descrição</Label><Textarea value={form.descricao} onChange={(e) => setForm({ ...form, descricao: e.target.value })} /></div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
-                <Button disabled={!form.codigo || !form.nome || criar.isPending} onClick={() => criar.mutate()}>Criar</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <Link to="/base-mestre/materiais/novo">
+            <Button><Plus className="mr-2 h-4 w-4" /> Novo material</Button>
+          </Link>
         }
       />
+
 
       <div className="container-page py-12">
         {/* Filtros */}
