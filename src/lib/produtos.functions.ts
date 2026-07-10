@@ -362,11 +362,11 @@ export const removerVideo = createServerFn({ method: "POST" })
     const supabase = getClient();
     const { data: v } = await supabase
       .from("produtos_videos")
-      .select("storage_path, produto_id")
+      .select("storage_path, produto_id, bucket, asset_id")
       .eq("id", data.id)
       .maybeSingle();
-    if (v?.storage_path) {
-      await supabase.storage.from("produtos-videos").remove([v.storage_path]);
+    if (v?.storage_path && !v.asset_id) {
+      await supabase.storage.from(v.bucket || "produtos-videos").remove([v.storage_path]);
     }
     const { error } = await supabase.from("produtos_videos").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
