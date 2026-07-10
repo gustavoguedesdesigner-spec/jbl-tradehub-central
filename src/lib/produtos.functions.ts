@@ -122,7 +122,7 @@ export const obterProduto = createServerFn({ method: "GET" })
     const { data: row, error } = await supabase
       .from("produtos")
       .select(
-        "*, linha:linhas(id,nome), categoria:categorias(id,nome), familia:familias(id,nome), imagens:produtos_imagens(id,storage_path,url_publica,ordem,principal,legenda,tipo), videos:produtos_videos(*), documentos:produtos_documentos(*)",
+        "*, linha:linhas(id,nome), categoria:categorias(id,nome), familia:familias(id,nome), imagens:produtos_imagens(id,storage_path,url_publica,ordem,principal,legenda,tipo,bucket,asset_id), videos:produtos_videos(*), documentos:produtos_documentos(*)",
       )
       .eq("id", data.id)
       .maybeSingle();
