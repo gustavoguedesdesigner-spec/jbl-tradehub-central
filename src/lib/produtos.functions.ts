@@ -94,7 +94,7 @@ export const listarProdutos = createServerFn({ method: "GET" })
     let query = supabase
       .from("produtos")
       .select(
-        "id, sku, codigo_jbl, nome, status, hero_product, posicionamento, preco_sugerido, ean, updated_at, linha:linhas(id,nome), categoria:categorias(id,nome), familia:familias(id,nome), imagens:produtos_imagens(id,storage_path,principal,ordem)",
+        "id, sku, codigo_jbl, nome, status, hero_product, posicionamento, preco_sugerido, ean, updated_at, linha:linhas(id,nome), categoria:categorias(id,nome), familia:familias(id,nome), imagens:produtos_imagens(id,storage_path,principal,ordem,bucket,asset_id)",
       )
       .order("updated_at", { ascending: false });
 
