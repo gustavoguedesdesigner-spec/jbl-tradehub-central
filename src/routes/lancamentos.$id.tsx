@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   ArrowLeft, CalendarClock, User, Rocket, Package, Trash2, CheckCircle2, Circle,
   Plus, MessageSquare, FileText, Paperclip, ListChecks, Sparkles, Boxes, Wrench,
-  Star, Factory, ClipboardCheck, Truck, ShieldCheck, ShieldAlert, Send,
+  Star, Factory, ClipboardCheck, Truck, ShieldCheck, ShieldAlert, Send, Printer,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
