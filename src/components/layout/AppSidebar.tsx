@@ -61,7 +61,7 @@ const principais: Item[] = [
 ];
 
 const sistema: Item[] = [
-  { title: "Relatórios", url: "/relatorios", icon: BarChart3 },
+  { title: "Dashboard Executivo", url: "/relatorios", icon: BarChart3 },
   { title: "Usuários & Permissões", url: "/usuarios", icon: Users },
   { title: "Configurações", url: "/configuracoes", icon: Settings },
 ];
