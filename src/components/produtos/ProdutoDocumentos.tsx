@@ -75,6 +75,7 @@ export function ProdutoDocumentos({
 
   const adicionarFn = useServerFn(adicionarDocumento);
   const removerFn = useServerFn(removerDocumento);
+  const registrarFn = useServerFn(registrarAssetVinculado);
   const invalidate = () => qc.invalidateQueries({ queryKey: ["produto", produtoId] });
 
   const remover = useMutation({
