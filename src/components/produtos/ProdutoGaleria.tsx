@@ -53,6 +53,7 @@ export function ProdutoGaleria({ produtoId, imagens }: { produtoId: string; imag
   const atualizarFn = useServerFn(atualizarImagem);
   const principalFn = useServerFn(definirImagemPrincipal);
   const reordenarFn = useServerFn(reordenarImagens);
+  const registrarFn = useServerFn(registrarAssetVinculado);
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ["produto", produtoId] });
 
