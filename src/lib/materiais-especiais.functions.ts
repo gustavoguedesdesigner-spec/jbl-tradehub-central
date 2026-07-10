@@ -42,6 +42,31 @@ async function assinar(supabase: ReturnType<typeof getClient>, paths: string[]) 
   return map;
 }
 
+export const listarTodosMateriaisEspeciais = createServerFn({ method: "GET" })
+  .handler(async () => {
+    const supabase = getClient();
+    const { data: rows, error } = await supabase
+      .from("materiais_especiais" as never)
+      .select("*, fornecedor:fornecedores(id, nome), lancamento:lancamentos(id, nome, codigo, status)")
+      .order("created_at", { ascending: false });
+    if (error) throw new Error(error.message);
+    const list = (rows ?? []) as Array<{
+      imagem_referencia_path: string | null;
+      croqui_path: string | null;
+    } & Record<string, unknown>>;
+    const paths: string[] = [];
+    for (const r of list) {
+      if (r.imagem_referencia_path) paths.push(r.imagem_referencia_path);
+      if (r.croqui_path) paths.push(r.croqui_path);
+    }
+    const map = await assinar(supabase, paths);
+    return list.map((r) => ({
+      ...r,
+      imagem_referencia_url: r.imagem_referencia_path ? map.get(r.imagem_referencia_path) ?? null : null,
+      croqui_url: r.croqui_path ? map.get(r.croqui_path) ?? null : null,
+    }));
+  });
+
 export const listarMateriaisEspeciais = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => z.object({ lancamento_id: z.string().uuid() }).parse(input))
   .handler(async ({ data }) => {
