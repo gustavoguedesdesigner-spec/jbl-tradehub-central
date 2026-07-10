@@ -57,13 +57,28 @@ function DecisionEnginePage() {
 
   return (
     <div className="space-y-6">
-      <PageHero
-        eyebrow="INTELIGÊNCIA"
-        title="Decision Engine"
-        description="Análise automática de categoria, posicionamento, campanha, contexto, produtos e materiais existentes — recomendando o mix ideal de PDV. Arquitetado para plugar IA."
-        icon={Brain}
-        gradient="from-indigo-600 via-violet-600 to-fuchsia-600"
-      />
+      <section className="relative overflow-hidden rounded-3xl border border-indigo-200/60 bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 p-8 text-white shadow-xl">
+        <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
+        <div className="absolute -bottom-20 -left-10 h-64 w-64 rounded-full bg-fuchsia-300/20 blur-3xl" />
+        <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-start gap-4">
+            <div className="rounded-2xl bg-white/15 p-3 backdrop-blur ring-1 ring-white/20">
+              <Brain className="h-7 w-7" />
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-[0.2em] text-white/70">Inteligência</p>
+              <h1 className="mt-1 text-2xl font-semibold tracking-tight md:text-3xl">Decision Engine</h1>
+              <p className="mt-2 max-w-2xl text-sm text-white/85">
+                Análise automática de categoria, posicionamento, campanha, contexto, produtos e
+                materiais existentes — recomendando o mix ideal de PDV. Arquitetado para plugar IA.
+              </p>
+            </div>
+          </div>
+          <Badge variant="outline" className="w-fit border-white/40 bg-white/10 text-white">
+            <Sparkles className="mr-1 h-3 w-3" /> Provider: Heurístico · pronto para IA
+          </Badge>
+        </div>
+      </section>
 
       {/* Pipeline visual */}
       <div className="grid gap-3 md:grid-cols-3">
