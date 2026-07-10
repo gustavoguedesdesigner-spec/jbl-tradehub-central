@@ -86,22 +86,27 @@ export const obterAuditoriaLegado = createServerFn({ method: "GET" }).handler(as
     .select("*");
   if (error) throw new Error(error.message);
 
-  const [semVinculo, duplicidades, totalAssets] = await Promise.all([
-    supabase
-      .from("assets" as never)
-      .select("id", { count: "exact", head: true })
-      .not(
-        "id",
-        "in",
-        `(select asset_id from public.asset_vinculos)`,
-      ),
-    // possíveis duplicidades por nome+peso
-    supabase.rpc("bib_duplicidades" as never).then(
-      (r) => ({ count: (r.data as { total: number }[] | null)?.[0]?.total ?? 0, error: r.error }),
-      () => ({ count: 0, error: null }),
-    ),
-    supabase.from("assets" as never).select("id", { count: "exact", head: true }),
-  ]);
+  const { data: allAssets } = await supabase
+    .from("assets" as never)
+    .select("id, nome, peso_bytes");
+  const { data: vinc } = await supabase
+    .from("asset_vinculos" as never)
+    .select("asset_id");
+
+  const assets = (allAssets ?? []) as Array<{ id: string; nome: string; peso_bytes: number | null }>;
+  const vinculos = (vinc ?? []) as Array<{ asset_id: string }>;
+  const vinculadosSet = new Set(vinculos.map((v) => v.asset_id));
+
+  const semVinculo = assets.filter((a) => !vinculadosSet.has(a.id)).length;
+
+  // possíveis duplicidades: mesmo nome + mesmo tamanho
+  const chave = new Map<string, number>();
+  for (const a of assets) {
+    const k = `${a.nome}::${a.peso_bytes ?? "?"}`;
+    chave.set(k, (chave.get(k) ?? 0) + 1);
+  }
+  let duplicidades = 0;
+  for (const n of chave.values()) if (n > 1) duplicidades += n - 1;
 
   return {
     resumo: (resumo ?? []) as Array<{
@@ -111,8 +116,8 @@ export const obterAuditoriaLegado = createServerFn({ method: "GET" }).handler(as
       migrado: number;
       total: number;
     }>,
-    assets_total: totalAssets.count ?? 0,
-    assets_sem_vinculo: semVinculo.count ?? 0,
-    duplicidades_potenciais: (duplicidades as { count: number }).count ?? 0,
+    assets_total: assets.length,
+    assets_sem_vinculo: semVinculo,
+    duplicidades_potenciais: duplicidades,
   };
 });
