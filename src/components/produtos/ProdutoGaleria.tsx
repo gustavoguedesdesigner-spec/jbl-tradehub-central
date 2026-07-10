@@ -183,6 +183,14 @@ export function ProdutoGaleria({ produtoId, imagens }: { produtoId: string; imag
                     <Star className="h-3 w-3" /> Principal
                   </span>
                 )}
+                {!img.asset_id && (
+                  <span
+                    title="Arquivo legado — ainda não migrado para a Biblioteca de Mídia"
+                    className="absolute bottom-2 left-2 rounded-full bg-amber-500/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white shadow"
+                  >
+                    Legado
+                  </span>
+                )}
                 <div className="absolute right-2 top-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
                   <Button size="icon" variant="secondary" onClick={() => setPreviewIndex(idx)}>
                     <Maximize2 className="h-4 w-4" />
