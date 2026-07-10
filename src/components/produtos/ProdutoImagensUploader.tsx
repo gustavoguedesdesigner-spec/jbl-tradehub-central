@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { adicionarImagem, removerImagem } from "@/lib/produtos.functions";
+import { registrarAssetVinculado } from "@/lib/biblioteca.functions";
 
 interface Imagem {
   id: string;
@@ -15,6 +16,7 @@ interface Imagem {
   url_assinada?: string | null;
   ordem: number;
   principal: boolean;
+  asset_id?: string | null;
 }
 
 export function ProdutoImagensUploader({ produtoId, imagens }: { produtoId: string; imagens: Imagem[] }) {
@@ -24,6 +26,7 @@ export function ProdutoImagensUploader({ produtoId, imagens }: { produtoId: stri
 
   const adicionarFn = useServerFn(adicionarImagem);
   const removerFn = useServerFn(removerImagem);
+  const registrarFn = useServerFn(registrarAssetVinculado);
 
   const remover = useMutation({
     mutationFn: (id: string) => removerFn({ data: { id } }),
@@ -37,16 +40,36 @@ export function ProdutoImagensUploader({ produtoId, imagens }: { produtoId: stri
     try {
       for (const file of Array.from(files)) {
         const ext = file.name.split(".").pop() ?? "bin";
-        const path = `${produtoId}/${crypto.randomUUID()}.${ext}`;
-        const { error: upErr } = await supabase.storage.from("produtos").upload(path, file, {
+        const path = `produto/${produtoId}/${crypto.randomUUID()}.${ext}`;
+        const { error: upErr } = await supabase.storage.from("assets").upload(path, file, {
           contentType: file.type,
         });
         if (upErr) throw upErr;
+        const { asset_id } = await registrarFn({
+          data: {
+            nome: file.name,
+            storage_path: path,
+            tipo: "imagem",
+            mime_type: file.type || null,
+            peso_bytes: file.size,
+            formato: ext,
+            entidade_tipo: "produto",
+            entidade_id: produtoId,
+            papel: "imagem_produto",
+          },
+        });
         await adicionarFn({
-          data: { produto_id: produtoId, storage_path: path, url_publica: path, principal: false },
+          data: {
+            produto_id: produtoId,
+            storage_path: path,
+            url_publica: path,
+            principal: false,
+            bucket: "assets",
+            asset_id,
+          },
         });
       }
-      toast.success("Imagens adicionadas");
+      toast.success("Imagens adicionadas à Biblioteca de Mídia");
       qc.invalidateQueries({ queryKey: ["produto", produtoId] });
       qc.invalidateQueries({ queryKey: ["produtos"] });
     } catch (e) {
