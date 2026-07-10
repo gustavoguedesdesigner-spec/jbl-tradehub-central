@@ -64,8 +64,8 @@ export const buscaGlobal = createServerFn({ method: "GET" })
         .limit(limit),
       supabase
         .from("fornecedores")
-        .select("id, nome, cidade, especialidades")
-        .or(`nome.ilike.${t},cidade.ilike.${t}`)
+        .select("id, nome, contato_nome, contato_email")
+        .or(`nome.ilike.${t},contato_nome.ilike.${t},contato_email.ilike.${t}`)
         .limit(limit),
     ]);
 
