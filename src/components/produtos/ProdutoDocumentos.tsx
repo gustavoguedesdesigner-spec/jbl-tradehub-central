@@ -89,11 +89,26 @@ export function ProdutoDocumentos({
     setUploading(true);
     try {
       for (const file of Array.from(files)) {
-        const path = `${produtoId}/${crypto.randomUUID()}-${file.name}`;
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+        const path = `produto/${produtoId}/${crypto.randomUUID()}-${safeName}`;
         const { error } = await supabase.storage
-          .from("produtos-documentos")
+          .from("assets")
           .upload(path, file, { contentType: file.type });
         if (error) throw error;
+        const ext = file.name.split(".").pop() ?? null;
+        const { asset_id } = await registrarFn({
+          data: {
+            nome: file.name,
+            storage_path: path,
+            tipo: meta.guideline ? "guideline" : "pdf",
+            mime_type: file.type || null,
+            peso_bytes: file.size,
+            formato: ext,
+            entidade_tipo: "produto",
+            entidade_id: produtoId,
+            papel: meta.categoria ?? "documento_produto",
+          },
+        });
         await adicionarFn({
           data: {
             produto_id: produtoId,
@@ -106,10 +121,12 @@ export function ProdutoDocumentos({
             versao: meta.versao || null,
             autor: meta.autor || null,
             guideline: meta.guideline,
+            bucket: "assets",
+            asset_id,
           },
         });
       }
-      toast.success("Documentos enviados");
+      toast.success("Documentos enviados à Biblioteca de Mídia");
       invalidate();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Falha");
