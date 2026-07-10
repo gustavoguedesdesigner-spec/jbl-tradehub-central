@@ -333,3 +333,84 @@ export const adicionarComentarioMaterial = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+// ============ CATÁLOGO MERCHANDISING ============
+export type CatalogoMaterial = {
+  id: string;
+  codigo: string | null;
+  nome: string;
+  descricao: string | null;
+  tipo: string | null;
+  status: string;
+  dimensoes: string | null;
+  imagem_url: string | null;
+  fornecedor: { id: string; nome: string } | null;
+  categoria: { id: string; nome: string } | null;
+  produtos: Array<{ id: string; nome: string; linha: { id: string; nome: string } | null }>;
+  linhas: Array<{ id: string; nome: string }>;
+  campanhas: Array<{ id: string; nome: string }>;
+};
+
+export const listarCatalogoMerchandising = createServerFn({ method: "GET" }).handler(async () => {
+  const supabase = getClient();
+  const { data, error } = await supabase
+    .from("materiais_pdv")
+    .select(
+      "id, codigo, nome, descricao, tipo, dimensoes, status, imagem_principal_url, fornecedor:fornecedores(id,nome), categoria:categorias(id,nome), compat:compatibilidades(produto:produtos(id,nome,linha:linhas(id,nome))), usos:lancamentos_materiais(lancamento:lancamentos(id, campanha:campanhas(id,nome)))",
+    )
+    .order("nome", { ascending: true });
+  if (error) throw new Error(error.message);
+  const rows = data ?? [];
+
+  // sign principal images if they're storage paths
+  const paths = rows
+    .map((r) => r.imagem_principal_url)
+    .filter((u): u is string => !!u && !u.startsWith("http"));
+  const signedMap = new Map<string, string>();
+  if (paths.length > 0) {
+    const { data: signed } = await supabase.storage
+      .from("materiais")
+      .createSignedUrls(paths, 60 * 60 * 24);
+    for (const s of signed ?? []) if (s.path && s.signedUrl) signedMap.set(s.path, s.signedUrl);
+  }
+
+  const out: CatalogoMaterial[] = rows.map((r) => {
+    const compat = (r.compat ?? []) as Array<{
+      produto: { id: string; nome: string; linha: { id: string; nome: string } | null } | null;
+    }>;
+    const produtos = compat.map((c) => c.produto).filter((p): p is NonNullable<typeof p> => !!p);
+    const linhasMap = new Map<string, { id: string; nome: string }>();
+    for (const p of produtos) if (p.linha) linhasMap.set(p.linha.id, p.linha);
+
+    const usos = (r.usos ?? []) as Array<{
+      lancamento: { id: string; campanha: { id: string; nome: string } | null } | null;
+    }>;
+    const campMap = new Map<string, { id: string; nome: string }>();
+    for (const u of usos) if (u.lancamento?.campanha) campMap.set(u.lancamento.campanha.id, u.lancamento.campanha);
+
+    const rawUrl = r.imagem_principal_url;
+    const imagem_url = rawUrl
+      ? rawUrl.startsWith("http")
+        ? rawUrl
+        : signedMap.get(rawUrl) ?? null
+      : null;
+
+    return {
+      id: r.id,
+      codigo: r.codigo,
+      nome: r.nome,
+      descricao: r.descricao,
+      tipo: r.tipo,
+      status: r.status,
+      dimensoes: r.dimensoes,
+      imagem_url,
+      fornecedor: r.fornecedor,
+      categoria: r.categoria,
+      produtos,
+      linhas: [...linhasMap.values()],
+      campanhas: [...campMap.values()],
+    };
+  });
+
+  return out;
+});
