@@ -191,10 +191,18 @@ function LancamentoDetalhe() {
               {sec.label}
             </a>
           ))}
-          <div className="ml-auto flex items-center">
+          <div className="ml-auto flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-2 print:hidden"
+              onClick={() => typeof window !== "undefined" && window.print()}
+            >
+              <Printer className="h-3.5 w-3.5" /> Exportar PDF
+            </Button>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50 gap-2">
+                <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50 gap-2 print:hidden">
                   <Trash2 className="h-3.5 w-3.5" /> Excluir
                 </Button>
               </AlertDialogTrigger>
