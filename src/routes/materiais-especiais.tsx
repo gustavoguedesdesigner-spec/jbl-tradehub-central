@@ -108,6 +108,7 @@ function MateriaisEspeciaisModulo() {
         eyebrow="Inovação"
         title="Materiais Especiais"
         description="Hub de inovação da JBL Trade Hub. Cadastre materiais que ainda não existem na Base Mestre — cada ideia aprovada pode ser homologada e migrar automaticamente para o catálogo oficial."
+        image={heroImg}
       />
 
       <div className="mx-auto max-w-7xl px-6 py-8 space-y-8">
