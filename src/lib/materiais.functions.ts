@@ -81,7 +81,7 @@ export const listarMateriais = createServerFn({ method: "GET" }).handler(async (
   const { data, error } = await supabase
     .from("materiais_pdv")
     .select(
-      "id, codigo, nome, descricao, tipo, dimensoes, status, imagem_principal_url, updated_at, fornecedor:fornecedores(id,nome), categoria:categorias(id,nome), imagens:materiais_imagens(id,storage_path,principal)",
+      "id, codigo, nome, descricao, tipo, dimensoes, status, imagem_principal_url, updated_at, fornecedor:fornecedores(id,nome), categoria:categorias(id,nome), imagens:materiais_imagens(id,storage_path,principal,bucket,asset_id)",
     )
     .order("updated_at", { ascending: false });
   if (error) throw new Error(error.message);
