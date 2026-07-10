@@ -14,6 +14,7 @@ import { Route as TerritoryRouteImport } from './routes/territory'
 import { Route as RelatoriosRouteImport } from './routes/relatorios'
 import { Route as ProjetoInteligenteRouteImport } from './routes/projeto-inteligente'
 import { Route as MerchandisingRouteImport } from './routes/merchandising'
+import { Route as MateriaisEspeciaisRouteImport } from './routes/materiais-especiais'
 import { Route as LaunchControlRouteImport } from './routes/launch-control'
 import { Route as LancamentosRouteImport } from './routes/lancamentos'
 import { Route as ImportacaoRouteImport } from './routes/importacao'
@@ -62,6 +63,11 @@ const ProjetoInteligenteRoute = ProjetoInteligenteRouteImport.update({
 const MerchandisingRoute = MerchandisingRouteImport.update({
   id: '/merchandising',
   path: '/merchandising',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MateriaisEspeciaisRoute = MateriaisEspeciaisRouteImport.update({
+  id: '/materiais-especiais',
+  path: '/materiais-especiais',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LaunchControlRoute = LaunchControlRouteImport.update({
@@ -195,6 +201,7 @@ export interface FileRoutesByFullPath {
   '/importacao': typeof ImportacaoRouteWithChildren
   '/lancamentos': typeof LancamentosRouteWithChildren
   '/launch-control': typeof LaunchControlRoute
+  '/materiais-especiais': typeof MateriaisEspeciaisRoute
   '/merchandising': typeof MerchandisingRoute
   '/projeto-inteligente': typeof ProjetoInteligenteRoute
   '/relatorios': typeof RelatoriosRoute
@@ -224,6 +231,7 @@ export interface FileRoutesByTo {
   '/configuracoes': typeof ConfiguracoesRoute
   '/importacao': typeof ImportacaoRouteWithChildren
   '/launch-control': typeof LaunchControlRoute
+  '/materiais-especiais': typeof MateriaisEspeciaisRoute
   '/merchandising': typeof MerchandisingRoute
   '/projeto-inteligente': typeof ProjetoInteligenteRoute
   '/relatorios': typeof RelatoriosRoute
@@ -254,6 +262,7 @@ export interface FileRoutesById {
   '/importacao': typeof ImportacaoRouteWithChildren
   '/lancamentos': typeof LancamentosRouteWithChildren
   '/launch-control': typeof LaunchControlRoute
+  '/materiais-especiais': typeof MateriaisEspeciaisRoute
   '/merchandising': typeof MerchandisingRoute
   '/projeto-inteligente': typeof ProjetoInteligenteRoute
   '/relatorios': typeof RelatoriosRoute
@@ -287,6 +296,7 @@ export interface FileRouteTypes {
     | '/importacao'
     | '/lancamentos'
     | '/launch-control'
+    | '/materiais-especiais'
     | '/merchandising'
     | '/projeto-inteligente'
     | '/relatorios'
@@ -316,6 +326,7 @@ export interface FileRouteTypes {
     | '/configuracoes'
     | '/importacao'
     | '/launch-control'
+    | '/materiais-especiais'
     | '/merchandising'
     | '/projeto-inteligente'
     | '/relatorios'
@@ -345,6 +356,7 @@ export interface FileRouteTypes {
     | '/importacao'
     | '/lancamentos'
     | '/launch-control'
+    | '/materiais-especiais'
     | '/merchandising'
     | '/projeto-inteligente'
     | '/relatorios'
@@ -377,6 +389,7 @@ export interface RootRouteChildren {
   ImportacaoRoute: typeof ImportacaoRouteWithChildren
   LancamentosRoute: typeof LancamentosRouteWithChildren
   LaunchControlRoute: typeof LaunchControlRoute
+  MateriaisEspeciaisRoute: typeof MateriaisEspeciaisRoute
   MerchandisingRoute: typeof MerchandisingRoute
   ProjetoInteligenteRoute: typeof ProjetoInteligenteRoute
   RelatoriosRoute: typeof RelatoriosRoute
@@ -419,6 +432,13 @@ declare module '@tanstack/react-router' {
       path: '/merchandising'
       fullPath: '/merchandising'
       preLoaderRoute: typeof MerchandisingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/materiais-especiais': {
+      id: '/materiais-especiais'
+      path: '/materiais-especiais'
+      fullPath: '/materiais-especiais'
+      preLoaderRoute: typeof MateriaisEspeciaisRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/launch-control': {
@@ -682,6 +702,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImportacaoRoute: ImportacaoRouteWithChildren,
   LancamentosRoute: LancamentosRouteWithChildren,
   LaunchControlRoute: LaunchControlRoute,
+  MateriaisEspeciaisRoute: MateriaisEspeciaisRoute,
   MerchandisingRoute: MerchandisingRoute,
   ProjetoInteligenteRoute: ProjetoInteligenteRoute,
   RelatoriosRoute: RelatoriosRoute,
