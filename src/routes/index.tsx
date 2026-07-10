@@ -472,7 +472,7 @@ function AtividadesRecentes({
                     </span>
                   </p>
                   <p className="text-[11px] text-muted-foreground">
-                    {new Date(a.created_at).toLocaleString("pt-BR")}
+                    {new Date(a.created_at).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}
                   </p>
                 </div>
               </li>
