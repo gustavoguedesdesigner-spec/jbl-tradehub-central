@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   ArrowLeft, CalendarClock, User, Rocket, Package, Trash2, CheckCircle2, Circle,
   Plus, MessageSquare, FileText, Paperclip, ListChecks, Sparkles, Boxes, Wrench,
-  Star, Factory, ClipboardCheck, Truck, ShieldCheck, ShieldAlert, Send,
+  Star, Factory, ClipboardCheck, Truck, ShieldCheck, ShieldAlert, Send, Printer,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -191,10 +191,18 @@ function LancamentoDetalhe() {
               {sec.label}
             </a>
           ))}
-          <div className="ml-auto flex items-center">
+          <div className="ml-auto flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-2 print:hidden"
+              onClick={() => typeof window !== "undefined" && window.print()}
+            >
+              <Printer className="h-3.5 w-3.5" /> Exportar PDF
+            </Button>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50 gap-2">
+                <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50 gap-2 print:hidden">
                   <Trash2 className="h-3.5 w-3.5" /> Excluir
                 </Button>
               </AlertDialogTrigger>
@@ -268,11 +276,14 @@ function LancamentoDetalhe() {
 
         {/* CRONOGRAMA */}
         <Section id="cronograma" icon={CalendarClock} title="Cronograma">
-          <div className="grid gap-6 md:grid-cols-3">
-            <TimelineCard icon={Sparkles} label="Criado em" value={new Date(anyL.created_at).toLocaleDateString("pt-BR")} tone="neutral" />
-            <TimelineCard icon={CalendarClock} label="Prazo previsto" value={anyL.data_prevista ? new Date(anyL.data_prevista).toLocaleDateString("pt-BR") : "—"} tone="amber" />
-            <TimelineCard icon={Rocket} label="Lançamento" value={anyL.data_lancamento ? new Date(anyL.data_lancamento).toLocaleDateString("pt-BR") : "—"} tone="primary" />
-          </div>
+          <GanttTimeline
+            criadoEm={anyL.created_at}
+            prazo={anyL.data_prevista}
+            lancamento={anyL.data_lancamento}
+            producao={anyL.producao_status}
+            aprovacao={anyL.aprovacao_status}
+            implantacao={anyL.implantacao_status}
+          />
         </Section>
 
         {/* CHECKLIST */}
@@ -466,30 +477,60 @@ function PdvReadyPanel({ lancamentoId, ready, progresso, onChanged }: { lancamen
   });
 
   return (
-    <div className={`relative overflow-hidden rounded-3xl border p-8 ${ready ? "border-emerald-400/40 bg-gradient-to-br from-emerald-500/20 to-emerald-700/20" : "border-white/15 bg-white/5"}`}>
-      <div className="flex items-start justify-between gap-4">
+    <div
+      className={`relative overflow-hidden rounded-3xl border p-8 transition-all ${
+        ready
+          ? "border-emerald-400/60 bg-gradient-to-br from-emerald-500/25 via-emerald-500/15 to-teal-600/25 shadow-2xl shadow-emerald-500/20"
+          : "border-white/15 bg-white/5"
+      }`}
+    >
+      {ready && (
+        <>
+          <div className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-emerald-400/30 blur-3xl animate-pulse" />
+          <div className="pointer-events-none absolute -bottom-20 -left-16 h-56 w-56 rounded-full bg-teal-400/20 blur-3xl" />
+        </>
+      )}
+      <div className="relative flex items-start justify-between gap-4">
         <div>
           <p className="text-[10px] uppercase tracking-[0.2em] text-white/60">Indicador</p>
-          <h3 className="mt-1 text-2xl font-semibold">PDV READY</h3>
+          <h3 className="mt-1 text-2xl font-semibold flex items-center gap-2">
+            PDV READY
+            {ready && (
+              <span className="text-[10px] uppercase tracking-[0.15em] px-2 py-0.5 rounded-full bg-emerald-400 text-emerald-950 font-bold animate-pulse">
+                Certificado
+              </span>
+            )}
+          </h3>
         </div>
         {ready ? (
-          <div className="h-14 w-14 rounded-2xl bg-emerald-500 grid place-items-center shadow-lg shadow-emerald-500/30">
-            <ShieldCheck className="h-7 w-7" />
+          <div className="relative h-16 w-16 rounded-2xl bg-gradient-to-br from-emerald-300 to-emerald-500 grid place-items-center shadow-xl shadow-emerald-500/40 ring-4 ring-emerald-300/30">
+            <ShieldCheck className="h-8 w-8 text-emerald-950" />
+            <span className="absolute inset-0 rounded-2xl ring-2 ring-emerald-300/50 animate-ping" />
           </div>
         ) : (
-          <div className="h-14 w-14 rounded-2xl bg-white/10 grid place-items-center">
-            <ShieldAlert className="h-7 w-7 text-white/70" />
+          <div className="h-16 w-16 rounded-2xl bg-white/10 grid place-items-center">
+            <ShieldAlert className="h-8 w-8 text-white/70" />
           </div>
         )}
       </div>
 
-      <div className="mt-6">
+      <div className="relative mt-6">
         <div className="flex items-baseline justify-between mb-2">
           <span className="text-xs text-white/60">Progresso geral</span>
-          <span className="text-2xl font-semibold tabular-nums">{progresso}%</span>
+          <span className="text-3xl font-bold tabular-nums">
+            {progresso}
+            <span className="text-lg text-white/60">%</span>
+          </span>
         </div>
-        <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-emerald-400 to-emerald-300 transition-all" style={{ width: `${progresso}%` }} />
+        <div className="h-2.5 rounded-full bg-white/10 overflow-hidden">
+          <div
+            className={`h-full rounded-full transition-all duration-700 ${
+              ready
+                ? "bg-gradient-to-r from-emerald-300 via-emerald-400 to-teal-300"
+                : "bg-gradient-to-r from-primary/80 to-primary"
+            }`}
+            style={{ width: `${progresso}%` }}
+          />
         </div>
       </div>
 
@@ -497,7 +538,7 @@ function PdvReadyPanel({ lancamentoId, ready, progresso, onChanged }: { lancamen
         onClick={() => mut.mutate(!ready)}
         disabled={mut.isPending}
         variant={ready ? "secondary" : "default"}
-        className="mt-6 w-full"
+        className="relative mt-6 w-full"
       >
         {ready ? "Desmarcar PDV Ready" : "Marcar como PDV Ready"}
       </Button>
@@ -548,6 +589,100 @@ function TimelineCard({ icon: Icon, label, value, tone }: { icon: typeof Rocket;
         <p className="text-xs uppercase tracking-widest opacity-70">{label}</p>
         <p className="text-2xl font-semibold mt-1 text-foreground">{value}</p>
       </div>
+    </Card>
+  );
+}
+
+function GanttTimeline({
+  criadoEm, prazo, lancamento, producao, aprovacao, implantacao,
+}: {
+  criadoEm: string;
+  prazo: string | null;
+  lancamento: string | null;
+  producao: string;
+  aprovacao: string;
+  implantacao: string;
+}) {
+  const fmt = (d: string | null) =>
+    d ? new Date(d).toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric", timeZone: "UTC" }) : "—";
+
+  const inicio = new Date(criadoEm).getTime();
+  const fim = prazo ? new Date(prazo).getTime() : inicio + 30 * 24 * 3600_000;
+  const total = Math.max(fim - inicio, 1);
+  const agora = Date.now();
+  const nowPct = Math.max(0, Math.min(100, ((agora - inicio) / total) * 100));
+
+  const etapaProg = (s: string) =>
+    s === "concluido" ? 100 : s === "em_andamento" ? 55 : s === "bloqueado" ? 20 : 0;
+
+  const etapas = [
+    { nome: "Produção", icon: Factory, status: producao, pct: etapaProg(producao), cls: "from-amber-400 to-orange-500" },
+    { nome: "Aprovação", icon: ClipboardCheck, status: aprovacao, pct: etapaProg(aprovacao), cls: "from-emerald-400 to-teal-500" },
+    { nome: "Implantação", icon: Truck, status: implantacao, pct: etapaProg(implantacao), cls: "from-blue-400 to-indigo-500" },
+  ];
+
+  return (
+    <Card className="overflow-hidden">
+      <CardContent className="p-6 md:p-8 space-y-8">
+        {/* Marcos */}
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="rounded-2xl bg-gradient-to-br from-neutral-100 to-neutral-50 p-5 border">
+            <Sparkles className="h-6 w-6 text-neutral-700 mb-2" />
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Criado em</p>
+            <p className="text-lg font-semibold">{fmt(criadoEm)}</p>
+          </div>
+          <div className="rounded-2xl bg-gradient-to-br from-amber-100 to-amber-50 p-5 border border-amber-200/60">
+            <CalendarClock className="h-6 w-6 text-amber-700 mb-2" />
+            <p className="text-[10px] uppercase tracking-widest text-amber-800/70">Prazo previsto</p>
+            <p className="text-lg font-semibold">{fmt(prazo)}</p>
+          </div>
+          <div className="rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 p-5 border border-primary/30">
+            <Rocket className="h-6 w-6 text-primary mb-2" />
+            <p className="text-[10px] uppercase tracking-widest text-primary/80">Lançamento</p>
+            <p className="text-lg font-semibold">{fmt(lancamento)}</p>
+          </div>
+        </div>
+
+        {/* Barra "hoje" */}
+        <div className="relative pt-6">
+          <div className="flex justify-between text-[10px] uppercase tracking-wider text-muted-foreground mb-2">
+            <span>Início</span>
+            <span>Prazo</span>
+          </div>
+          <div className="relative h-3 rounded-full bg-neutral-100 overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-primary/70 to-primary" style={{ width: `${nowPct}%` }} />
+          </div>
+          <div className="absolute -top-1 flex flex-col items-center" style={{ left: `${nowPct}%`, transform: "translateX(-50%)" }}>
+            <div className="text-[10px] font-semibold text-primary bg-white px-1.5 py-0.5 rounded shadow-sm border border-primary/30 whitespace-nowrap">Hoje</div>
+            <div className="h-6 w-0.5 bg-primary mt-1" />
+          </div>
+        </div>
+
+        {/* Gantt de etapas */}
+        <div className="space-y-3">
+          {etapas.map((e) => (
+            <div key={e.nome} className="grid grid-cols-[minmax(0,140px)_1fr_auto] items-center gap-4">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className={`h-8 w-8 shrink-0 rounded-lg bg-gradient-to-br ${e.cls} grid place-items-center text-white shadow-sm`}>
+                  <e.icon className="h-4 w-4" />
+                </div>
+                <span className="text-sm font-medium truncate">{e.nome}</span>
+              </div>
+              <div className="relative h-8 rounded-lg bg-neutral-100 overflow-hidden">
+                <div
+                  className={`h-full bg-gradient-to-r ${e.cls} transition-all duration-500 flex items-center justify-end pr-3`}
+                  style={{ width: `${Math.max(e.pct, 4)}%` }}
+                >
+                  {e.pct > 15 && <span className="text-[11px] font-semibold text-white drop-shadow">{e.pct}%</span>}
+                </div>
+              </div>
+              <Badge variant="outline" className={`${etapaMap[e.status]?.cls ?? ""} border text-[10px] uppercase tracking-wider whitespace-nowrap`}>
+                {etapaMap[e.status]?.l ?? e.status}
+              </Badge>
+            </div>
+          ))}
+        </div>
+      </CardContent>
     </Card>
   );
 }

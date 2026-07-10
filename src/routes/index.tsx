@@ -340,6 +340,7 @@ function Cronograma({ data }: { data: DashboardResumo["cronograma"] }) {
                         day: "2-digit",
                         month: "long",
                         year: "numeric",
+                        timeZone: "UTC",
                       })
                     : "Sem data definida"}
                 </p>
