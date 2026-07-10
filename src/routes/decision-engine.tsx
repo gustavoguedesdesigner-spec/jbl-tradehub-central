@@ -6,7 +6,7 @@ import {
   CircuitBoard, Cpu, Zap,
 } from "lucide-react";
 
-import { PageHero } from "@/components/layout/PageHero";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
