@@ -387,6 +387,8 @@ const documentoInput = z.object({
   tamanho_bytes: z.number().int().nonnegative().optional().nullable(),
   guideline: z.boolean().default(false),
   data_documento: z.string().optional().nullable(),
+  bucket: z.string().max(60).optional().nullable(),
+  asset_id: z.string().uuid().optional().nullable(),
 });
 
 export const adicionarDocumento = createServerFn({ method: "POST" })
