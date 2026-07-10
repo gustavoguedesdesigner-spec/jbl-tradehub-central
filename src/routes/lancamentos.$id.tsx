@@ -593,6 +593,100 @@ function TimelineCard({ icon: Icon, label, value, tone }: { icon: typeof Rocket;
   );
 }
 
+function GanttTimeline({
+  criadoEm, prazo, lancamento, producao, aprovacao, implantacao,
+}: {
+  criadoEm: string;
+  prazo: string | null;
+  lancamento: string | null;
+  producao: string;
+  aprovacao: string;
+  implantacao: string;
+}) {
+  const fmt = (d: string | null) =>
+    d ? new Date(d).toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric", timeZone: "UTC" }) : "—";
+
+  const inicio = new Date(criadoEm).getTime();
+  const fim = prazo ? new Date(prazo).getTime() : inicio + 30 * 24 * 3600_000;
+  const total = Math.max(fim - inicio, 1);
+  const agora = Date.now();
+  const nowPct = Math.max(0, Math.min(100, ((agora - inicio) / total) * 100));
+
+  const etapaProg = (s: string) =>
+    s === "concluido" ? 100 : s === "em_andamento" ? 55 : s === "bloqueado" ? 20 : 0;
+
+  const etapas = [
+    { nome: "Produção", icon: Factory, status: producao, pct: etapaProg(producao), cls: "from-amber-400 to-orange-500" },
+    { nome: "Aprovação", icon: ClipboardCheck, status: aprovacao, pct: etapaProg(aprovacao), cls: "from-emerald-400 to-teal-500" },
+    { nome: "Implantação", icon: Truck, status: implantacao, pct: etapaProg(implantacao), cls: "from-blue-400 to-indigo-500" },
+  ];
+
+  return (
+    <Card className="overflow-hidden">
+      <CardContent className="p-6 md:p-8 space-y-8">
+        {/* Marcos */}
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="rounded-2xl bg-gradient-to-br from-neutral-100 to-neutral-50 p-5 border">
+            <Sparkles className="h-6 w-6 text-neutral-700 mb-2" />
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Criado em</p>
+            <p className="text-lg font-semibold">{fmt(criadoEm)}</p>
+          </div>
+          <div className="rounded-2xl bg-gradient-to-br from-amber-100 to-amber-50 p-5 border border-amber-200/60">
+            <CalendarClock className="h-6 w-6 text-amber-700 mb-2" />
+            <p className="text-[10px] uppercase tracking-widest text-amber-800/70">Prazo previsto</p>
+            <p className="text-lg font-semibold">{fmt(prazo)}</p>
+          </div>
+          <div className="rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 p-5 border border-primary/30">
+            <Rocket className="h-6 w-6 text-primary mb-2" />
+            <p className="text-[10px] uppercase tracking-widest text-primary/80">Lançamento</p>
+            <p className="text-lg font-semibold">{fmt(lancamento)}</p>
+          </div>
+        </div>
+
+        {/* Barra "hoje" */}
+        <div className="relative pt-6">
+          <div className="flex justify-between text-[10px] uppercase tracking-wider text-muted-foreground mb-2">
+            <span>Início</span>
+            <span>Prazo</span>
+          </div>
+          <div className="relative h-3 rounded-full bg-neutral-100 overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-primary/70 to-primary" style={{ width: `${nowPct}%` }} />
+          </div>
+          <div className="absolute -top-1 flex flex-col items-center" style={{ left: `${nowPct}%`, transform: "translateX(-50%)" }}>
+            <div className="text-[10px] font-semibold text-primary bg-white px-1.5 py-0.5 rounded shadow-sm border border-primary/30 whitespace-nowrap">Hoje</div>
+            <div className="h-6 w-0.5 bg-primary mt-1" />
+          </div>
+        </div>
+
+        {/* Gantt de etapas */}
+        <div className="space-y-3">
+          {etapas.map((e) => (
+            <div key={e.nome} className="grid grid-cols-[minmax(0,140px)_1fr_auto] items-center gap-4">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className={`h-8 w-8 shrink-0 rounded-lg bg-gradient-to-br ${e.cls} grid place-items-center text-white shadow-sm`}>
+                  <e.icon className="h-4 w-4" />
+                </div>
+                <span className="text-sm font-medium truncate">{e.nome}</span>
+              </div>
+              <div className="relative h-8 rounded-lg bg-neutral-100 overflow-hidden">
+                <div
+                  className={`h-full bg-gradient-to-r ${e.cls} transition-all duration-500 flex items-center justify-end pr-3`}
+                  style={{ width: `${Math.max(e.pct, 4)}%` }}
+                >
+                  {e.pct > 15 && <span className="text-[11px] font-semibold text-white drop-shadow">{e.pct}%</span>}
+                </div>
+              </div>
+              <Badge variant="outline" className={`${etapaMap[e.status]?.cls ?? ""} border text-[10px] uppercase tracking-wider whitespace-nowrap`}>
+                {etapaMap[e.status]?.l ?? e.status}
+              </Badge>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 function EmptyCard({ text }: { text: string }) {
   return (
     <Card><CardContent className="py-10 text-center text-sm text-muted-foreground">{text}</CardContent></Card>
