@@ -466,30 +466,60 @@ function PdvReadyPanel({ lancamentoId, ready, progresso, onChanged }: { lancamen
   });
 
   return (
-    <div className={`relative overflow-hidden rounded-3xl border p-8 ${ready ? "border-emerald-400/40 bg-gradient-to-br from-emerald-500/20 to-emerald-700/20" : "border-white/15 bg-white/5"}`}>
-      <div className="flex items-start justify-between gap-4">
+    <div
+      className={`relative overflow-hidden rounded-3xl border p-8 transition-all ${
+        ready
+          ? "border-emerald-400/60 bg-gradient-to-br from-emerald-500/25 via-emerald-500/15 to-teal-600/25 shadow-2xl shadow-emerald-500/20"
+          : "border-white/15 bg-white/5"
+      }`}
+    >
+      {ready && (
+        <>
+          <div className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-emerald-400/30 blur-3xl animate-pulse" />
+          <div className="pointer-events-none absolute -bottom-20 -left-16 h-56 w-56 rounded-full bg-teal-400/20 blur-3xl" />
+        </>
+      )}
+      <div className="relative flex items-start justify-between gap-4">
         <div>
           <p className="text-[10px] uppercase tracking-[0.2em] text-white/60">Indicador</p>
-          <h3 className="mt-1 text-2xl font-semibold">PDV READY</h3>
+          <h3 className="mt-1 text-2xl font-semibold flex items-center gap-2">
+            PDV READY
+            {ready && (
+              <span className="text-[10px] uppercase tracking-[0.15em] px-2 py-0.5 rounded-full bg-emerald-400 text-emerald-950 font-bold animate-pulse">
+                Certificado
+              </span>
+            )}
+          </h3>
         </div>
         {ready ? (
-          <div className="h-14 w-14 rounded-2xl bg-emerald-500 grid place-items-center shadow-lg shadow-emerald-500/30">
-            <ShieldCheck className="h-7 w-7" />
+          <div className="relative h-16 w-16 rounded-2xl bg-gradient-to-br from-emerald-300 to-emerald-500 grid place-items-center shadow-xl shadow-emerald-500/40 ring-4 ring-emerald-300/30">
+            <ShieldCheck className="h-8 w-8 text-emerald-950" />
+            <span className="absolute inset-0 rounded-2xl ring-2 ring-emerald-300/50 animate-ping" />
           </div>
         ) : (
-          <div className="h-14 w-14 rounded-2xl bg-white/10 grid place-items-center">
-            <ShieldAlert className="h-7 w-7 text-white/70" />
+          <div className="h-16 w-16 rounded-2xl bg-white/10 grid place-items-center">
+            <ShieldAlert className="h-8 w-8 text-white/70" />
           </div>
         )}
       </div>
 
-      <div className="mt-6">
+      <div className="relative mt-6">
         <div className="flex items-baseline justify-between mb-2">
           <span className="text-xs text-white/60">Progresso geral</span>
-          <span className="text-2xl font-semibold tabular-nums">{progresso}%</span>
+          <span className="text-3xl font-bold tabular-nums">
+            {progresso}
+            <span className="text-lg text-white/60">%</span>
+          </span>
         </div>
-        <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-emerald-400 to-emerald-300 transition-all" style={{ width: `${progresso}%` }} />
+        <div className="h-2.5 rounded-full bg-white/10 overflow-hidden">
+          <div
+            className={`h-full rounded-full transition-all duration-700 ${
+              ready
+                ? "bg-gradient-to-r from-emerald-300 via-emerald-400 to-teal-300"
+                : "bg-gradient-to-r from-primary/80 to-primary"
+            }`}
+            style={{ width: `${progresso}%` }}
+          />
         </div>
       </div>
 
@@ -497,7 +527,7 @@ function PdvReadyPanel({ lancamentoId, ready, progresso, onChanged }: { lancamen
         onClick={() => mut.mutate(!ready)}
         disabled={mut.isPending}
         variant={ready ? "secondary" : "default"}
-        className="mt-6 w-full"
+        className="relative mt-6 w-full"
       >
         {ready ? "Desmarcar PDV Ready" : "Marcar como PDV Ready"}
       </Button>
