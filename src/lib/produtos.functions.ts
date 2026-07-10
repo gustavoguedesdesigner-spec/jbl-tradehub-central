@@ -333,6 +333,8 @@ const videoInput = z.object({
   titulo: z.string().max(200).optional().nullable(),
   url: z.string().max(500).optional().nullable(),
   storage_path: z.string().max(500).optional().nullable(),
+  bucket: z.string().max(60).optional().nullable(),
+  asset_id: z.string().uuid().optional().nullable(),
 });
 
 export const adicionarVideo = createServerFn({ method: "POST" })
