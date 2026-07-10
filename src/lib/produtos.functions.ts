@@ -37,19 +37,30 @@ const produtoInput = z.object({
   marca: z.string().max(80).optional().nullable(),
 });
 
-async function signPaths<T extends { storage_path: string | null }>(
+async function signPaths<T extends { storage_path: string | null; bucket?: string | null }>(
   supabase: ReturnType<typeof getClient>,
-  bucket: string,
+  defaultBucket: string,
   rows: T[],
 ): Promise<(T & { url_assinada: string | null })[]> {
-  const withPath = rows.filter((r) => !!r.storage_path);
-  if (withPath.length === 0) return rows.map((r) => ({ ...r, url_assinada: null }));
-  const paths = withPath.map((r) => r.storage_path as string);
-  const { data } = await supabase.storage.from(bucket).createSignedUrls(paths, 60 * 60 * 24 * 7);
-  const map = new Map((data ?? []).map((d) => [d.path, d.signedUrl]));
+  const grupos = new Map<string, T[]>();
+  for (const r of rows) {
+    if (!r.storage_path) continue;
+    const b = r.bucket || defaultBucket;
+    const arr = grupos.get(b) ?? [];
+    arr.push(r);
+    grupos.set(b, arr);
+  }
+  const urlPor = new Map<string, string>();
+  for (const [bucket, list] of grupos) {
+    const paths = list.map((r) => r.storage_path as string);
+    const { data } = await supabase.storage.from(bucket).createSignedUrls(paths, 60 * 60 * 24 * 7);
+    for (const s of data ?? []) if (s.path && s.signedUrl) urlPor.set(`${bucket}:${s.path}`, s.signedUrl);
+  }
   return rows.map((r) => ({
     ...r,
-    url_assinada: r.storage_path ? map.get(r.storage_path) ?? null : null,
+    url_assinada: r.storage_path
+      ? urlPor.get(`${r.bucket || defaultBucket}:${r.storage_path}`) ?? null
+      : null,
   }));
 }
 
