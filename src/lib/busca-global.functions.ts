@@ -126,12 +126,11 @@ export const buscaGlobal = createServerFn({ method: "GET" })
       });
     }
     for (const f of fornecedores.data ?? []) {
-      const esp = Array.isArray(f.especialidades) ? f.especialidades.join(", ") : null;
       out.push({
         id: f.id, tipo: "fornecedor",
         titulo: f.nome,
-        subtitulo: f.cidade ?? null,
-        descricao: esp,
+        subtitulo: f.contato_nome ?? null,
+        descricao: f.contato_email ?? null,
         url: "/base-mestre/fornecedores",
       });
     }
