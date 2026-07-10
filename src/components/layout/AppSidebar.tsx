@@ -55,6 +55,7 @@ const principais: Item[] = [
   { title: "Territory Intelligence", url: "/territory", icon: Map },
   { title: "Asset Center", url: "/asset-center", icon: FolderOpen },
   { title: "Importação Inteligente", url: "/importacao", icon: Zap },
+  { title: "Materiais Especiais", url: "/materiais-especiais", icon: Sparkles },
   { title: "Menu Merchandising", url: "/merchandising", icon: LayoutGrid },
 ];
 
