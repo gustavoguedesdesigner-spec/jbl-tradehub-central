@@ -13,6 +13,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { adicionarDocumento, removerDocumento } from "@/lib/produtos.functions";
+import { registrarAssetVinculado } from "@/lib/biblioteca.functions";
 
 interface Documento {
   id: string;
@@ -28,6 +29,7 @@ interface Documento {
   guideline: boolean;
   data_documento: string | null;
   created_at: string;
+  asset_id?: string | null;
 }
 
 const CATEGORIAS = [
