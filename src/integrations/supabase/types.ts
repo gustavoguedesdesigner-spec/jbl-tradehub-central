@@ -1048,6 +1048,8 @@ export type Database = {
       }
       materiais_documentos: {
         Row: {
+          asset_id: string | null
+          bucket: string | null
           categoria: string | null
           created_at: string
           descricao: string | null
@@ -1062,6 +1064,8 @@ export type Database = {
           versao: string | null
         }
         Insert: {
+          asset_id?: string | null
+          bucket?: string | null
           categoria?: string | null
           created_at?: string
           descricao?: string | null
@@ -1076,6 +1080,8 @@ export type Database = {
           versao?: string | null
         }
         Update: {
+          asset_id?: string | null
+          bucket?: string | null
           categoria?: string | null
           created_at?: string
           descricao?: string | null
@@ -1090,6 +1096,13 @@ export type Database = {
           versao?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "materiais_documentos_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "materiais_documentos_material_id_fkey"
             columns: ["material_id"]
@@ -1180,6 +1193,8 @@ export type Database = {
       }
       materiais_imagens: {
         Row: {
+          asset_id: string | null
+          bucket: string | null
           created_at: string
           id: string
           legenda: string | null
@@ -1192,6 +1207,8 @@ export type Database = {
           url_publica: string | null
         }
         Insert: {
+          asset_id?: string | null
+          bucket?: string | null
           created_at?: string
           id?: string
           legenda?: string | null
@@ -1204,6 +1221,8 @@ export type Database = {
           url_publica?: string | null
         }
         Update: {
+          asset_id?: string | null
+          bucket?: string | null
           created_at?: string
           id?: string
           legenda?: string | null
@@ -1216,6 +1235,13 @@ export type Database = {
           url_publica?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "materiais_imagens_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "materiais_imagens_material_id_fkey"
             columns: ["material_id"]
@@ -1426,7 +1452,9 @@ export type Database = {
       }
       produtos_documentos: {
         Row: {
+          asset_id: string | null
           autor: string | null
+          bucket: string | null
           categoria: string | null
           created_at: string
           data_documento: string | null
@@ -1441,7 +1469,9 @@ export type Database = {
           versao: string | null
         }
         Insert: {
+          asset_id?: string | null
           autor?: string | null
+          bucket?: string | null
           categoria?: string | null
           created_at?: string
           data_documento?: string | null
@@ -1456,7 +1486,9 @@ export type Database = {
           versao?: string | null
         }
         Update: {
+          asset_id?: string | null
           autor?: string | null
+          bucket?: string | null
           categoria?: string | null
           created_at?: string
           data_documento?: string | null
@@ -1472,6 +1504,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "produtos_documentos_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "produtos_documentos_produto_id_fkey"
             columns: ["produto_id"]
             isOneToOne: false
@@ -1482,6 +1521,8 @@ export type Database = {
       }
       produtos_imagens: {
         Row: {
+          asset_id: string | null
+          bucket: string | null
           created_at: string
           id: string
           legenda: string | null
@@ -1494,6 +1535,8 @@ export type Database = {
           url_publica: string
         }
         Insert: {
+          asset_id?: string | null
+          bucket?: string | null
           created_at?: string
           id?: string
           legenda?: string | null
@@ -1506,6 +1549,8 @@ export type Database = {
           url_publica: string
         }
         Update: {
+          asset_id?: string | null
+          bucket?: string | null
           created_at?: string
           id?: string
           legenda?: string | null
@@ -1519,6 +1564,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "produtos_imagens_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "produtos_imagens_produto_id_fkey"
             columns: ["produto_id"]
             isOneToOne: false
@@ -1529,6 +1581,8 @@ export type Database = {
       }
       produtos_videos: {
         Row: {
+          asset_id: string | null
+          bucket: string | null
           created_at: string
           id: string
           ordem: number
@@ -1539,6 +1593,8 @@ export type Database = {
           url: string | null
         }
         Insert: {
+          asset_id?: string | null
+          bucket?: string | null
           created_at?: string
           id?: string
           ordem?: number
@@ -1549,6 +1605,8 @@ export type Database = {
           url?: string | null
         }
         Update: {
+          asset_id?: string | null
+          bucket?: string | null
           created_at?: string
           id?: string
           ordem?: number
@@ -1559,6 +1617,13 @@ export type Database = {
           url?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "produtos_videos_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "produtos_videos_produto_id_fkey"
             columns: ["produto_id"]
@@ -1624,7 +1689,16 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      biblioteca_auditoria_legado: {
+        Row: {
+          bucket_origem: string | null
+          legado: number | null
+          migrado: number | null
+          tipo: string | null
+          total: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       can_write: { Args: never; Returns: boolean }

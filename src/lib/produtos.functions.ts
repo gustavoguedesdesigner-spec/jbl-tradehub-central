@@ -37,19 +37,30 @@ const produtoInput = z.object({
   marca: z.string().max(80).optional().nullable(),
 });
 
-async function signPaths<T extends { storage_path: string | null }>(
+async function signPaths<T extends { storage_path: string | null; bucket?: string | null }>(
   supabase: ReturnType<typeof getClient>,
-  bucket: string,
+  defaultBucket: string,
   rows: T[],
 ): Promise<(T & { url_assinada: string | null })[]> {
-  const withPath = rows.filter((r) => !!r.storage_path);
-  if (withPath.length === 0) return rows.map((r) => ({ ...r, url_assinada: null }));
-  const paths = withPath.map((r) => r.storage_path as string);
-  const { data } = await supabase.storage.from(bucket).createSignedUrls(paths, 60 * 60 * 24 * 7);
-  const map = new Map((data ?? []).map((d) => [d.path, d.signedUrl]));
+  const grupos = new Map<string, T[]>();
+  for (const r of rows) {
+    if (!r.storage_path) continue;
+    const b = r.bucket || defaultBucket;
+    const arr = grupos.get(b) ?? [];
+    arr.push(r);
+    grupos.set(b, arr);
+  }
+  const urlPor = new Map<string, string>();
+  for (const [bucket, list] of grupos) {
+    const paths = list.map((r) => r.storage_path as string);
+    const { data } = await supabase.storage.from(bucket).createSignedUrls(paths, 60 * 60 * 24 * 7);
+    for (const s of data ?? []) if (s.path && s.signedUrl) urlPor.set(`${bucket}:${s.path}`, s.signedUrl);
+  }
   return rows.map((r) => ({
     ...r,
-    url_assinada: r.storage_path ? map.get(r.storage_path) ?? null : null,
+    url_assinada: r.storage_path
+      ? urlPor.get(`${r.bucket || defaultBucket}:${r.storage_path}`) ?? null
+      : null,
   }));
 }
 
@@ -83,7 +94,7 @@ export const listarProdutos = createServerFn({ method: "GET" })
     let query = supabase
       .from("produtos")
       .select(
-        "id, sku, codigo_jbl, nome, status, hero_product, posicionamento, preco_sugerido, ean, updated_at, linha:linhas(id,nome), categoria:categorias(id,nome), familia:familias(id,nome), imagens:produtos_imagens(id,storage_path,principal,ordem)",
+        "id, sku, codigo_jbl, nome, status, hero_product, posicionamento, preco_sugerido, ean, updated_at, linha:linhas(id,nome), categoria:categorias(id,nome), familia:familias(id,nome), imagens:produtos_imagens(id,storage_path,principal,ordem,bucket,asset_id)",
       )
       .order("updated_at", { ascending: false });
 
@@ -111,7 +122,7 @@ export const obterProduto = createServerFn({ method: "GET" })
     const { data: row, error } = await supabase
       .from("produtos")
       .select(
-        "*, linha:linhas(id,nome), categoria:categorias(id,nome), familia:familias(id,nome), imagens:produtos_imagens(id,storage_path,url_publica,ordem,principal,legenda,tipo), videos:produtos_videos(*), documentos:produtos_documentos(*)",
+        "*, linha:linhas(id,nome), categoria:categorias(id,nome), familia:familias(id,nome), imagens:produtos_imagens(id,storage_path,url_publica,ordem,principal,legenda,tipo,bucket,asset_id), videos:produtos_videos(*), documentos:produtos_documentos(*)",
       )
       .eq("id", data.id)
       .maybeSingle();
@@ -216,6 +227,8 @@ const imagemInput = z.object({
   principal: z.boolean().default(false),
   tipo: z.string().max(60).optional().nullable(),
   legenda: z.string().max(300).optional().nullable(),
+  bucket: z.string().max(60).optional().nullable(),
+  asset_id: z.string().uuid().optional().nullable(),
 });
 
 export const adicionarImagem = createServerFn({ method: "POST" })
@@ -300,11 +313,12 @@ export const removerImagem = createServerFn({ method: "POST" })
     const supabase = getClient();
     const { data: img } = await supabase
       .from("produtos_imagens")
-      .select("storage_path, produto_id")
+      .select("storage_path, produto_id, bucket, asset_id")
       .eq("id", data.id)
       .maybeSingle();
-    if (img?.storage_path) {
-      await supabase.storage.from("produtos").remove([img.storage_path]);
+    if (img?.storage_path && !img.asset_id) {
+      // só remove do storage se NÃO for asset da Biblioteca (asset pode ser reutilizado)
+      await supabase.storage.from(img.bucket || "produtos").remove([img.storage_path]);
     }
     const { error } = await supabase.from("produtos_imagens").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -319,6 +333,8 @@ const videoInput = z.object({
   titulo: z.string().max(200).optional().nullable(),
   url: z.string().max(500).optional().nullable(),
   storage_path: z.string().max(500).optional().nullable(),
+  bucket: z.string().max(60).optional().nullable(),
+  asset_id: z.string().uuid().optional().nullable(),
 });
 
 export const adicionarVideo = createServerFn({ method: "POST" })
@@ -346,11 +362,11 @@ export const removerVideo = createServerFn({ method: "POST" })
     const supabase = getClient();
     const { data: v } = await supabase
       .from("produtos_videos")
-      .select("storage_path, produto_id")
+      .select("storage_path, produto_id, bucket, asset_id")
       .eq("id", data.id)
       .maybeSingle();
-    if (v?.storage_path) {
-      await supabase.storage.from("produtos-videos").remove([v.storage_path]);
+    if (v?.storage_path && !v.asset_id) {
+      await supabase.storage.from(v.bucket || "produtos-videos").remove([v.storage_path]);
     }
     const { error } = await supabase.from("produtos_videos").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -371,6 +387,8 @@ const documentoInput = z.object({
   tamanho_bytes: z.number().int().nonnegative().optional().nullable(),
   guideline: z.boolean().default(false),
   data_documento: z.string().optional().nullable(),
+  bucket: z.string().max(60).optional().nullable(),
+  asset_id: z.string().uuid().optional().nullable(),
 });
 
 export const adicionarDocumento = createServerFn({ method: "POST" })
@@ -393,11 +411,11 @@ export const removerDocumento = createServerFn({ method: "POST" })
     const supabase = getClient();
     const { data: d } = await supabase
       .from("produtos_documentos")
-      .select("storage_path, produto_id")
+      .select("storage_path, produto_id, bucket, asset_id")
       .eq("id", data.id)
       .maybeSingle();
-    if (d?.storage_path) {
-      await supabase.storage.from("produtos-documentos").remove([d.storage_path]);
+    if (d?.storage_path && !d.asset_id) {
+      await supabase.storage.from(d.bucket || "produtos-documentos").remove([d.storage_path]);
     }
     const { error } = await supabase.from("produtos_documentos").delete().eq("id", data.id);
     if (error) throw new Error(error.message);

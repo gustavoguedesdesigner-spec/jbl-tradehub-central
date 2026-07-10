@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { adicionarImagem, removerImagem } from "@/lib/produtos.functions";
+import { registrarAssetVinculado } from "@/lib/biblioteca.functions";
 
 interface Imagem {
   id: string;
@@ -15,6 +16,7 @@ interface Imagem {
   url_assinada?: string | null;
   ordem: number;
   principal: boolean;
+  asset_id?: string | null;
 }
 
 export function ProdutoImagensUploader({ produtoId, imagens }: { produtoId: string; imagens: Imagem[] }) {
@@ -24,6 +26,7 @@ export function ProdutoImagensUploader({ produtoId, imagens }: { produtoId: stri
 
   const adicionarFn = useServerFn(adicionarImagem);
   const removerFn = useServerFn(removerImagem);
+  const registrarFn = useServerFn(registrarAssetVinculado);
 
   const remover = useMutation({
     mutationFn: (id: string) => removerFn({ data: { id } }),
@@ -37,16 +40,36 @@ export function ProdutoImagensUploader({ produtoId, imagens }: { produtoId: stri
     try {
       for (const file of Array.from(files)) {
         const ext = file.name.split(".").pop() ?? "bin";
-        const path = `${produtoId}/${crypto.randomUUID()}.${ext}`;
-        const { error: upErr } = await supabase.storage.from("produtos").upload(path, file, {
+        const path = `produto/${produtoId}/${crypto.randomUUID()}.${ext}`;
+        const { error: upErr } = await supabase.storage.from("assets").upload(path, file, {
           contentType: file.type,
         });
         if (upErr) throw upErr;
+        const { asset_id } = await registrarFn({
+          data: {
+            nome: file.name,
+            storage_path: path,
+            tipo: "imagem",
+            mime_type: file.type || null,
+            peso_bytes: file.size,
+            formato: ext,
+            entidade_tipo: "produto",
+            entidade_id: produtoId,
+            papel: "imagem_produto",
+          },
+        });
         await adicionarFn({
-          data: { produto_id: produtoId, storage_path: path, url_publica: path, principal: false },
+          data: {
+            produto_id: produtoId,
+            storage_path: path,
+            url_publica: path,
+            principal: false,
+            bucket: "assets",
+            asset_id,
+          },
         });
       }
-      toast.success("Imagens adicionadas");
+      toast.success("Imagens adicionadas à Biblioteca de Mídia");
       qc.invalidateQueries({ queryKey: ["produto", produtoId] });
       qc.invalidateQueries({ queryKey: ["produtos"] });
     } catch (e) {
@@ -97,6 +120,14 @@ export function ProdutoImagensUploader({ produtoId, imagens }: { produtoId: stri
                 {img.principal && (
                   <span className="absolute left-1 top-1 flex items-center gap-1 rounded bg-primary px-1.5 py-0.5 text-[10px] font-medium text-primary-foreground">
                     <Star className="h-3 w-3" /> Principal
+                  </span>
+                )}
+                {!img.asset_id && (
+                  <span
+                    title="Arquivo legado — ainda não migrado para a Biblioteca de Mídia"
+                    className="absolute bottom-1 left-1 rounded bg-amber-500/95 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-white"
+                  >
+                    Legado
                   </span>
                 )}
                 <button

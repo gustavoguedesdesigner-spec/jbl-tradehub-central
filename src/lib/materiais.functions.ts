@@ -34,19 +34,30 @@ const materialInput = z.object({
   acabamento: z.string().max(120).optional().nullable(),
 });
 
-async function signPaths<T extends { storage_path: string | null }>(
+async function signPaths<T extends { storage_path: string | null; bucket?: string | null }>(
   supabase: ReturnType<typeof getClient>,
-  bucket: string,
+  defaultBucket: string,
   rows: T[],
 ): Promise<(T & { url_assinada: string | null })[]> {
-  const withPath = rows.filter((r) => !!r.storage_path);
-  if (withPath.length === 0) return rows.map((r) => ({ ...r, url_assinada: null }));
-  const paths = withPath.map((r) => r.storage_path as string);
-  const { data } = await supabase.storage.from(bucket).createSignedUrls(paths, 60 * 60 * 24 * 7);
-  const map = new Map((data ?? []).map((d) => [d.path, d.signedUrl]));
+  const grupos = new Map<string, T[]>();
+  for (const r of rows) {
+    if (!r.storage_path) continue;
+    const b = r.bucket || defaultBucket;
+    const arr = grupos.get(b) ?? [];
+    arr.push(r);
+    grupos.set(b, arr);
+  }
+  const urlPor = new Map<string, string>();
+  for (const [bucket, list] of grupos) {
+    const paths = list.map((r) => r.storage_path as string);
+    const { data } = await supabase.storage.from(bucket).createSignedUrls(paths, 60 * 60 * 24 * 7);
+    for (const s of data ?? []) if (s.path && s.signedUrl) urlPor.set(`${bucket}:${s.path}`, s.signedUrl);
+  }
   return rows.map((r) => ({
     ...r,
-    url_assinada: r.storage_path ? map.get(r.storage_path) ?? null : null,
+    url_assinada: r.storage_path
+      ? urlPor.get(`${r.bucket || defaultBucket}:${r.storage_path}`) ?? null
+      : null,
   }));
 }
 
@@ -70,7 +81,7 @@ export const listarMateriais = createServerFn({ method: "GET" }).handler(async (
   const { data, error } = await supabase
     .from("materiais_pdv")
     .select(
-      "id, codigo, nome, descricao, tipo, dimensoes, status, imagem_principal_url, updated_at, fornecedor:fornecedores(id,nome), categoria:categorias(id,nome), imagens:materiais_imagens(id,storage_path,principal)",
+      "id, codigo, nome, descricao, tipo, dimensoes, status, imagem_principal_url, updated_at, fornecedor:fornecedores(id,nome), categoria:categorias(id,nome), imagens:materiais_imagens(id,storage_path,principal,bucket,asset_id)",
     )
     .order("updated_at", { ascending: false });
   if (error) throw new Error(error.message);
@@ -233,6 +244,8 @@ export const adicionarImagemMaterial = createServerFn({ method: "POST" })
         legenda: z.string().max(300).optional().nullable(),
         tipo: z.enum(["galeria", "foto_real"]).default("galeria"),
         principal: z.boolean().default(false),
+        bucket: z.string().max(60).optional().nullable(),
+        asset_id: z.string().uuid().optional().nullable(),
       })
       .parse(raw),
   )
@@ -278,7 +291,14 @@ export const removerImagemMaterial = createServerFn({ method: "POST" })
   .inputValidator((raw: unknown) => z.object({ id: z.string().uuid(), storage_path: z.string() }).parse(raw))
   .handler(async ({ data }) => {
     const supabase = getClient();
-    await supabase.storage.from("materiais").remove([data.storage_path]);
+    const { data: row } = await supabase
+      .from("materiais_imagens")
+      .select("bucket, asset_id")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (!row?.asset_id) {
+      await supabase.storage.from(row?.bucket || "materiais").remove([data.storage_path]);
+    }
     const { error } = await supabase.from("materiais_imagens").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
@@ -297,6 +317,8 @@ export const adicionarDocumentoMaterial = createServerFn({ method: "POST" })
         tamanho_bytes: z.number().optional().nullable(),
         categoria: z.string().max(64).optional().nullable(),
         versao: z.string().max(32).optional().nullable(),
+        bucket: z.string().max(60).optional().nullable(),
+        asset_id: z.string().uuid().optional().nullable(),
       })
       .parse(raw),
   )
@@ -312,7 +334,14 @@ export const removerDocumentoMaterial = createServerFn({ method: "POST" })
   .inputValidator((raw: unknown) => z.object({ id: z.string().uuid(), storage_path: z.string() }).parse(raw))
   .handler(async ({ data }) => {
     const supabase = getClient();
-    await supabase.storage.from("materiais-documentos").remove([data.storage_path]);
+    const { data: row } = await supabase
+      .from("materiais_documentos")
+      .select("bucket, asset_id")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (!row?.asset_id) {
+      await supabase.storage.from(row?.bucket || "materiais-documentos").remove([data.storage_path]);
+    }
     const { error } = await supabase.from("materiais_documentos").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };

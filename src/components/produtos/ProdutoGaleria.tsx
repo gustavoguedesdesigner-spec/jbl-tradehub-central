@@ -16,6 +16,7 @@ import {
   removerImagem,
   reordenarImagens,
 } from "@/lib/produtos.functions";
+import { registrarAssetVinculado } from "@/lib/biblioteca.functions";
 
 interface Imagem {
   id: string;
@@ -26,6 +27,7 @@ interface Imagem {
   principal: boolean;
   legenda?: string | null;
   tipo?: string | null;
+  asset_id?: string | null;
 }
 
 const TIPOS = [
@@ -51,6 +53,7 @@ export function ProdutoGaleria({ produtoId, imagens }: { produtoId: string; imag
   const atualizarFn = useServerFn(atualizarImagem);
   const principalFn = useServerFn(definirImagemPrincipal);
   const reordenarFn = useServerFn(reordenarImagens);
+  const registrarFn = useServerFn(registrarAssetVinculado);
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ["produto", produtoId] });
 
@@ -79,16 +82,36 @@ export function ProdutoGaleria({ produtoId, imagens }: { produtoId: string; imag
     try {
       for (const file of Array.from(files)) {
         const ext = file.name.split(".").pop() ?? "bin";
-        const path = `${produtoId}/${crypto.randomUUID()}.${ext}`;
-        const { error: upErr } = await supabase.storage.from("produtos").upload(path, file, {
+        const path = `produto/${produtoId}/${crypto.randomUUID()}.${ext}`;
+        const { error: upErr } = await supabase.storage.from("assets").upload(path, file, {
           contentType: file.type,
         });
         if (upErr) throw upErr;
+        const { asset_id } = await registrarFn({
+          data: {
+            nome: file.name,
+            storage_path: path,
+            tipo: "imagem",
+            mime_type: file.type || null,
+            peso_bytes: file.size,
+            formato: ext,
+            entidade_tipo: "produto",
+            entidade_id: produtoId,
+            papel: "galeria_produto",
+          },
+        });
         await adicionarFn({
-          data: { produto_id: produtoId, storage_path: path, url_publica: path, principal: false },
+          data: {
+            produto_id: produtoId,
+            storage_path: path,
+            url_publica: path,
+            principal: false,
+            bucket: "assets",
+            asset_id,
+          },
         });
       }
-      toast.success("Imagens adicionadas");
+      toast.success("Imagens adicionadas à Biblioteca de Mídia");
       invalidate();
       qc.invalidateQueries({ queryKey: ["produtos"] });
     } catch (e) {
@@ -158,6 +181,14 @@ export function ProdutoGaleria({ produtoId, imagens }: { produtoId: string; imag
                 {img.principal && (
                   <span className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-xs font-medium text-primary-foreground">
                     <Star className="h-3 w-3" /> Principal
+                  </span>
+                )}
+                {!img.asset_id && (
+                  <span
+                    title="Arquivo legado — ainda não migrado para a Biblioteca de Mídia"
+                    className="absolute bottom-2 left-2 rounded-full bg-amber-500/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white shadow"
+                  >
+                    Legado
                   </span>
                 )}
                 <div className="absolute right-2 top-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
