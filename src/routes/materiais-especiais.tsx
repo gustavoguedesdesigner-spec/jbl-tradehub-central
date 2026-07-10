@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 
 import { PageHero } from "@/components/layout/PageHero";
+import heroImg from "@/assets/hero-materiais-especiais.jpg";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
