@@ -411,11 +411,11 @@ export const removerDocumento = createServerFn({ method: "POST" })
     const supabase = getClient();
     const { data: d } = await supabase
       .from("produtos_documentos")
-      .select("storage_path, produto_id")
+      .select("storage_path, produto_id, bucket, asset_id")
       .eq("id", data.id)
       .maybeSingle();
-    if (d?.storage_path) {
-      await supabase.storage.from("produtos-documentos").remove([d.storage_path]);
+    if (d?.storage_path && !d.asset_id) {
+      await supabase.storage.from(d.bucket || "produtos-documentos").remove([d.storage_path]);
     }
     const { error } = await supabase.from("produtos_documentos").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
