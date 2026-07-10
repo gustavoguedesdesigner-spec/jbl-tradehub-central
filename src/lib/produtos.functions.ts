@@ -227,6 +227,8 @@ const imagemInput = z.object({
   principal: z.boolean().default(false),
   tipo: z.string().max(60).optional().nullable(),
   legenda: z.string().max(300).optional().nullable(),
+  bucket: z.string().max(60).optional().nullable(),
+  asset_id: z.string().uuid().optional().nullable(),
 });
 
 export const adicionarImagem = createServerFn({ method: "POST" })
