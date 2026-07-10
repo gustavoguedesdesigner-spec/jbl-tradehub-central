@@ -16,6 +16,7 @@ import {
   removerImagem,
   reordenarImagens,
 } from "@/lib/produtos.functions";
+import { registrarAssetVinculado } from "@/lib/biblioteca.functions";
 
 interface Imagem {
   id: string;
@@ -26,6 +27,7 @@ interface Imagem {
   principal: boolean;
   legenda?: string | null;
   tipo?: string | null;
+  asset_id?: string | null;
 }
 
 const TIPOS = [
