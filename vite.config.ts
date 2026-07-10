@@ -12,4 +12,8 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // Deploy target: Vercel (via GitHub). Inside Lovable's own build this override
+  // is ignored and Cloudflare is forced; on Vercel CI, Nitro emits the Vercel
+  // output layout (.vercel/output) so server functions run as Edge/Node handlers.
+  nitro: { preset: "vercel" },
 });
