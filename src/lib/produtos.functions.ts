@@ -313,11 +313,12 @@ export const removerImagem = createServerFn({ method: "POST" })
     const supabase = getClient();
     const { data: img } = await supabase
       .from("produtos_imagens")
-      .select("storage_path, produto_id")
+      .select("storage_path, produto_id, bucket, asset_id")
       .eq("id", data.id)
       .maybeSingle();
-    if (img?.storage_path) {
-      await supabase.storage.from("produtos").remove([img.storage_path]);
+    if (img?.storage_path && !img.asset_id) {
+      // só remove do storage se NÃO for asset da Biblioteca (asset pode ser reutilizado)
+      await supabase.storage.from(img.bucket || "produtos").remove([img.storage_path]);
     }
     const { error } = await supabase.from("produtos_imagens").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
