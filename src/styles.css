@@ -206,3 +206,14 @@
   margin-inline: auto;
   padding-inline: 1.5rem;
 }
+
+/* Print styles — for "Exportar PDF" on the launch project page */
+@media print {
+  @page { size: A4; margin: 14mm; }
+  html, body { background: white !important; }
+  aside, nav, header button, .print\:hidden { display: none !important; }
+  [data-sidebar], [role="navigation"].sticky { display: none !important; }
+  .sticky { position: static !important; }
+  section { break-inside: avoid; page-break-inside: avoid; }
+  a { color: inherit !important; text-decoration: none !important; }
+}
