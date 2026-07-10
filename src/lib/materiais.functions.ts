@@ -244,6 +244,8 @@ export const adicionarImagemMaterial = createServerFn({ method: "POST" })
         legenda: z.string().max(300).optional().nullable(),
         tipo: z.enum(["galeria", "foto_real"]).default("galeria"),
         principal: z.boolean().default(false),
+        bucket: z.string().max(60).optional().nullable(),
+        asset_id: z.string().uuid().optional().nullable(),
       })
       .parse(raw),
   )
@@ -289,7 +291,14 @@ export const removerImagemMaterial = createServerFn({ method: "POST" })
   .inputValidator((raw: unknown) => z.object({ id: z.string().uuid(), storage_path: z.string() }).parse(raw))
   .handler(async ({ data }) => {
     const supabase = getClient();
-    await supabase.storage.from("materiais").remove([data.storage_path]);
+    const { data: row } = await supabase
+      .from("materiais_imagens")
+      .select("bucket, asset_id")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (!row?.asset_id) {
+      await supabase.storage.from(row?.bucket || "materiais").remove([data.storage_path]);
+    }
     const { error } = await supabase.from("materiais_imagens").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
