@@ -122,6 +122,14 @@ export function ProdutoImagensUploader({ produtoId, imagens }: { produtoId: stri
                     <Star className="h-3 w-3" /> Principal
                   </span>
                 )}
+                {!img.asset_id && (
+                  <span
+                    title="Arquivo legado — ainda não migrado para a Biblioteca de Mídia"
+                    className="absolute bottom-1 left-1 rounded bg-amber-500/95 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-white"
+                  >
+                    Legado
+                  </span>
+                )}
                 <button
                   type="button"
                   onClick={() => remover.mutate(img.id)}
