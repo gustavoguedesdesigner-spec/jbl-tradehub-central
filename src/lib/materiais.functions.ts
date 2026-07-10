@@ -317,6 +317,8 @@ export const adicionarDocumentoMaterial = createServerFn({ method: "POST" })
         tamanho_bytes: z.number().optional().nullable(),
         categoria: z.string().max(64).optional().nullable(),
         versao: z.string().max(32).optional().nullable(),
+        bucket: z.string().max(60).optional().nullable(),
+        asset_id: z.string().uuid().optional().nullable(),
       })
       .parse(raw),
   )
@@ -332,7 +334,14 @@ export const removerDocumentoMaterial = createServerFn({ method: "POST" })
   .inputValidator((raw: unknown) => z.object({ id: z.string().uuid(), storage_path: z.string() }).parse(raw))
   .handler(async ({ data }) => {
     const supabase = getClient();
-    await supabase.storage.from("materiais-documentos").remove([data.storage_path]);
+    const { data: row } = await supabase
+      .from("materiais_documentos")
+      .select("bucket, asset_id")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (!row?.asset_id) {
+      await supabase.storage.from(row?.bucket || "materiais-documentos").remove([data.storage_path]);
+    }
     const { error } = await supabase.from("materiais_documentos").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
