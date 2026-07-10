@@ -18,6 +18,7 @@ import { Route as MateriaisEspeciaisRouteImport } from './routes/materiais-espec
 import { Route as LaunchControlRouteImport } from './routes/launch-control'
 import { Route as LancamentosRouteImport } from './routes/lancamentos'
 import { Route as ImportacaoRouteImport } from './routes/importacao'
+import { Route as DecisionEngineRouteImport } from './routes/decision-engine'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as BaseMestreRouteImport } from './routes/base-mestre'
 import { Route as AssetCenterRouteImport } from './routes/asset-center'
@@ -83,6 +84,11 @@ const LancamentosRoute = LancamentosRouteImport.update({
 const ImportacaoRoute = ImportacaoRouteImport.update({
   id: '/importacao',
   path: '/importacao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DecisionEngineRoute = DecisionEngineRouteImport.update({
+  id: '/decision-engine',
+  path: '/decision-engine',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
@@ -198,6 +204,7 @@ export interface FileRoutesByFullPath {
   '/asset-center': typeof AssetCenterRoute
   '/base-mestre': typeof BaseMestreRouteWithChildren
   '/configuracoes': typeof ConfiguracoesRoute
+  '/decision-engine': typeof DecisionEngineRoute
   '/importacao': typeof ImportacaoRouteWithChildren
   '/lancamentos': typeof LancamentosRouteWithChildren
   '/launch-control': typeof LaunchControlRoute
@@ -229,6 +236,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/asset-center': typeof AssetCenterRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/decision-engine': typeof DecisionEngineRoute
   '/importacao': typeof ImportacaoRouteWithChildren
   '/launch-control': typeof LaunchControlRoute
   '/materiais-especiais': typeof MateriaisEspeciaisRoute
@@ -259,6 +267,7 @@ export interface FileRoutesById {
   '/asset-center': typeof AssetCenterRoute
   '/base-mestre': typeof BaseMestreRouteWithChildren
   '/configuracoes': typeof ConfiguracoesRoute
+  '/decision-engine': typeof DecisionEngineRoute
   '/importacao': typeof ImportacaoRouteWithChildren
   '/lancamentos': typeof LancamentosRouteWithChildren
   '/launch-control': typeof LaunchControlRoute
@@ -293,6 +302,7 @@ export interface FileRouteTypes {
     | '/asset-center'
     | '/base-mestre'
     | '/configuracoes'
+    | '/decision-engine'
     | '/importacao'
     | '/lancamentos'
     | '/launch-control'
@@ -324,6 +334,7 @@ export interface FileRouteTypes {
     | '/'
     | '/asset-center'
     | '/configuracoes'
+    | '/decision-engine'
     | '/importacao'
     | '/launch-control'
     | '/materiais-especiais'
@@ -353,6 +364,7 @@ export interface FileRouteTypes {
     | '/asset-center'
     | '/base-mestre'
     | '/configuracoes'
+    | '/decision-engine'
     | '/importacao'
     | '/lancamentos'
     | '/launch-control'
@@ -386,6 +398,7 @@ export interface RootRouteChildren {
   AssetCenterRoute: typeof AssetCenterRoute
   BaseMestreRoute: typeof BaseMestreRouteWithChildren
   ConfiguracoesRoute: typeof ConfiguracoesRoute
+  DecisionEngineRoute: typeof DecisionEngineRoute
   ImportacaoRoute: typeof ImportacaoRouteWithChildren
   LancamentosRoute: typeof LancamentosRouteWithChildren
   LaunchControlRoute: typeof LaunchControlRoute
@@ -460,6 +473,13 @@ declare module '@tanstack/react-router' {
       path: '/importacao'
       fullPath: '/importacao'
       preLoaderRoute: typeof ImportacaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/decision-engine': {
+      id: '/decision-engine'
+      path: '/decision-engine'
+      fullPath: '/decision-engine'
+      preLoaderRoute: typeof DecisionEngineRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/configuracoes': {
@@ -699,6 +719,7 @@ const rootRouteChildren: RootRouteChildren = {
   AssetCenterRoute: AssetCenterRoute,
   BaseMestreRoute: BaseMestreRouteWithChildren,
   ConfiguracoesRoute: ConfiguracoesRoute,
+  DecisionEngineRoute: DecisionEngineRoute,
   ImportacaoRoute: ImportacaoRouteWithChildren,
   LancamentosRoute: LancamentosRouteWithChildren,
   LaunchControlRoute: LaunchControlRoute,
