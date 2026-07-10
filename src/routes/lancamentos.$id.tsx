@@ -268,11 +268,14 @@ function LancamentoDetalhe() {
 
         {/* CRONOGRAMA */}
         <Section id="cronograma" icon={CalendarClock} title="Cronograma">
-          <div className="grid gap-6 md:grid-cols-3">
-            <TimelineCard icon={Sparkles} label="Criado em" value={new Date(anyL.created_at).toLocaleDateString("pt-BR")} tone="neutral" />
-            <TimelineCard icon={CalendarClock} label="Prazo previsto" value={anyL.data_prevista ? new Date(anyL.data_prevista).toLocaleDateString("pt-BR") : "—"} tone="amber" />
-            <TimelineCard icon={Rocket} label="Lançamento" value={anyL.data_lancamento ? new Date(anyL.data_lancamento).toLocaleDateString("pt-BR") : "—"} tone="primary" />
-          </div>
+          <GanttTimeline
+            criadoEm={anyL.created_at}
+            prazo={anyL.data_prevista}
+            lancamento={anyL.data_lancamento}
+            producao={anyL.producao_status}
+            aprovacao={anyL.aprovacao_status}
+            implantacao={anyL.implantacao_status}
+          />
         </Section>
 
         {/* CHECKLIST */}
